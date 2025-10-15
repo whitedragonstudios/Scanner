@@ -1,0 +1,12 @@
+{
+    "webpage title": "Populus Numerus",
+    "company": "Scanner",
+    "main_background_color": "#333333",
+    "main_text_color": "#f5f5f5", 
+    "button_color": "#4CAF50",
+    "button_text_color": "#ffffff",
+    "button_border_color": "#388E3C",
+    "button_border_hover_color": "#2E7D32",
+    "sidebar_color": "#222222",
+    "sidebar_text_color": "#f5f5f5"
+}
