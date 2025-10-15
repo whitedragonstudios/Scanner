@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner</title>
+    <!-- link css stylesheet for flask -->
+    <link href="{{url_for('static', filename='styles/style.css')}}" rel="stylesheet"/>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="sidebar"> 
+            Weather 
+        </div>
+        <div class="main-content">
+            <h1> <!-- Header for the whole app. Change this to company name -->
+                Scanner
+            </h1>
+            
+            <form action = "/index" method="post"> <!-- Form for entering ID number -->
+                <input type="text" name="idnumber" id = "idnumber" placeholder="Scan or Enter ID number" maxlength="8" required>
+                <button type="submit"> 
+                    Submit 
+                </button>
+            </form>
+            <div class="content"> 
+                <div class = "left-div">
+                    <h2> {{ idnumber }} {{ name }}  </h2>
+                    <h2> {{time}} </h2>
+                    <h2> {{date}} </h2>
+                    <p>  {{ group }} </p>
+                    </div>
+                <div class = "right-div">
+                    <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="picture not found" width ="256" height = "256" />
+                    <!-- <img src="{{ url_for('static', filename='images/' + picture) }}"  alt="picture not found" width ="1024" height = "1024">-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
