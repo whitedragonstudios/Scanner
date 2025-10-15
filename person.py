@@ -8,3 +8,6 @@ class Person():
     def welcome_message(self):
         current = dt.now()
         print(f"[Welcome,\n{self.name.title()} your clock in time is {current}. \nHave a wonderful day.")
+    def name_look_up(self):
+        pass
+    
