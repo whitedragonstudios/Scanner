@@ -1,22 +1,26 @@
 # server password stoic
 # port 5000
 
+user = 'marcus'
+db_name = 'people'
+port = 5000
 
-read -sp "Enter password: " DB_PASSWORD
+
+read -sp "Enter password: " password
 echo
-read -sp "Confirm password: " DB_PASSWORD_CONFIRM
+read -sp "Confirm password: " password2
 echo
 
 # Check if the passwords match.
-if [[ "$DB_PASSWORD" != "$DB_PASSWORD_CONFIRM" ]]; then
-    echo "Passwords do not match. Exiting."
+if [[ "$password" != "$password2" ]]; then
+    echo "Passwords do not match."
     exit 1
 fi
 
 sudo -u postgre psql -p 5000 << EOF
-    CREATE USER 'marcus' WITH PASSWORD 'stoic';
-    CREATE DATABASE people WITH OWNER = marcus;
-    GRANT ALL PRIVILEGES ON DATABASE people TO marcus;
+    CREATE USER $user WITH PASSWORD '$password';
+    CREATE DATABASE $db_name WITH OWNER = $user;
+    GRANT ALL PRIVILEGES ON DATABASE $db_name TO $user;
 EOF
 
 echo "Setup complete."
