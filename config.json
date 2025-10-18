@@ -1,4 +1,9 @@
 {
+    "config_status": false,
+    "config_date": null,
+    "CSV_path": null,
+    "XLSX_path": null,
+    "JSON_path": null,
     "webpage title": "Populus Numerus",
     "company": "Scanner",
     "main_background_color": "#333333",

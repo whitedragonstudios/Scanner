@@ -12,7 +12,7 @@ def load_config():
             config = json.load(config_file)
             print("Config file loaded.")
     except FileNotFoundError:
-        config = {"placeholder_key": "placeholder_value"}n
+        config = {"placeholder_key": "placeholder_value"}
         print("Config file not found. Using default settings.") 
     return config
 

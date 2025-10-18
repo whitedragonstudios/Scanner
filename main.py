@@ -1,6 +1,9 @@
 from datetime import datetime as dt
 import json
 
+# Check if db and config has been initialized.
+
+# If not launch setup wizzard
 
 # Load a config file which allows users to easily change settings
 with open('config.json') as config_file:
@@ -14,7 +17,7 @@ with open('config.json') as config_file:
 
 # Update flask server with person output
 
-# Send clock in time to storage DB 
+# Send clock in time to timesheet DB 
 
 if __name__ == "__main__":
     pass
