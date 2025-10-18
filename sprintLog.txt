@@ -1,0 +1,30 @@
+Future Backlog
+>> create flask or TK config GUI for setup and settings changes. 
+
+Second Sprint 10/15/25-ongoing
+Primary Goal: Create setup files in order for user to create and configure database
+
+Requirements:
+1) Shell script to initialize databases on install
+2) Use variables to make shell script configurable
+3) Begin design of database structure
+4) Allow databases to be named via variables
+5) Keep in mind that config will eventually come from flask
+
+First Sprint 10/12/25-10/15/25
+Primary Goal: Basic functionality of Flask
+
+
+Requirements:
+1) HTML CSS Python handshake
+2) Establish architecural principals and basic templates.
+3) Flask should put up an index page showing a text box as well as feedback information boxes for when database returns information.
+4) Create a python object which can hold the neccecary data to send to Flask
+5) Keep in mind modularity and cross language configurability. 
+
+Review:
+1) Using Flask seems to be an effient way mostly due to Python's compatibilty with JSON. May require more complexity when intergrating POSTGRE
+2) Created basic architecural plan in main.py. 
+3) Created HTML and CSS templates. Using variables for CSS attributes was easier than expected. 
+4) person.py created with outline of attributes needed from database
+5) In order to configure as many settings that are required it looks like a second webpage or TK app may be needed to give user GUI configuration ADD to requirements

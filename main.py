@@ -5,6 +5,8 @@ import json
 
 # If not launch setup wizzard
 
+#setup wizzard is a flask based app to save config settings to postgreSQL DB NOTE convert config.json to postgreSQL in future
+
 # Load a config file which allows users to easily change settings
 with open('config.json') as config_file:
     config = json.load(config_file)
