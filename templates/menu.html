@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration Menu</title>
+    <!-- link css stylesheet for flask -->
+    <link href="{{url_for('static', filename='styles/style.css')}}" rel="stylesheet"/>
+    <style>
+        :root {
+            --bg-color: {{ cf.main_background_color}};
+            --text-color: {{cf.main_text_color}};
+            --button-color: {{cf.button_color}};
+            --button-text-color: {{cf.button_text_color}};
+            --button-boarder-color: {{cf.button_border_color}};
+            --button-boarder-hover-color: {{cf.button_border_hover_color}};
+            --sidebar-color: {{cf.sidebar_color}};
+            --sidebar-text-color: {{cf.sidebar_text_color}};
+        }
+    </style>
+
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="sidebar"> 
+            Technical Settings
+        </div>
+        <div class="main-content">
+            <h1>
+                Change Company Name
+            </h1>
+            <h2> 
+                Current name: {{company_name}}
+            </h2>
+            <form action = "/menu" method="post">
+                <input class="resizedTextbox" type="text" name="new_companyname" id = "new_companyname" placeholder="Enter new company name" maxlength="50" required>
+                <button class=button1 type="submit"> 
+                    Submit
+                </button>
+            </form>
+            <div class="content"> 
+                <div class = "left-div">
+                    </div>
+                <div class = "right-div">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

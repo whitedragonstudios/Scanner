@@ -11,6 +11,13 @@ Requirements:
 4) Allow databases to be named via variables
 5) Keep in mind that config will eventually come from flask
 
+Review:
+1) It will be better modularity to split shell and sql setup into seperate scripts
+2) While using variables was a good idea this is not a user facing part of the app so generaic naming conventions assures better compatibilty across different users
+3) Database structure designed, three many-to-many db (people, roles, timesheet) an additional config db needed
+4) Requirement changed see #2
+5) 
+
 First Sprint 10/12/25-10/15/25
 Primary Goal: Basic functionality of Flask
 
