@@ -4,6 +4,8 @@ from datetime import datetime as dt
 from initialization import Setting
 
 setting = Setting()
+
+
 # Intialize flask server
 app = Flask(__name__)
 
@@ -11,15 +13,18 @@ app = Flask(__name__)
 @app.route ('/menu')
 
 # Render updates from setting to webpage
-def update_webpage():
+def open_settings():
     # Get text from input box on webpage
     new_company_name = request.args.get('new_companyname')
 
     return render_template("menu.html", 
-                           company_name=setting.company,
-                           cf = setting
-                           )
+                        company_name=setting.company,
+                        cf = setting
+                        )
+
+
 
 if __name__ == "__main__":
+    # if setting.config_status == "False": # move to main.py in future
     app.run(host="0.0.0.0", port=2000)
     #serve(app, host="0.0.0.0", port=2000))

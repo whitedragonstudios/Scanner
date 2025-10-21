@@ -1,13 +1,11 @@
 #!/bin/bash
 
 # change these variables as needed to create a custom user and database
-user = 'marcus'
-employee_database = 'people'
-timesheet_database = 'timesheet'
-roles_database = 'roles'
-id_length = 8
-port = 5000
+user="marcus"
+port=5000
 
+
+echo "Create password for your PostgreSQL databases"
 while true; do
     read -sp "Enter password: " password #stoic
     echo
@@ -22,7 +20,7 @@ while true; do
     fi
 done
 
-choice= ""
+choice=""
 while true; do
     read -sp "Install PostgreSQL? (y/n): " choice
     echo
@@ -31,7 +29,7 @@ while true; do
         break
     elif [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         echo "Intalling PostgreSQL."
-        sudo apt-get update && ugrade -y
+        sudo apt-get update && sudo apt-get upgrade -y
         sudo apt-get install -y postgresql postgresql-contrib
         break
     else
@@ -39,39 +37,24 @@ while true; do
     fi
 done
 
+sudo service postgresql start
 
-sudo -u postgre psql -p $port << EOF
-    CREATE USER $user WITH PASSWORD '$password';
-    CREATE TABLE $employee_database (
-        id SERIAL PRIMARY KEY, 
-        employee_id INTEGER ($id_length) UNIQUE,
-        name VARCHAR(50) UNIQUE,
-        email VARCHAR(50) UNIQUE, 
-        phone VARCHAR(15) UNIQUE
-        ) WITH OWNER = $user;
-    GRANT ALL PRIVILEGES ON DATABASE $employee_database TO $user;
+sudo -u postgres psql -p "$port" -d postgres -c "
+DO \$\$
+BEGIN
+   IF EXISTS (SELECT FROM pg_roles WHERE rolname = '${user}') THEN
+      RAISE NOTICE 'User ${user} already exists. Resetting password.';
+      EXECUTE format('ALTER ROLE %I WITH PASSWORD %L', '${user}', '${password}');
+   ELSE
+      RAISE NOTICE 'Creating new user ${user}.';
+      EXECUTE format('CREATE ROLE %I WITH LOGIN PASSWORD %L', '${user}', '${password}');
+   END IF;
+END
+\$\$;
+"
 
-    CREATE TABLE $roles_database (
-        id SERIAL PRIMARY KEY,
-        employee_id INTEGER($id_length) NOT NULL REFERENCES $employee_database(employee_id) ON DELETE CASCADE,
-        name VARCHAR(100) NOT NULL REFERENCES $employee_database(name) ON DELETE CASCADE,
-        role VARCHAR(50) UNIQUE
-        position VARCHAR(50),
-        department VARCHAR(50)
-        ) WITH OWNER = $user;
-    GRANT ALL PRIVILEGES ON DATABASE $roles_database TO $user;
 
-    CREATE TABLE $timesheet_database (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(50) NOT NULL REFERENCES $employee_database(name) ON DELETE CASCADE,
-        role VARCHAR(50) NOT NULL REFERENCES $roles_database(role) ON DELETE CASCADE,
-        clock_in TIMESTAMPTZ,
-        clock_out TIMESTAMPTZ
-        ) WITH OWNER = $user;
-    GRANT ALL PRIVILEGES ON DATABASE $timesheet_database TO $user;
-EOF
+psql -U postgres -d postgres -p 5000 -f createDB.sql
+
 
 echo "Setup complete."
-
-psql -h localhost -p $port -U $user -d $d
-database
