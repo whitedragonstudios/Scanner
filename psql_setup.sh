@@ -3,6 +3,7 @@
 # change these variables as needed to create a custom user and database
 user="marcus"
 port=5000
+dbname="scanner"
 
 
 echo "Create password for your PostgreSQL databases"
@@ -38,6 +39,8 @@ while true; do
 done
 
 sudo service postgresql start
+echo "PostgreSQL service started."
+
 
 sudo -u postgres psql -p "$port" -d postgres -c "
 DO \$\$
@@ -53,8 +56,50 @@ END
 \$\$;
 "
 
+echo "'$dbname' exists..."
+sudo -u postgres psql -p "$port" -d postgres -c "
+DO \$\$
+BEGIN
+   IF NOT EXISTS (SELECT FROM pg_database WHERE datname = '${dbname}') THEN
+      EXECUTE format('CREATE DATABASE %I OWNER %I', '${dbname}', '${user}');
+   END IF;
+END
+\$\$;
+"
 
-psql -U postgres -d postgres -p 5000 -f createDB.sql
+sudo -u postgres psql -p "$port" -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE ${dbname} TO ${user};"
+
+echo "Choose which tables you want to reset"
+echo "  1) CLEAN re-install - DROP all tables (WARNING: will delete all data stored in people & timesheets)"
+echo "  2) RESET configuration settings only (set to defaults)"
+echo "  3) KEEP all tables (choose this to keep all existing data)"
+read -p "Enter 1, 2 or 3: " choice
+choice=${choice:-3}
+
+case "$choice" in
+    1)
+        echo "Performing CLEAN re-install"
+        sudo -u postgres psql -p "$port" -d scanner -c "
+            DROP TABLE IF EXISTS timesheet_database CASCADE;
+            DROP TABLE IF EXISTS people_database CASCADE;
+            DROP TABLE IF EXISTS config_database CASCADE;"
+        ;;
+    2)
+        echo "Resetting configuration settings to defaults"
+        sudo -u postgres psql -p "$port" -d scanner -c "
+            DROP TABLE IF EXISTS config_database CASCADE;"
+        ;;
+    3)
+        echo "Keeping existing tables (no drops)."
+        ;;
+    *)
+        echo "Invalid choice - keeping existing tables."
+        ;;
+esac
+
+
+echo "Creating tables as needed..."
+sudo -u postgres psql -p "$port" -d "$dbname" -f createDB.sql
 
 
 echo "Setup complete."
