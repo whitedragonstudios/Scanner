@@ -4,3 +4,4 @@ venv
 \bin
 pyvenv.cfg
 \testsite
+.github
