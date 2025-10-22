@@ -25,6 +25,5 @@ def open_settings():
 
 
 if __name__ == "__main__":
-    # if setting.config_status == "False": # move to main.py in future
     app.run(host="0.0.0.0", port=2000)
     #serve(app, host="0.0.0.0", port=2000))

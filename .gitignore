@@ -1,4 +1,6 @@
 .venv
 venv
 .env
-test.sql
+\bin
+pyvenv.cfg
+\testsite
