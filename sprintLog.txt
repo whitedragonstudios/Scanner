@@ -20,6 +20,8 @@ Review:
 5) Converted config to be created in createDB.sql. Need to edit it from Flask commandlets.
 * while splitting psql_setup.sh realized that I need to add cross compatibilty for chrome/linux/windows 
 * may need to add to psql_setup.sh to handle privilages and different enviorments.
+* resuced number of tables to 3, seperate roles table was slow. sinplified and eleminated vertical repition in tables.
+* added a clean install option to allow user to choose how to deal with a previously installed data.
 
 First Sprint 10/12/25-10/15/25
 Primary Goal: Basic functionality of Flask
