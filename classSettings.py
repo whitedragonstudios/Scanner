@@ -15,24 +15,9 @@ postgressql_config = "scanner"
 postgressql_user = "marcus"
 postgressql_password = "stoic"
 
-# Load a config file which allows users to easily change settings NOTE this may be changed to postgre DB in the future. 
-#def load_config():
-#    config_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.json')
-#    try:
-#        with open(config_path,"r") as config_file:
-#            config = json.load(config_file)
-#            print("Config file loaded.")
-#    except FileNotFoundError:
-#        config = {"placeholder_key": "placeholder_value"}
-#        print("Config file not found. Using default settings.") 
-#    return config
-
-# config = load_config()
-
-
 class Setting:
     def __init__(self):
-        self.assign_setting()
+        self.assign_settings()
     def connect_db(self):
         connect = psycopg2.connect(
             host = postgressql_host,
@@ -77,10 +62,10 @@ class Setting:
         
 setting = Setting()
 
-paths = setting.CSV_path, setting.XLSX_path, setting.JSON_path
-print(paths)
-for item in paths:
-    if item is not None:
-        filetype_path = item
-        print("Database source is: ", filetype_path)
-        break
+#paths = setting.CSV_path, setting.XLSX_path, setting.JSON_path
+#rint(paths)
+#for item in paths:
+#    if item is not None:
+#        filetype_path = item
+#        print("Database source is: ", filetype_path)
+#        break

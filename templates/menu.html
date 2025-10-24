@@ -7,16 +7,7 @@
     <!-- link css stylesheet for flask -->
     <link href="{{url_for('static', filename='styles/style.css')}}" rel="stylesheet"/>
     <style>
-        :root {
-            --bg-color: {{ cf.main_background_color}};
-            --text-color: {{cf.main_text_color}};
-            --button-color: {{cf.button_color}};
-            --button-text-color: {{cf.button_text_color}};
-            --button-boarder-color: {{cf.button_border_color}};
-            --button-boarder-hover-color: {{cf.button_border_hover_color}};
-            --sidebar-color: {{cf.sidebar_color}};
-            --sidebar-text-color: {{cf.sidebar_text_color}};
-        }
+
     </style>
 
 </head>
@@ -48,45 +39,45 @@
             <div class="content"> 
                 <div class = "left-div">
                     <h2>
-                        Change Company Name --- Current name: {{company_name}}
+                        Change Company Name --- Current name:
                     </h2>
                     <form action = "/menu" method="post">
-                        <input class="resizedTextbox" type="text" name="new_companyname" id = "new_companyname" placeholder="Enter company name" maxlength="50" required>
-                        <button class=button1 type="submit"> 
+                        <input class="textBox" type="text" name="new_companyname" id = "new_companyname" placeholder="Enter company name" maxlength="50" required>
+                        <button class=buttonM type="submit"> 
                             Submit
                         </button>
                     </form>
                     <h2>
-                        Change Webpage Title --- Current Title: {{webpage_title}}
+                        Change Webpage Title --- Current Title:
                     </h2>
                     <form action = "/menu" method="post">
-                        <input class="resizedTextbox" type="text" name="new_title" id = "new_title" placeholder="Enter webpage title" maxlength="50" required>
-                        <button class=button1 type="submit"> 
+                        <input class="textBox" type="text" name="new_title" id = "new_title" placeholder="Enter webpage title" maxlength="50" required>
+                        <button class=buttonM type="submit"> 
                             Submit
                         </button>
                     </form>
                     <h2>
-                        Change Background Color --- Current Color: {{}}
+                        Change Background Color --- Current Color:
                     </h2>
                     <form action = "/menu" method="post">
-                        <input class="resizedTextbox" type="text" name="bgcolor" id = "bgcolor" placeholder="Enter Background Color" maxlength="50" required>
-                        <button class=button1 type="submit"> 
+                        <input class="textBox" type="text" name="bgcolor" id = "bgcolor" placeholder="Enter Background Color" maxlength="50" required>
+                        <button class=buttonM type="submit"> 
                             Submit
                         </button>
                     </form>
                     <h2>
-                        Change Text Color --- Current Color: {{}}
+                        Change Text Color --- Current Color:
                     </h2>
                     <form action = "/menu" method="post">
-                        <input class="resizedTextbox" type="text" name="txtcolor" id = "txtcolor" placeholder="Enter Text Color" maxlength="50" required>
-                        <button class=button1 type="submit"> 
+                        <input class="textBox" type="text" name="txtcolor" id = "txtcolor" placeholder="Enter Text Color" maxlength="50" required>
+                        <button class=buttonM type="submit"> 
                             Submit
                         </button>
                     </form>
                 </div>
                 <div class = "right-div">
                     <div class="color-picker-wrapper">
-                        <h1>🎨 Interactive Color Picker</h1>
+                        <h1>Color Picker</h1>
                         <input type="color" id="colorPicker" value="#00aaff">
                         <div class="color-info">
                             <div>Hex: <span id="hexValue">#00aaff</span>

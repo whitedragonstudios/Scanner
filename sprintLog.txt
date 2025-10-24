@@ -2,7 +2,16 @@ Future Backlog
 >> create flask or TK config GUI for setup and settings changes. 
 >> modify psql_setup for cross platform compatibilty
 
-Second Sprint 10/15/25-ongoing
+Thrid Sprint 10/23
+Primary Goal: Establish I/O between settings page and database
+
+Requirements:
+1) Design settings HTML page.
+2) Make classSettings.py load config settings from db.
+3) Make SQL script to handle Database updates. 
+4) Rework setup process to detect OS and adjust postgresql setup accordingly.
+
+Second Sprint 10/15-10/23 2025
 Primary Goal: Create setup files in order for user to create and configure database
 
 Requirements:
@@ -20,10 +29,10 @@ Review:
 5) Converted config to be created in createDB.sql. Need to edit it from Flask commandlets.
 * while splitting psql_setup.sh realized that I need to add cross compatibilty for chrome/linux/windows 
 * may need to add to psql_setup.sh to handle privilages and different enviorments.
-* resuced number of tables to 3, seperate roles table was slow. sinplified and eleminated vertical repition in tables.
+* reduced number of tables to 3, seperate roles table was slow. simplified and eleminated vertical repition in tables.
 * added a clean install option to allow user to choose how to deal with a previously installed data.
 
-First Sprint 10/12/25-10/15/25
+First Sprint 10/12-10/15 2025
 Primary Goal: Basic functionality of Flask
 
 
