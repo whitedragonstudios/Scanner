@@ -10,6 +10,7 @@ Requirements:
 2) Make classSettings.py load config settings from db.
 3) Make SQL script to handle Database updates. 
 4) Rework setup process to detect OS and adjust postgresql setup accordingly.
+5) Start connecting scripts via main.py
 
 Second Sprint 10/15-10/23 2025
 Primary Goal: Create setup files in order for user to create and configure database
