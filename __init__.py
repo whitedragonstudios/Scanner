@@ -1,7 +1,7 @@
 from . import (
+    classInstall,
     classSettings,
     person,
-    postgre_setup,
     server,
     settings
 )
@@ -9,7 +9,7 @@ from . import (
 __all__ = [
     "classSettings",
     "person",
-    "postgre_setup",
+    "classInstall",
     "server",
     "settings"
 ]

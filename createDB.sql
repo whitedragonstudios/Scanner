@@ -2,6 +2,11 @@
 -- It sets up the config_database, people_database, and timesheet_database tables,
 -- and inserts initial configuration data into the config_database table.
 
+CREATE DATABASE scanner;
+\c scanner
+CREATE USER WITH PASSWORD 'stoic'
+GRANT ALL PRIVILEGES ON DATABASE TO marcus
+
 -- Create config_database table to hold configuration settings
 CREATE TABLE config_database (
     key VARCHAR(50) PRIMARY KEY,
