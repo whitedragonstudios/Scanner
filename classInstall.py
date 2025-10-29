@@ -138,7 +138,7 @@ class Postgre_Install:
         ]
     
     # Automatically looks for PostgreSQL install
-    def check_path(self):
+    def check_install(self):
         print("Checking PATH for PostgreSQL installation")
         try:
             self.connectDB(dbname="postgres", user="postgres")
@@ -200,28 +200,6 @@ class Postgre_Install:
         else:
             print("!!! Automatic installation failed !!!")
 
-    # Tests connection to psql sever.
-    def connection_test(self):
-        if not self.check_path():
-            sys.exit(1)
-        psql_version = self.run_command("psql --version")
-        if psql_version:
-            print(f"PostgreSQL version: {psql_version} installed")
-        else:
-            sys.exit("psql not working after Path update. Restatrt program or manually install PostgreSQL.")
-        print("\nTesting connection to PostgreSQL > > > > ")
-        connect = self.run_command(f'psql -U postgres -p {self.port} -c "\\conninfo"')
-        if connect:
-            print(f"PostgreSQL connection test successful on port: {self.port}. < < < <")
-        else:
-            print("Could not connect as 'postgres'. Ensure the service is running and credentials are correct.")
-            print("   You can start it manually, for example:")
-            if self.system == "windows":
-                print("   net start postgresql-x64-16")
-            else:
-                print("   sudo service postgresql start")
-
-    
     # Setup the database that you will need for the program to run
     def create_database(self):
         print("Checking if databases have been created")
