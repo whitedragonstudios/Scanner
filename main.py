@@ -10,7 +10,7 @@ host = "localhost"
 if __name__ == "__main__":
     # Run classInstall and check the server connection works, if not updates path and installs psql.
     server = classInstall.Postgre_Install(user, password, db_name, port, host)
-    server.drop_database() #uncomment if you need to reset database
+    server.drop_database(db_name) #uncomment if you need to reset database
     # run controls the flow of classInstall
     server.run()
  

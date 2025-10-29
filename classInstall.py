@@ -40,16 +40,16 @@ class Postgre_Install:
                     cur.execute(sql)
                     for n in conn.notices:
                         print(f"[PostgreSQL Notice] {n.strip()}")
-                    
-                    try:
-                        rows = cur.fetchall()
-                        if rows:
-                            print("\nQuery Result:")
-                            for row in rows:
-                                print("   ", row)
-                    except psycopg2.ProgrammingError:
-                        # Happens when no results (e.g., CREATE TABLE)
-                        pass
+                    if sql.strip().lower().startswith("select"):
+                        try:
+                            rows = cur.fetchall()
+                            if rows:
+                                print("\nQuery Result:")
+                                for row in rows:
+                                    print("   ", row)
+                        except psycopg2.ProgrammingError:
+                            # Happens when no results (e.g., CREATE TABLE)
+                            pass
                     conn.notices.clear()
 
 
@@ -163,7 +163,13 @@ class Postgre_Install:
             if os.path.exists(psql_location):
                 print(f"Found PostgreSQL at: {psql_location}")
                 # Append env:PATH to include psql's path for the future
-                os.environ["PATH"] += os.pathsep + path
+                if os.name == "nt":
+                    # Set path for windows
+                    subprocess.run(f'setx PATH "%PATH%;{path}"', shell=True)
+                else:
+                    # Set path for linux/mac
+                    with open(os.path.expanduser("~/.bashrc"), "a") as f:
+                        f.write(f'\nexport PATH="$PATH:{path}"\n')
                 print(f"Added '{path}' to PATH for this session.")
                 return True
         # If Path cannot be loacted function returns false
@@ -176,7 +182,7 @@ class Postgre_Install:
     def install_psql(self):
         print(self.system.title(), " detected")
         # Check for windows OS
-        if self.system == "windows" or self.system == "nt":
+        if self.system == "windows":
             print("Installing PostgreSQL with Chocolatey")
             # Install postgresql with chocolatey
             cmd = "choco install postgresql --yes"
@@ -189,6 +195,7 @@ class Postgre_Install:
         elif self.system == "linux":
             # Find package managner
             distro = platform.freedesktop_os_release().get("ID", "").lower() if hasattr(platform, "freedesktop_os_release") else ""
+            print(f"Distro detected: {distro}")
             if shutil.which("apt"):
                 # Install postgresql with apt
                 cmd = "sudo apt update && sudo apt install -y postgresql-client"
@@ -253,6 +260,7 @@ class Postgre_Install:
         if self.check_install() == False:
             # ask if the user wants to automatically install psql
             ans = input("Install PostgreSQL? (y/n): ").lower().strip()
+            # if running autoinstall manually set ans = "y" comment out line above.
             if ans != "y":
                 print("PostgreSQL is required for this program to run.\nPlease install manually.\n!!! Aborting program launch !!!")
                 # Abort setup the user must install psql for the program to work
@@ -267,20 +275,35 @@ class Postgre_Install:
                     return False
         # Set up the database which the program will use.
         print("Checking if databases have been created")
-        # Connect to scanner with the postgre default user
-        if self.connectDB(user="postgres"):
-            print("Databases already created")
-        else:
-            self.create_database
+        try:
+            # Connect to scanner with the postgre default user
+            if self.connectDB(user="postgres") is not None:
+                print("Databases already created")
+            else:
+                self.create_database()
+                print("Success databases created")
+        except Exception as e:
+            print(f"Alert Database failed existence check: {e}")
+            print("Attempting to create Database anyways")
+            self.create_database()
             print("Success databases created")
 
-    # Quick function to delete the scanner database to be used in debugging
-    def drop_database(self):
+    # Quick function to delete database to be used in debugging
+    def drop_database(self, dropDB):
         try:
             # Connect with default credentials and drop database
-            self.connectDB(cmd=f"DROP DATABASE IF EXISTS scanner CASCADE;", dbname="postgres", user="postgres", info=True)
+            self.connectDB(cmd=f"DROP DATABASE IF EXISTS {dropDB};", dbname="postgres", user="postgres", info=True)
+            print(f"Database {dropDB} deleted")
         except Exception as e:
             print(f"Failed to drop database:{e}")
-        
 
+    
+    # quick function to delete users to be used in bebugging
+    def drop_user(self, dropUser):
+        try:
+            # Connect with deault credentials and drop user.
+            self.connectDB(cmd=f"DROP USER IF EXISTS {dropUser};", dbname="postgres", user="postgres", info=True)
+            print(f"User {dropUser} deleted")
+        except Exception as e:
+            print(f"Failed to drop user '{dropUser}': {e}")
 
