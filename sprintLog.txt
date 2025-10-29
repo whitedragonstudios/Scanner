@@ -20,6 +20,7 @@ Review:
 4+) CreateDB may be blueprint for future modules. May seperate it from classInstall. 
 5) For now server.check_install() and server.create_database() are seperate calls. May be benificial to include a seperate sql script to give different options during setup.
 * added a debug method to classInstall will be moved to edit db instaction class 
+* Need a new classHandler which will update database entries. move connectDB to handler.
 
 Second Sprint 10/15-10/23 2025
 Primary Goal: Create setup files in order for user to create and configure database

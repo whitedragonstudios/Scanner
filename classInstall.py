@@ -1,5 +1,7 @@
 import os, platform, subprocess, sys, shutil
 import psycopg2
+from time import sleep
+
 
 
 class Postgre_Install:
@@ -31,7 +33,7 @@ class Postgre_Install:
                     host=host,
                     port=port
                 )
-                conn.autocommit = True  # <-- set autocommit here
+                conn.autocommit = True
                 cur = conn.cursor()
 
                 def exec_and_print(sql):
@@ -136,89 +138,149 @@ class Postgre_Install:
             r"/mnt/c/Program Files/PostgreSQL/16/bin",
         ]
     
+
     # Automatically looks for PostgreSQL install
     def check_install(self):
-        print("Checking PATH for PostgreSQL installation")
+        print("Checking for PostgreSQL installation...")
         try:
+            # Try to connect to the default psql database
             self.connectDB(dbname="postgres", user="postgres")
             print("Connection to default psql server confirmed.")
+            # Skip the rest of this function
             return True
         except Exception as e:
             print(f"Failed to connect to psql server: {e}")
             print("Locating installation manually")
+        # Search through every likely Path for pqsl
         for path in self.path_list():
-            bin_name = "psql.exe" if os.name == "nt" else "psql"
+            # Check which version of psql to look for.
+            if os.name == "nt":
+                bin_name = "psql.exe"
+            else:
+                bin_name = "psql"
             psql_location = os.path.join(path, bin_name)
+            # Check Path against psql location
             if os.path.exists(psql_location):
                 print(f"Found PostgreSQL at: {psql_location}")
+                # Append env:PATH to include psql's path for the future
                 os.environ["PATH"] += os.pathsep + path
                 print(f"Added '{path}' to PATH for this session.")
                 return True
-        print("PostgreSQL not found")
+        # If Path cannot be loacted function returns false
         if shutil.which("psql") is None:
-            ans = input("Install PostgreSQL? (y/n): ").lower().strip()
-            if ans == "y":
-                print("Installing PostgreSQL.\nMake sure to remember your password.")
-                self.install_psql()
-                return True
-            else:
-                print("PostgreSQL is required for this program to run. Please install manually.")
-                return False
-        return False
+            print("Failure: PATH detection \n!!! Could not locate PostgreSQL installation !!!\nYou must install PostgreSQL")
+            return False
+        
 
-
-    # Automaticaly install psql.
+    # Detect os and automaticaly install psql.
     def install_psql(self):
-        print("Installing PostgreSQL")
         print(self.system.title(), " detected")
+        # Check for windows OS
         if self.system == "windows" or self.system == "nt":
             print("Installing PostgreSQL with Chocolatey")
+            # Install postgresql with chocolatey
             cmd = "choco install postgresql --yes"
-        elif self.system == "darwin":  # macOS
+        # Check for Mac OS
+        elif self.system == "darwin": 
             print("Installing PostgreSQL with Homebrew")
+            # Install postgresql with homebrew
             cmd = "brew install postgresql"
+        # Check for Linux OS
         elif self.system == "linux":
             # Find package managner
             distro = platform.freedesktop_os_release().get("ID", "").lower() if hasattr(platform, "freedesktop_os_release") else ""
             if shutil.which("apt"):
+                # Install postgresql with apt
                 cmd = "sudo apt update && sudo apt install -y postgresql-client"
             elif shutil.which("dnf"):
+                # Install postgresql with dnf
                 cmd = "sudo dnf install -y postgresql"
             elif shutil.which("yum"):
+                # Install postgresql with yum
                 cmd = "sudo yum install -y postgresql"
             elif shutil.which("pacman"):
+                # Install postgresql with pacman
                 cmd = "sudo pacman -Sy postgresql --noconfirm"
             else:
-                print("Unsupported Linux distribution.")
-                return
+                # Could not determine linux distro
+                print("Failure: Linux Distro detection \n!!! Automatic installation failed !!!\nPlease install PostgreSQL manually then try running this program again")
+                return False
         else:
-            print("Unsupported system for automatic installation.")
-            return
-        result = self.run_command(cmd)
-        if result:
-            print(">>> PostgreSQL installed <<<")
+            # Could not determine OS
+            print("Failure: OS detection \n!!! Automatic installation failed !!!\nPlease install PostgreSQL manually then try running this program again")
+            return False
+        installed = True
+        try:
+            # Send the correct OS command to shell
+            result = subprocess.run(cmd, shell=True, check=True, text=True, capture_output=True)
+            print(result.stdout.strip())
+        except subprocess.CalledProcessError as e:
+            print(f"Command failed: {cmd}")
+            print(e.stderr.strip())
+            installed = False
+        # Check that the command worked
+        if installed == True:
+            print(">>> PostgreSQL sucessfully installed <<<")
+            return True
         else:
-            print("!!! Automatic installation failed !!!")
+            print("Failure: installing psql\n!!! Automatic installation failed !!!\nPlease install PostgreSQL manually then try running this program again")
+            return False
+
 
     # Setup the database that you will need for the program to run
     def create_database(self):
+        print("No Databases found: creating them")
+        try:
+            # Connect using default credentials to create the database
+            self.connectDB(cmd=f"CREATE DATABASE {self.dbname};", dbname="postgres", user="postgres", info=True)
+            # Connect using default credentials to create the user
+            self.connectDB(cmd=f"CREATE USER {self.user} WITH PASSWORD '{self.password}';", dbname="postgres", user="postgres")
+            # Connect to scanner using postgre credenitals to grant user full permissions
+            self.connectDB(cmd=f"GRANT USAGE, CREATE ON SCHEMA public TO {self.user}; ALTER SCHEMA public OWNER TO {self.user};", user="postgres")
+            # Run createDB sql script to create all tables and populate config_databse
+            self.connectDB(filename="createDB.sql", info=True)
+            print(f"Database creation complete")
+            # Query config_database the ensure it was created.
+            self.connectDB(query="SELECT * FROM config_database;")
+        except Exception as e:
+            print(f"Failed to open createDB {e}")
+
+    
+    # This method controls the flow of the entire class.
+    # Call this method in order to begin initalization fo the program.
+    def run(self):
+        # Run check_install to see if psql is installed.
+        if self.check_install() == False:
+            # ask if the user wants to automatically install psql
+            ans = input("Install PostgreSQL? (y/n): ").lower().strip()
+            if ans != "y":
+                print("PostgreSQL is required for this program to run.\nPlease install manually.\n!!! Aborting program launch !!!")
+                # Abort setup the user must install psql for the program to work
+                sleep(5)
+                return False
+            else:
+                # Install psql, works on most OS and Distros
+                print("Installing PostgreSQL.\n   !!! Make sure to remember your password. !!!")
+                if self.install_psql() == False:
+                    print("Failure: install_ psql\nPostgreSQL is required for this program to run.\nPlease install manually.\n!!! Aborting program launch !!!")
+                    sleep(5)
+                    return False
+        # Set up the database which the program will use.
         print("Checking if databases have been created")
-        conn = self.connectDB(user="postgres")
-        if conn == True:
+        # Connect to scanner with the postgre default user
+        if self.connectDB(user="postgres"):
             print("Databases already created")
-        else: 
-            print("No Databases found: creating them")
-            try:
-                self.connectDB(cmd=f"CREATE DATABASE {self.dbname};", dbname="postgres", user="postgres", info=True)
-                self.connectDB(cmd=f"CREATE USER {self.user} WITH PASSWORD '{self.password}';", dbname="postgres", user="postgres")
-                self.connectDB(cmd=f"GRANT USAGE, CREATE ON SCHEMA public TO {self.user}; ALTER SCHEMA public OWNER TO {self.user};", user="postgres")
-                self.connectDB(filename="createDB.sql", info=True)
-                print(f"Database creation complete")
-                self.connectDB(query="SELECT * FROM config_database;")
-            except Exception as e:
-                print(f"Failed to open createDB {e}")
+        else:
+            self.create_database
+            print("Success databases created")
+
+    # Quick function to delete the scanner database to be used in debugging
     def drop_database(self):
         try:
-            self.connectDB(cmd=f"DROP DATABASE IF EXISTS scanner;", dbname="postgres", user="postgres", info=True)
+            # Connect with default credentials and drop database
+            self.connectDB(cmd=f"DROP DATABASE IF EXISTS scanner CASCADE;", dbname="postgres", user="postgres", info=True)
         except Exception as e:
             print(f"Failed to drop database:{e}")
+        
+
+

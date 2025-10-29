@@ -1,6 +1,7 @@
 from . import (
     classInstall,
     classSettings,
+    classHandler,
     person,
     server,
     settings
@@ -8,6 +9,7 @@ from . import (
 
 __all__ = [
     "classSettings",
+    "classHandler",
     "person",
     "classInstall",
     "server",

@@ -10,14 +10,13 @@ host = "localhost"
 if __name__ == "__main__":
     # Run classInstall and check the server connection works, if not updates path and installs psql.
     server = classInstall.Postgre_Install(user, password, db_name, port, host)
-    #server.drop_database() #uncomment if you need to reset database
-    # if postgresql is not installed install it.
-    server.check_install()
-    # Check if db and config has been initialized.
-    server.create_database()
+    server.drop_database() #uncomment if you need to reset database
+    # run controls the flow of classInstall
+    server.run()
+ 
     # Load a config file which allows users to easily change settings
     cf = classSettings.Setting(user, password, db_name, port, host)
-    #print(cf.company)
+    print(cf.company)
 
 
 

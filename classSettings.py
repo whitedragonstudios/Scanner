@@ -1,11 +1,4 @@
-# Scanner/initialization.py
-
 import psycopg2
-import json
-import csv
-import os
-import openpyxl
-import pandas as pd
 
 
 class Setting:
@@ -38,14 +31,9 @@ class Setting:
             config = {row[0]: row[1] for row in config_data}
         db.close()
         return config
-    def update_config(self, key, value):   
-        db = self.connect_db()
-        with db.cursor() as cursor:
-            cursor.execute("UPDATE config_table SET value = %s WHERE key = %s;", (value, key))
-            db.commit()
-        db.close()
     def assign_settings(self):
         data = self.request_config()
+        self.config_dict = data
         self.config_status = data["config_status"]
         self.config_date = data["config_date"]
         self.CSV_path = data["CSV_path"]
