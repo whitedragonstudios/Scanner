@@ -10,10 +10,9 @@ class Postgre_Install:
         self.port = port
         self.host = host
         self.system = platform.system().lower()
-        self.port_list = [self.port, 5432, 5000]
-        print(self.system.title(), " detected")
 
-    
+
+    # universal function for connecting to the database
     def connectDB(self, filename=None, query=None, cmd=None, user=None, password=None, dbname=None, host=None, port=None, return_conn=False, info = False):
             user = user or self.user
             password = password or self.password
@@ -171,6 +170,7 @@ class Postgre_Install:
     # Automaticaly install psql.
     def install_psql(self):
         print("Installing PostgreSQL")
+        print(self.system.title(), " detected")
         if self.system == "windows" or self.system == "nt":
             print("Installing PostgreSQL with Chocolatey")
             cmd = "choco install postgresql --yes"
@@ -203,7 +203,7 @@ class Postgre_Install:
     # Setup the database that you will need for the program to run
     def create_database(self):
         print("Checking if databases have been created")
-        conn = False#self.connectDB(user="postgres")
+        conn = self.connectDB(user="postgres")
         if conn == True:
             print("Databases already created")
         else: 
@@ -216,4 +216,9 @@ class Postgre_Install:
                 print(f"Database creation complete")
                 self.connectDB(query="SELECT * FROM config_database;")
             except Exception as e:
-                print(f"Failed to open createDB {e}") 
+                print(f"Failed to open createDB {e}")
+    def drop_database(self):
+        try:
+            self.connectDB(cmd=f"DROP DATABASE IF EXISTS scanner;", dbname="postgres", user="postgres", info=True)
+        except Exception as e:
+            print(f"Failed to drop database:{e}")

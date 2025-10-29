@@ -1,4 +1,4 @@
-import classInstall
+import classInstall, classSettings
 import psycopg2
 
 user = "marcus"
@@ -10,18 +10,19 @@ host = "localhost"
 if __name__ == "__main__":
     # Run classInstall and check the server connection works, if not updates path and installs psql.
     server = classInstall.Postgre_Install(user, password, db_name, port, host)
+    #server.drop_database() #uncomment if you need to reset database
+    # if postgresql is not installed install it.
     server.check_install()
     # Check if db and config has been initialized.
     server.create_database()
+    # Load a config file which allows users to easily change settings
+    cf = classSettings.Setting(user, password, db_name, port, host)
+    #print(cf.company)
 
 
 
-# If not launch setup wizzard
 
 #setup wizzard is a flask based app to save config settings to postgreSQL DB NOTE convert config.json to postgreSQL in future
-
-# Load a config file which allows users to easily change settings
-
 
 # Event handler for opening Database
 

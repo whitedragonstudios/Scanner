@@ -7,24 +7,27 @@ import os
 import openpyxl
 import pandas as pd
 
-postgressql_host = "localhost"
-postgressql_employee_db = "people"
-postgressql_timesheet_db = "timesheet"
-postgressql_role_db= "role"
-postgressql_config = "scanner"
-postgressql_user = "marcus"
-postgressql_password = "stoic"
 
 class Setting:
-    def __init__(self):
+    def __init__(self, user, password, dbname, port, host):
+        self.user = user
+        self.password = password
+        self.dbname = dbname
+        self.port = port
+        self.host = host
+        DBpeople = "people_database"
+        DBtime = "timesheet_database"
+        DBrole = "role"
+        DBconfig = "config_database"
         self.assign_settings()
+
     def connect_db(self):
         connect = psycopg2.connect(
-            host = postgressql_host,
-            dbname = postgressql_config,
-            user = postgressql_user,
-            password = postgressql_password,
-            port = 5000
+            host = self.host,
+            dbname = self.dbname,
+            user = self.user,
+            password = self.password,
+            port = self.port
             )
         return connect
     def request_config(self):
@@ -60,12 +63,3 @@ class Setting:
         self.sidebar_text_color = data["sidebar_text_color"]
 
         
-setting = Setting()
-
-#paths = setting.CSV_path, setting.XLSX_path, setting.JSON_path
-#rint(paths)
-#for item in paths:
-#    if item is not None:
-#        filetype_path = item
-#        print("Database source is: ", filetype_path)
-#        break

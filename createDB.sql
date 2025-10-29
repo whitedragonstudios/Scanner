@@ -18,7 +18,7 @@ INSERT INTO config_database (key, value) VALUES
     ('CSV_path', NULL),
     ('XLSX_path', NULL),
     ('JSON_path', NULL),
-    ('webpage title', 'Populus Numerus'),
+    ('webpage_title', 'Populus Numerus'),
     ('company','Scanner'),
     ('main_background_color','#333333'),
     ('main_text_color','#f5f5f5'), 
