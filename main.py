@@ -2,16 +2,17 @@ import classInstall
 import psycopg2
 
 user = "marcus"
-port = 5000
+password = "stoic"
 db_name = "scanner"
+port = 5000
 host = "localhost"
 
 if __name__ == "__main__":
     # Run classInstall and check the server connection works, if not updates path and installs psql.
-    server_test = classInstall.Postgre_Install(user, port,db_name,host)
-    server_test.connection_test()
+    server = classInstall.Postgre_Install(user, password, db_name, port, host)
+    server.connection_test()
     # Check if db and config has been initialized.
-    server_test.database_install()
+    server.create_database()
 
 
 

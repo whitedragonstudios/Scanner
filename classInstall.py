@@ -3,27 +3,88 @@ import psycopg2
 
 
 class Postgre_Install:
-    def __init__(self, user, port, dbname, host):
+    def __init__(self, user, password, dbname, port, host):
         self.user = user
+        self.password = password
+        self.dbname = dbname
         self.port = port
         self.host = host
-        self.dbname = dbname
         self.system = platform.system().lower()
         self.port_list = [self.port, 5432, 5000]
         print(self.system.title(), " detected")
 
+    
+    def connectDB(self, filename=None, query=None, cmd=None, user=None, password=None, dbname=None, host=None, port=None, return_conn=False, info = False):
+            user = user or self.user
+            password = password or self.password
+            dbname = dbname or self.dbname
+            host = host or self.host
+            port = port or self.port
+            def connection_info():
+                if info == True:
+                    print(f"Connecting...\n---Database: {dbname}\n---User: {user}\n---Port: {port}\n---Host: {host}")
+            connection_info()
+            try:
+                conn = psycopg2.connect(
+                    dbname=dbname,
+                    user=user,
+                    password=password,
+                    host=host,
+                    port=port
+                )
+                conn.autocommit = True  # <-- set autocommit here
+                cur = conn.cursor()
 
-    # Function for running shell commands. 
-    def run_command(self, cmd):
-        try:
-            result = subprocess.run(cmd, shell=True, check=True, text=True, capture_output=True)
-            return result.stdout.strip()
-        except subprocess.CalledProcessError as e:
-            print(f"Command failed: {cmd}")
-            print(e.stderr.strip())
-            return None
-    
-    
+                def exec_and_print(sql):
+                    cur.execute(sql)
+                    for n in conn.notices:
+                        print(f"[PostgreSQL Notice] {n.strip()}")
+                    
+                    try:
+                        rows = cur.fetchall()
+                        if rows:
+                            print("\nQuery Result:")
+                            for row in rows:
+                                print("   ", row)
+                    except psycopg2.ProgrammingError:
+                        # Happens when no results (e.g., CREATE TABLE)
+                        pass
+                    conn.notices.clear()
+
+
+                if filename:
+                    with open(filename, 'r') as f:
+                        sql_script = f.read()
+                    #cur.execute(sql_script)
+                    statements = [s.strip() for s in sql_script.split(';') if s.strip()]
+                    for stmt in statements:
+                        exec_and_print(stmt)
+                    print(f"^^^Executed SQL file: {filename}")
+
+                if query:
+                    #cur.execute(query)
+                    exec_and_print(query)
+                    print(f"^^^Executed Query:\n{query}")
+                    #for row in cur.fetchall():
+                        #print(row)
+
+                if cmd:
+                    #cur.execute(cmd)
+                    exec_and_print(cmd)
+                    print(f"^^^Executed command: {cmd}")
+
+                if return_conn:
+                    return conn, cur  # let caller handle closing
+
+                cur.close()
+                conn.close()
+                return True
+
+            except Exception as e:
+                print(f"Database connection failed: {e}")
+                return None
+
+
     # List of all psql paths
     def path_list(self):
         return [
@@ -76,38 +137,36 @@ class Postgre_Install:
             r"/mnt/c/Program Files/PostgreSQL/16/bin",
         ]
     
-
-    # Function to check if psql is installed. 
+    # Automatically looks for PostgreSQL install
     def check_path(self):
-        psql_path = shutil.which("psql")
-        if psql_path:
-            print(f"Found psql at: {psql_path}")
+        print("Checking PATH for PostgreSQL installation")
+        try:
+            self.connectDB(dbname="postgres", user="postgres")
+            print("Connection to default psql server confirmed.")
             return True
-        print("psql not found in PATH. Attempting to locate...")
+        except Exception as e:
+            print(f"Failed to connect to psql server: {e}")
+            print("Locating installation manually")
         for path in self.path_list():
-            if os.name == "nt" or os.name == "windows":
-                bin_name = "psql.exe"
-            else:
-                bin_name = "psql"
+            bin_name = "psql.exe" if os.name == "nt" else "psql"
             psql_location = os.path.join(path, bin_name)
             if os.path.exists(psql_location):
                 print(f"Found PostgreSQL at: {psql_location}")
                 os.environ["PATH"] += os.pathsep + path
                 print(f"Added '{path}' to PATH for this session.")
                 return True
-        print("Could not locate psql automatically.")
-        # Install psql
+        print("PostgreSQL not found")
         if shutil.which("psql") is None:
-            ans = input("Failed to locate PostgreSQL on your computer. /nDo you with to install it automatically? y/n").lower().strip()
+            ans = input("Install PostgreSQL? (y/n): ").lower().strip()
             if ans == "y":
-                print("Installing PostgreSQL make sure to note your PASSWORD use: /n>>Username: marcus/n >>Port: 5000")
+                print("Installing PostgreSQL.\nMake sure to remember your password.")
                 self.install_psql()
                 return True
-            else: 
-                print("PostgreSQL is required to ensure this program works. Please install it manually.")
+            else:
+                print("PostgreSQL is required for this program to run. Please install manually.")
                 return False
         return False
-    
+
 
     # Automaticaly install psql.
     def install_psql(self):
@@ -147,7 +206,7 @@ class Postgre_Install:
             sys.exit(1)
         psql_version = self.run_command("psql --version")
         if psql_version:
-            print(f"PostgreSQL version: {psql_version} Installed")
+            print(f"PostgreSQL version: {psql_version} installed")
         else:
             sys.exit("psql not working after Path update. Restatrt program or manually install PostgreSQL.")
         print("\nTesting connection to PostgreSQL > > > > ")
@@ -161,21 +220,22 @@ class Postgre_Install:
                 print("   net start postgresql-x64-16")
             else:
                 print("   sudo service postgresql start")
-    def database_install(self):
+
+    
+    # Setup the database that you will need for the program to run
+    def create_database(self):
         print("Checking if databases have been created")
-        db_exists = self.run_command(f'psql -U postgres -p {self.port} -W -tAc "SELECT * FROM config_database;"')
-        if db_exists == "1":
+        conn = False#self.connectDB(user="postgres")
+        if conn == True:
             print("Databases already created")
         else: 
-            print("Not Databases found: creating them")
-            with open("createDB.sql", 'r') as file:
-                script = file.read()
-            try: 
-                connection = psycopg2.connect(dbname=self.dbname, user=self.user, host=self.host, port=self.port)
-                connection.autocommit = True 
-                cursor = connection.cursor()
-                cursor.execute(script)
-                cursor.close()
-                connection.close()
+            print("No Databases found: creating them")
+            try:
+                self.connectDB(cmd=f"CREATE DATABASE {self.dbname};", dbname="postgres", user="postgres", info=True)
+                self.connectDB(cmd=f"CREATE USER {self.user} WITH PASSWORD '{self.password}';", dbname="postgres", user="postgres")
+                self.connectDB(cmd=f"GRANT USAGE, CREATE ON SCHEMA public TO {self.user}; ALTER SCHEMA public OWNER TO {self.user};", user="postgres")
+                self.connectDB(filename="createDB.sql", info=True)
+                print(f"Database creation complete")
+                self.connectDB(query="SELECT * FROM config_database;")
             except Exception as e:
-                print("Filed to create sql databases error: ",e)
+                print(f"Failed to open createDB {e}") 

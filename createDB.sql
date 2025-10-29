@@ -2,10 +2,8 @@
 -- It sets up the config_database, people_database, and timesheet_database tables,
 -- and inserts initial configuration data into the config_database table.
 
-CREATE DATABASE scanner;
-\c scanner
-CREATE USER WITH PASSWORD 'stoic'
-GRANT ALL PRIVILEGES ON DATABASE TO marcus
+--Note the scanner database as well as the user marcu are created in classInstall.py
+--default password 'stoic'
 
 -- Create config_database table to hold configuration settings
 CREATE TABLE config_database (
@@ -57,9 +55,11 @@ CREATE TABLE timesheet_database (
     );
 
 -- marcus will be the main user for the scanner database tables are made with defult postgres user but we need to give marcus access to them.
-GRANT ALL PRIVILEGES ON TABLE config_database TO marcus;
-GRANT ALL PRIVILEGES ON TABLE people_database TO marcus;
-GRANT ALL PRIVILEGES ON TABLE timesheet_database TO marcus;
+--GRANT ALL PRIVILEGES ON DATABASE scanner TO marcus;
+GRANT ALL PRIVILEGES ON DATABASE scanner TO marcus;
+GRANT ALL PRIVILEGES ON SCHEMA public TO marcus;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO marcus;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO marcus;
 
 --- Update config status to True and set config date to current date 
 --- main.py uses these two values to determine if initial setup has been completed.
@@ -67,8 +67,6 @@ GRANT ALL PRIVILEGES ON TABLE timesheet_database TO marcus;
 UPDATE config_database SET value = 'True' WHERE key = 'config_status';
 UPDATE config_database SET value = CURRENT_DATE WHERE key = 'config_date';
 
---- Feedback for user to verify tables were created successfully
-\dt
 
 --- Below this line are options to verify database functionality. They will be left in for advanced users. 
 
@@ -77,15 +75,11 @@ UPDATE config_database SET value = CURRENT_DATE WHERE key = 'config_date';
 
 -- Uncomment next three line to insert test data into people_database
 -- INSERT INTO people_database (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES
-    --(2001, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '/images/2001.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
-    --(2002, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '/images/2002.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice');
+    --(0001, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '/images/0001.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
+    --(0002, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '/images/0002.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice');
 
 -- Uncomment next three line to insert test data into timesheet_database
 -- INSERT INTO timesheet_database (employee_id, clock_in, clock_out, work_date) VALUES
     --(2001, '2025-10-01 08:00:00+00', '2025-10-01 16:00:00+00', '2025-10-01'),
     --(2002, '2025-10-01 08:00:00+00', '2025-10-01 16:00:00+00', '2025-10-01');
 
--- Uncomment next three lines to verify data schemas
--- \d+ config_database; SELECT * FROM config_database;
--- \d+ people_database; SELECT * FROM people_database;
--- \d+ timesheet_database; SELECT * FROM timesheet_database;
