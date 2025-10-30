@@ -13,6 +13,8 @@ class Postgre_Install:
         self.port = port
         self.host = host
         self.system = platform.system().lower()
+        # Create instance of Handler with admin privilages
+        self.admin = Handler(password=self.password)
 
 
     # List of all psql paths
@@ -73,7 +75,7 @@ class Postgre_Install:
         print("Checking for PostgreSQL installation...")
         try:
             # Try to connect to the default psql database
-            Handler(info=True, password=self.password)
+            self.admin.connect()
             print("Connection to default psql server confirmed.")
             # Skip the rest of this function
             return True
@@ -167,18 +169,19 @@ class Postgre_Install:
     def create_database(self):
         print("No Databases found: creating them")
         try:
-            # Connect using default credentials to create the database
-            Handler(cmd=f"CREATE DATABASE {self.dbname};", password=self.password, dbname="postgres", info=True)
-            # Connect using default credentials to create the user
-            Handler(cmd=f"CREATE USER {self.user} WITH PASSWORD '{self.password}';", password=self.password)
-            # Connect to scanner using postgre credenitals to grant user full permissions
-            Handler(cmd=f"GRANT USAGE, CREATE ON SCHEMA public TO {self.user}; ALTER SCHEMA public OWNER TO {self.user};", dbname=self.dbname, password=self.password)
+            # Create database scanner using admin account
+            self.admin.send_command(f"CREATE DATABASE {self.dbname};")
+            # Create the Ended User username
+            self.admin.send_command(f"CREATE USER {self.user} WITH PASSWORD '{self.password}';")
+            # Grant user full permissions
+            self.admin.send_command(f"GRANT USAGE, CREATE ON SCHEMA public TO {self.user};")
+            self.admin.send_command(f"ALTER SCHEMA public OWNER TO {self.user};")
             # Run createDB sql script to create all tables and populate config_databse
-            send = Handler(filename="createDB.sql", user=self.user, dbname=self.dbname, password=self.password, info=True, autorun=False)
-            send.open_file()
-            print(f"Database creation complete")
+            self.admin.open_file("createDB.sql")
+            print("@@@ Database creation complete @@@")
             # Query config_database the ensure it was created.
-            Handler(query= "SELECT * FROM config_database;", dbname=self.dbname, user=self.user, password = self.password, info=True)
+            general_user = Handler(dbname=self.dbname, user=self.user, password=self.password, info=True)
+            general_user.send_query("SELECT * FROM config_database;")
         except Exception as e:
             print(f"Failed to open createDB {e}")
 
@@ -186,6 +189,9 @@ class Postgre_Install:
     # This method controls the flow of the entire class.
     # Call this method in order to begin initalization fo the program.
     def run(self):
+
+
+    
         # Run check_install to see if psql is installed.
         if self.check_install() == False:
             # ask if the user wants to automatically install psql
@@ -207,7 +213,8 @@ class Postgre_Install:
         print("Checking if databases have been created")
         try:
             # Connect to scanner with the postgre default user
-            if Handler(password=self.password) is not None:
+            connection = self.admin.connect()
+            if connection is not None:
                 print("Databases already created")
             else:
                 self.create_database()
@@ -222,7 +229,7 @@ class Postgre_Install:
     def drop_database(self, dropDB):
         try:
             # Connect with default credentials and drop database
-            Handler(cmd=f"DROP DATABASE IF EXISTS {dropDB};", info=True, password=self.password)
+            self.admin.send_command(f"DROP DATABASE IF EXISTS {dropDB};")
             print(f"Database {dropDB} deleted")
         except Exception as e:
             print(f"Failed to drop database:{e}")
@@ -232,7 +239,8 @@ class Postgre_Install:
     def drop_user(self, dropUser):
         try:
             # Connect with deault credentials and drop user.
-            Handler(cmd=f"DROP USER IF EXISTS {dropUser};", info=True, password=self.password)
+            self.admin.send_command(f"DROP OWNED BY {dropUser};")
+            self.admin.send_command(f"DROP USER IF EXISTS {dropUser};")
             print(f"User {dropUser} deleted")
         except Exception as e:
             print(f"Failed to drop user '{dropUser}': {e}")

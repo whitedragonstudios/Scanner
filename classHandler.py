@@ -1,22 +1,17 @@
 import psycopg2, os
 
-
 class Handler:
-    def __init__(self,user="postgres",password="",dbname="postgres",port=5000,host="localhost",filename=None,query=None,cmd=None,info=False,autorun=True):
+    def __init__(self, user="postgres", password="", dbname="postgres", port=5000, host="localhost", info=False):
         self.user = user or "postgres"
         self.password = password or ""
         self.dbname = dbname or "postgres"
-        self.port = port or 5000 #5432
+        self.port = port or 5000 
         self.host = host or "localhost"
-        self.filename = filename
-        self.query = query
-        self.cmd = cmd
         self.info = info
-        self.autorun = autorun
-        if self.autorun == True:
-            self.run()
+
+
     def connect(self):
-        if self.info == True:
+        if self.info:
             print(f"""Connecting...
                 ---Database: {self.dbname}
                 ---User: {self.user}
@@ -24,113 +19,148 @@ class Handler:
                 ---Host: {self.host}""")
         try:
             conn = psycopg2.connect(
-                    dbname=self.dbname,
-                    user=self.user,
-                    password=self.password,
-                    host=self.host,
-                    port=self.port
-                )
-            conn.autocommit = True
+                dbname=self.dbname,
+                user=self.user,
+                password=self.password,
+                host=self.host,
+                port=self.port
+            )
+            conn.autocommit = True 
             return conn
-        except Exception as e:
-            print(f"Failed: Handler.connect - {e}")
-            return None
+        except Exception:
+            raise
+
+
+    def report_error(self, e):
+        print("\n\n!!! PostgreSQL Error !!!")
+        print(f"Message: {e.pgerror.strip()}")
+        if e.diag: 
+            print(f"SQLSTATE: {e.pgcode}")
+            if e.diag.message_detail:
+                print(f"Details: {e.diag.message_detail.strip()}")
+            if e.diag.context:
+                print(f"Context: {e.diag.context.strip()}")
+        print("\n\n")
     
-    
-    def open_file(self):
-        if not os.path.exists(self.filename):
-            print(f"Cannot locate file: {self.filename}")
-            return
-        conn=self.connect()
-        if not conn:
-            print("Could not connect to psql")
-            return
-        with conn.cursor() as cur:
-            try:
-                with open(self.filename, 'r') as f:
-                    sql_script = f.read()
-                for stmt in sql_script.split(";"):
-                    stmt = stmt.strip()
-                    if stmt:
-                        cur.execute(stmt)
-                print(f"^^^Executed SQL file: {self.filename}")
-            except psycopg2.Error as e:
-                print(f"Failed executing SQL file: {e}")
-            finally:
-                conn.close()
 
-
-    def send_command(self):
-            self.cur.execute(self.cmd)
-            print(f"^^^Executed command: {self.cmd}")
-
-
-    def send_query(self):
+    def send_command(self, cmd):
+        conn = None
+        cur = None
         try:
-            self.cur.execute(self.query)
-            print(f"^^^Executed Query: {self.query}")
-            for row in self.cur.fetchall():
-                print(row)
-        except psycopg2.Error as e:
-            self.print_pg_error("Query error", e)
-
-    def request_config(self):
             conn = self.connect()
-            if not conn:
-                return {}
             cur = conn.cursor()
-            config = {}
-            try:
-                cur.execute("SELECT * FROM config_database;")
-                for row in cur.fetchall():
-                    config[row[0]] = row[1]
-            except psycopg2.Error as e:
-                print("Database error:", e)
-            finally:
-                cur.close()
-                conn.close()
-            return config
-    
-
-    def update_config(self, key, value):
-        try:  
-            db = self.connect()
-            with db.cursor() as cursor:
-                cursor.execute("UPDATE config_table SET value = %s WHERE key = %s;", (value, key))
-        except psycopg2.Error as e:
-            print("Database error:", e)
-        finally: 
-            db.close()
-
-
-    def run(self):
-        conn = self.connect()
-        if not conn:
-            print("Error: Handler_Run" )
-            return
-        self.conn = conn
-        try:
-            self.cur = conn.cursor()
-            #if self.filename is not None:
-                #self.open_file()
-            if self.query is not None:
-                self.send_query()
-            if self.cmd is not None:
-                self.send_command()
+            print(f"<<< Executing command >>>")
+            print(cmd)
+            cur.execute(cmd)
+            conn.commit()
+            print(f">>> Executed command <<<")
             for notice in conn.notices:
                 print("NOTICE:", notice)
-
         except psycopg2.Error as e:
-            print("Message:", e.pgerror)
-            print("Details:", e.diag.message_detail)
-            print("Context:", e.diag.context)
-            print("SQLSTATE:", e.pgcode)
+            if conn and not conn.closed:
+                conn.rollback()
+            self.report_error(e)
+            raise e
         finally:
-            if hasattr(self, "cur"):
-                self.cur.close()
-            if conn:
-                conn.close()
+            if cur: cur.close()
+            if conn: conn.close()
 
 
-#if __name__ == "__main__":
-    #Handler(dbname="scanner", user="marcus", password = "stoic", info=True, query= "SELECT * FROM config_database;")
+    def open_file(self, filename):
+        if not os.path.exists(filename):
+            print(f"Cannot locate file: {filename}")
+            return
+        conn = None
+        cur = None
+        try:
+            conn = self.connect()
+            cur = conn.cursor()
+            print(f"<<< Processing SQL script >>>")
+            print(filename)
+            with open(filename, 'r') as f:
+                sql_script = f.read()
+            for stmt in sql_script.split(";"):
+                stmt = stmt.strip()
+                if stmt:
+                    print(stmt)
+                    cur.execute(stmt)
+            conn.commit() 
+            print(f">>> Executed SQL file <<<")
+            for notice in conn.notices:
+                print("NOTICE:", notice)
+        except psycopg2.Error as e:
+            if conn and not conn.closed:
+                conn.rollback()
+            self._report_error(e)
+            raise e
+        finally:
+            if cur: cur.close()
+            if conn: conn.close()
+
+
+    def send_query(self, query):
+        conn = None
+        cur = None
+        results = []
+        try:
+            conn = self.connect()
+            cur = conn.cursor()
+            print(f"<<< Executing Query >>>")
+            print(query)
+            cur.execute(query)
+            results = cur.fetchall()
+            
+            print("--- Query Results ---")
+            for row in results:
+                print(row)
+            print("--- End Results ---")
+            print(f">>> Query Exacuted <<<")
+            for notice in conn.notices:
+                print("NOTICE:", notice)
+            return results
+        except psycopg2.Error as e:
+            self._report_error(e)
+            raise e
+        finally:
+            if cur: cur.close()
+            if conn: conn.close()
+    
+    def request_config(self):
+        conn = None
+        cur = None
+        config = {}
+        try: 
+            conn = self.connect()
+            cur = conn.cursor()
+            print("<<< Loading configuration >>>")
+            cur.execute("SELECT key, value FROM config_database;") 
+            for row in cur.fetchall():
+                config[row[0]] = row[1]
+            print(">>> Configuration loaded <<<")
+            return config
+        except psycopg2.Error as e:
+            # We don't rollback for SELECT, just report and raise
+            self._report_error(e)
+            raise e
+        finally:
+            if cur: cur.close()
+            if conn: conn.close()
+    
+    def update_config(self, key, value):
+        conn = None
+        cur = None
+        try:
+            conn = self.connect()
+            cur = conn.cursor()
+            cur.execute("UPDATE config_database SET value = %s WHERE key = %s;", (value, key)) 
+            conn.commit() 
+            print(f"Configuration key '{key}' updated successfully.")
+        except psycopg2.Error as e:
+            print(f"Database error during config update: {e}")
+            if conn and not conn.closed:
+                conn.rollback()
+            self._report_error(e)
+            raise e
+        finally: 
+            if cur: cur.close()
+            if conn: conn.close()

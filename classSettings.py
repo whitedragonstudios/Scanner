@@ -13,7 +13,7 @@ class Setting:
         DBtime = "timesheet_database"
         DBrole = "role"
         DBconfig = "config_database"
-        
+    
     
     def assign_settings(self):
         db=Handler(dbname=self.dbname, user=self.user, password=self.password, autorun=False)
