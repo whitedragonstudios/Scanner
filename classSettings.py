@@ -1,4 +1,5 @@
 import psycopg2
+from classHandler import Handler
 
 
 class Setting:
@@ -12,27 +13,11 @@ class Setting:
         DBtime = "timesheet_database"
         DBrole = "role"
         DBconfig = "config_database"
-        self.assign_settings()
-
-    def connect_db(self):
-        connect = psycopg2.connect(
-            host = self.host,
-            dbname = self.dbname,
-            user = self.user,
-            password = self.password,
-            port = self.port
-            )
-        return connect
-    def request_config(self):
-        db=self.connect_db()
-        with db.cursor() as cursor:
-            cursor.execute("SELECT * FROM config_database;")
-            config_data = cursor.fetchall()
-            config = {row[0]: row[1] for row in config_data}
-        db.close()
-        return config
+        
+    
     def assign_settings(self):
-        data = self.request_config()
+        db=Handler(dbname=self.dbname, user=self.user, password=self.password, autorun=False)
+        data = db.request_config()
         self.config_dict = data
         self.config_status = data["config_status"]
         self.config_date = data["config_date"]

@@ -1,6 +1,7 @@
 import os, platform, subprocess, sys, shutil
 import psycopg2
 from time import sleep
+from classHandler import Handler
 
 
 
@@ -12,78 +13,6 @@ class Postgre_Install:
         self.port = port
         self.host = host
         self.system = platform.system().lower()
-
-
-    # universal function for connecting to the database
-    def connectDB(self, filename=None, query=None, cmd=None, user=None, password=None, dbname=None, host=None, port=None, return_conn=False, info = False):
-            user = user or self.user
-            password = password or self.password
-            dbname = dbname or self.dbname
-            host = host or self.host
-            port = port or self.port
-            def connection_info():
-                if info == True:
-                    print(f"Connecting...\n---Database: {dbname}\n---User: {user}\n---Port: {port}\n---Host: {host}")
-            connection_info()
-            try:
-                conn = psycopg2.connect(
-                    dbname=dbname,
-                    user=user,
-                    password=password,
-                    host=host,
-                    port=port
-                )
-                conn.autocommit = True
-                cur = conn.cursor()
-
-                def exec_and_print(sql):
-                    cur.execute(sql)
-                    for n in conn.notices:
-                        print(f"[PostgreSQL Notice] {n.strip()}")
-                    if sql.strip().lower().startswith("select"):
-                        try:
-                            rows = cur.fetchall()
-                            if rows:
-                                print("\nQuery Result:")
-                                for row in rows:
-                                    print("   ", row)
-                        except psycopg2.ProgrammingError:
-                            # Happens when no results (e.g., CREATE TABLE)
-                            pass
-                    conn.notices.clear()
-
-
-                if filename:
-                    with open(filename, 'r') as f:
-                        sql_script = f.read()
-                    #cur.execute(sql_script)
-                    statements = [s.strip() for s in sql_script.split(';') if s.strip()]
-                    for stmt in statements:
-                        exec_and_print(stmt)
-                    print(f"^^^Executed SQL file: {filename}")
-
-                if query:
-                    #cur.execute(query)
-                    exec_and_print(query)
-                    print(f"^^^Executed Query:\n{query}")
-                    #for row in cur.fetchall():
-                        #print(row)
-
-                if cmd:
-                    #cur.execute(cmd)
-                    exec_and_print(cmd)
-                    print(f"^^^Executed command: {cmd}")
-
-                if return_conn:
-                    return conn, cur  # let caller handle closing
-
-                cur.close()
-                conn.close()
-                return True
-
-            except Exception as e:
-                print(f"Database connection failed: {e}")
-                return None
 
 
     # List of all psql paths
@@ -144,7 +73,7 @@ class Postgre_Install:
         print("Checking for PostgreSQL installation...")
         try:
             # Try to connect to the default psql database
-            self.connectDB(dbname="postgres", user="postgres")
+            Handler(info=True, password=self.password)
             print("Connection to default psql server confirmed.")
             # Skip the rest of this function
             return True
@@ -239,16 +168,17 @@ class Postgre_Install:
         print("No Databases found: creating them")
         try:
             # Connect using default credentials to create the database
-            self.connectDB(cmd=f"CREATE DATABASE {self.dbname};", dbname="postgres", user="postgres", info=True)
+            Handler(cmd=f"CREATE DATABASE {self.dbname};", password=self.password, dbname="postgres", info=True)
             # Connect using default credentials to create the user
-            self.connectDB(cmd=f"CREATE USER {self.user} WITH PASSWORD '{self.password}';", dbname="postgres", user="postgres")
+            Handler(cmd=f"CREATE USER {self.user} WITH PASSWORD '{self.password}';", password=self.password)
             # Connect to scanner using postgre credenitals to grant user full permissions
-            self.connectDB(cmd=f"GRANT USAGE, CREATE ON SCHEMA public TO {self.user}; ALTER SCHEMA public OWNER TO {self.user};", user="postgres")
+            Handler(cmd=f"GRANT USAGE, CREATE ON SCHEMA public TO {self.user}; ALTER SCHEMA public OWNER TO {self.user};", dbname=self.dbname, password=self.password)
             # Run createDB sql script to create all tables and populate config_databse
-            self.connectDB(filename="createDB.sql", info=True)
+            send = Handler(filename="createDB.sql", user=self.user, dbname=self.dbname, password=self.password, info=True, autorun=False)
+            send.open_file()
             print(f"Database creation complete")
             # Query config_database the ensure it was created.
-            self.connectDB(query="SELECT * FROM config_database;")
+            Handler(query= "SELECT * FROM config_database;", dbname=self.dbname, user=self.user, password = self.password, info=True)
         except Exception as e:
             print(f"Failed to open createDB {e}")
 
@@ -277,7 +207,7 @@ class Postgre_Install:
         print("Checking if databases have been created")
         try:
             # Connect to scanner with the postgre default user
-            if self.connectDB(user="postgres") is not None:
+            if Handler(password=self.password) is not None:
                 print("Databases already created")
             else:
                 self.create_database()
@@ -292,7 +222,7 @@ class Postgre_Install:
     def drop_database(self, dropDB):
         try:
             # Connect with default credentials and drop database
-            self.connectDB(cmd=f"DROP DATABASE IF EXISTS {dropDB};", dbname="postgres", user="postgres", info=True)
+            Handler(cmd=f"DROP DATABASE IF EXISTS {dropDB};", info=True, password=self.password)
             print(f"Database {dropDB} deleted")
         except Exception as e:
             print(f"Failed to drop database:{e}")
@@ -302,7 +232,7 @@ class Postgre_Install:
     def drop_user(self, dropUser):
         try:
             # Connect with deault credentials and drop user.
-            self.connectDB(cmd=f"DROP USER IF EXISTS {dropUser};", dbname="postgres", user="postgres", info=True)
+            Handler(cmd=f"DROP USER IF EXISTS {dropUser};", info=True, password=self.password)
             print(f"User {dropUser} deleted")
         except Exception as e:
             print(f"Failed to drop user '{dropUser}': {e}")
