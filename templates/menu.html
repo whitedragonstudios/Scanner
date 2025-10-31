@@ -7,7 +7,16 @@
     <!-- link css stylesheet for flask -->
     <link href="{{url_for('static', filename='styles/style.css')}}" rel="stylesheet"/>
     <style>
-
+        :root {
+            --bg-color: {{ cf.main_background_color}};
+            --text-color: {{cf.main_text_color}};
+            --button-color: {{cf.button_color}};
+            --button-text-color: {{cf.button_text_color}};
+            --button-boarder-color: {{cf.button_border_color}};
+            --button-boarder-hover-color: {{cf.button_border_hover_color}};
+            --sidebar-color: {{cf.sidebar_color}};
+            --sidebar-text-color: {{cf.sidebar_text_color}};
+        }
     </style>
 
 </head>
@@ -39,7 +48,7 @@
             <div class="content"> 
                 <div class = "left-div">
                     <h2>
-                        Change Company Name --- Current name:
+                        Change Company Name<br>Current name: {{cf.company}}
                     </h2>
                     <form action = "/menu" method="post">
                         <input class="textBox" type="text" name="new_companyname" id = "new_companyname" placeholder="Enter company name" maxlength="50" required>
@@ -48,7 +57,7 @@
                         </button>
                     </form>
                     <h2>
-                        Change Webpage Title --- Current Title:
+                        Change Webpage Title<br>Current Title: {{cf.webpage_title}}
                     </h2>
                     <form action = "/menu" method="post">
                         <input class="textBox" type="text" name="new_title" id = "new_title" placeholder="Enter webpage title" maxlength="50" required>
@@ -57,7 +66,7 @@
                         </button>
                     </form>
                     <h2>
-                        Change Background Color --- Current Color:
+                        Change Background Color<br>Current Color: {{cf.main_background_color}}
                     </h2>
                     <form action = "/menu" method="post">
                         <input class="textBox" type="text" name="bgcolor" id = "bgcolor" placeholder="Enter Background Color" maxlength="50" required>
@@ -66,7 +75,7 @@
                         </button>
                     </form>
                     <h2>
-                        Change Text Color --- Current Color:
+                        Change Text Color<br>Current Color: {{cf.main_text_color}}
                     </h2>
                     <form action = "/menu" method="post">
                         <input class="textBox" type="text" name="txtcolor" id = "txtcolor" placeholder="Enter Text Color" maxlength="50" required>
@@ -101,7 +110,7 @@
 
 
 
-<!--    "config_status": false,
+<!--"config_status": false,
     "config_date": null,
     "CSV_path": null,
     "XLSX_path": null,

@@ -165,17 +165,90 @@ class Postgre_Install:
     def create_database(self):
         print("No Databases found: creating them")
         try:
-            # Create the Ended User username
+            # Create the End User username
             self.admin.send_command(f"CREATE USER {self.user} WITH PASSWORD '{self.password}';")
-            # Create database scanner using admin creds
+
+            # Create database owned by the new user
             self.admin.send_command(f"CREATE DATABASE {self.dbname} OWNER {self.user};")
-            # Run createDB sql script to create all tables and populate config_databse
-            user_handle = Handler(dbname=self.dbname, user=self.user, password=self.password, info=True)
-            user_handle.open_file("createDB.sql")
+
+            # Connect as the end user to initialize database and run all table commands
+            user_handle = Handler(dbname=self.dbname, user=self.user, password=self.password)
+
+            # Drop tables if they exist
+            user_handle.send_command("DROP TABLE IF EXISTS timesheet_database CASCADE;")
+            user_handle.send_command("DROP TABLE IF EXISTS people_database CASCADE;")
+            user_handle.send_command("DROP TABLE IF EXISTS config_database CASCADE;")
+
+            # Create config_database table
+            user_handle.send_command("""
+                CREATE TABLE config_database (
+                    key VARCHAR(50) PRIMARY KEY,
+                    value VARCHAR(128)
+                );
+            """)
+
+            # Insert default config data
+            user_handle.send_command("""
+                INSERT INTO config_database (key, value) VALUES
+                    ('config_status', 'False'),
+                    ('config_date', '2025-01-01'),
+                    ('CSV_path', NULL),
+                    ('XLSX_path', NULL),
+                    ('JSON_path', NULL),
+                    ('webpage_title', 'Populus Numerus'),
+                    ('company','Scanner'),
+                    ('main_background_color','#333333'),
+                    ('main_text_color','#f5f5f5'), 
+                    ('button_color','#4CAF50'),
+                    ('button_text_color','#ffffff'),
+                    ('button_border_color','#388E3C'),
+                    ('button_border_hover_color','#2E7D32'),
+                    ('sidebar_color','#222222'),
+                    ('sidebar_text_color','#f5f5f5');
+            """)
+
+            # Create people_database table
+            user_handle.send_command("""
+                CREATE TABLE people_database (
+                    id SERIAL PRIMARY KEY, 
+                    employee_id INTEGER UNIQUE,
+                    first_name VARCHAR(50) UNIQUE,
+                    last_name VARCHAR(50) UNIQUE,
+                    email VARCHAR(50) UNIQUE, 
+                    phone VARCHAR(15) UNIQUE,
+                    pic_path VARCHAR(128) UNIQUE,
+                    employee_role VARCHAR(50),
+                    position VARCHAR(50),
+                    department VARCHAR(50)
+                );
+            """)
+
+            # Create timesheet_database table
+            user_handle.send_command("""
+                CREATE TABLE timesheet_database (
+                    id SERIAL PRIMARY KEY,
+                    employee_id INTEGER NOT NULL REFERENCES people_database(employee_id) ON DELETE CASCADE,
+                    clock_in TIMESTAMPTZ DEFAULT NOW(),
+                    clock_out TIMESTAMPTZ DEFAULT NOW(),
+                    work_date DATE DEFAULT CURRENT_DATE
+                );
+            """)
+
+            # Grant privileges to user
+            user_handle.send_command(f"GRANT ALL PRIVILEGES ON DATABASE {self.dbname} TO {self.user};")
+            user_handle.send_command(f"GRANT ALL PRIVILEGES ON SCHEMA public TO {self.user};")
+            user_handle.send_command(f"GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {self.user};")
+            user_handle.send_command(f"ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO {self.user};")
+
+            # Update config_database to mark initialization complete
+            user_handle.send_command("UPDATE config_database SET value = CURRENT_DATE WHERE key = 'config_date';")
+            user_handle.send_command("UPDATE config_database SET value = 'True' WHERE key = 'config_status';")
+
             print("@@@ Database creation complete @@@")
-            # Query config_database the ensure it was created.
+            # Verify table creation
             user_handle.send_query("SELECT * FROM config_database;")
             return True
+
         except Exception as e:
             print(f"Failure in create_database: {e}")
             return False
