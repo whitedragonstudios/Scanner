@@ -1,8 +1,8 @@
 Future Backlog
->> create flask or TK config GUI for setup and settings changes. 
->> modify psql_setup for cross platform compatibilty
+>> put options back into setup to allow clean install without erasing existing databases.
 
-Thrid Sprint 10/23
+
+Thrid Sprint 10/23 - 10/31 2025
 Primary Goal: Establish I/O between settings page and database
 
 Requirements:
@@ -14,13 +14,14 @@ Requirements:
 
 Review:
 1) Lots of CSS mess with the new page. It may be best to use two different css scripts.
-2) Leasons learned from classInstall should make classSettings overhaul fairly fast.
-3)
+2) classSettings got paired down to be a very simple class. That may be for the best it just needs to store the config in memory. 
+3) It seemed better to intergate update into the the handler object. 
 4) Made major changes to how install process runs. Made a classs which handles the install. Checks path, checks server connection, checks if db is created. 
-4+) CreateDB may be blueprint for future modules. May seperate it from classInstall. 
+4+) CreateDB had permission problems need to learn more about postgre permissions before making the script work.  
 5) For now server.check_install() and server.create_database() are seperate calls. May be benificial to include a seperate sql script to give different options during setup.
-* added a debug method to classInstall will be moved to edit db instaction class 
-* Need a new classHandler which will update database entries. move connectDB to handler.
+* Handler is a unplanned class which will handle all server connections this is better to keep all connection operations in one class rather then having setting and install make their own connections.
+* Had to use commands directly from Handler rather than use sql script. Ran into too many permission errors.
+>> modify psql_setup for cross platform compatibilty - completed
 
 Second Sprint 10/15-10/23 2025
 Primary Goal: Create setup files in order for user to create and configure database
@@ -42,6 +43,7 @@ Review:
 * may need to add to psql_setup.sh to handle privilages and different enviorments.
 * reduced number of tables to 3, seperate roles table was slow. simplified and eleminated vertical repition in tables.
 * added a clean install option to allow user to choose how to deal with a previously installed data.
+>> create flask or TK config GUI for setup and settings changes.  - completed
 
 First Sprint 10/12-10/15 2025
 Primary Goal: Basic functionality of Flask

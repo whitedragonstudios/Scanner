@@ -2,25 +2,19 @@ from flask import Flask, render_template, request
 from datetime import datetime as dt
 import json
 import os
+from classSettings import Setting
 
-
-# Load a config file which allows users to easily change settings NOTE this may be changed to postgre DB in the future. 
-def load_config():
-    config_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.json')
-    try:
-        with open(config_path,"r") as config_file:
-            config = json.load(config_file)
-            print("Config file loaded.")
-    except FileNotFoundError:
-        config = {"placeholder_key": "placeholder_value"}
-        print("Config file not found. Using default settings.") 
-    return config
+user = "marcus"
+password = "stoic"
+db_name = "scanner"
+port = 5000
+host = "localhost"
 
 
 # Intialize flask server
 app = Flask(__name__)
 
-config = load_config()
+config = Setting(user, password, db_name, port, host).assign_settings()
 # Set default and index route
 @app.route ('/')
 #@app.route('/index')

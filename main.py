@@ -16,14 +16,12 @@ if __name__ == "__main__":
     server.run()
  
     # Load a config file which allows users to easily change settings
-    #cf = classSettings.Setting(user, password, db_name, port, host)
-    #data = cf.assign_settings()
-    #print(data.company)
+    cf = classSettings.Setting(user, password, db_name, port, host)
+    config_dict =cf.assign_settings()
+    print(cf.company)
+    print(config_dict)
 
-
-#setup wizzard is a flask based app to save config settings to postgreSQL DB NOTE convert config.json to postgreSQL in future
-
-# Event handler for opening Database
+# Check if people_database has entries. If it is empty immidiately open settings html to add employees.
 
 # Create person object for output to flask
 
