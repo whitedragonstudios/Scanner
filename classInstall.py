@@ -4,7 +4,6 @@ from time import sleep
 from classHandler import Handler
 
 
-
 class Postgre_Install:
     def __init__(self, user, password, dbname, port, host):
         self.user = user
@@ -15,7 +14,6 @@ class Postgre_Install:
         self.system = platform.system().lower()
         # Create instance of Handler with admin privilages
         self.admin = Handler(password=self.password)
-
 
     # List of all psql paths
     def path_list(self):
@@ -68,7 +66,6 @@ class Postgre_Install:
             r"/var/lib/postgresql/bin",
             r"/mnt/c/Program Files/PostgreSQL/16/bin",
         ]
-    
 
     # Automatically looks for PostgreSQL install
     def check_install(self):
@@ -107,7 +104,7 @@ class Postgre_Install:
         if shutil.which("psql") is None:
             print("Failure: PATH detection \n!!! Could not locate PostgreSQL installation !!!\nYou must install PostgreSQL")
             return False
-        
+
 
     # Detect os and automaticaly install psql.
     def install_psql(self):
@@ -118,15 +115,15 @@ class Postgre_Install:
             # Install postgresql with chocolatey
             cmd = "choco install postgresql --yes"
         # Check for Mac OS
-        elif self.system == "darwin": 
-            print("Installing PostgreSQL with Homebrew")
+        elif self.system == "darwin":
             # Install postgresql with homebrew
+            print("Installing PostgreSQL with Homebrew")
             cmd = "brew install postgresql"
         # Check for Linux OS
         elif self.system == "linux":
-            # Find package managner
             distro = platform.freedesktop_os_release().get("ID", "").lower() if hasattr(platform, "freedesktop_os_release") else ""
             print(f"Distro detected: {distro}")
+            # Find package managner
             if shutil.which("apt"):
                 # Install postgresql with apt
                 cmd = "sudo apt update && sudo apt install -y postgresql-client"
@@ -156,7 +153,6 @@ class Postgre_Install:
             print(f"Command failed: {cmd}")
             print(e.stderr.strip())
             installed = False
-        # Check that the command worked
         if installed == True:
             print(">>> PostgreSQL sucessfully installed <<<")
             return True
@@ -169,61 +165,89 @@ class Postgre_Install:
     def create_database(self):
         print("No Databases found: creating them")
         try:
-            # Create database scanner using admin account
-            self.admin.send_command(f"CREATE DATABASE {self.dbname};")
             # Create the Ended User username
             self.admin.send_command(f"CREATE USER {self.user} WITH PASSWORD '{self.password}';")
-            # Grant user full permissions
-            self.admin.send_command(f"GRANT USAGE, CREATE ON SCHEMA public TO {self.user};")
-            self.admin.send_command(f"ALTER SCHEMA public OWNER TO {self.user};")
+            # Create database scanner using admin creds
+            self.admin.send_command(f"CREATE DATABASE {self.dbname} OWNER {self.user};")
             # Run createDB sql script to create all tables and populate config_databse
-            self.admin.open_file("createDB.sql")
+            user_handle = Handler(dbname=self.dbname, user=self.user, password=self.password, info=True)
+            user_handle.open_file("createDB.sql")
             print("@@@ Database creation complete @@@")
             # Query config_database the ensure it was created.
-            general_user = Handler(dbname=self.dbname, user=self.user, password=self.password, info=True)
-            general_user.send_query("SELECT * FROM config_database;")
+            user_handle.send_query("SELECT * FROM config_database;")
+            return True
         except Exception as e:
-            print(f"Failed to open createDB {e}")
+            print(f"Failure in create_database: {e}")
+            return False
 
-    
+
+    def check_database(self):
+        print(f"Checking if database '{self.dbname}' is fully initialized.")
+        # Create a handler using the end user credentials
+        user_handle = Handler(dbname=self.dbname, user=self.user, password=self.password, port=self.port, host=self.host)
+        try:
+            # Check DB/User connection first
+            user_handle.connect()
+            # Check for required tables
+            tables = ['config_database', 'timesheet_database', 'people_database']
+            # A single query that fails if any table is missing
+            for table in tables:
+                query = f"SELECT 1 FROM {table} LIMIT 0;"
+                user_handle.send_query(query) 
+            print(f"Database '{self.dbname}' is fully initialized with the required tables.")
+            return True
+        except psycopg2.OperationalError as e:
+            # Code '3D000' (DB missing), '28P01' (Password failed), '42P01' (Table missing)
+            if e.pgcode in ('3D000', '28P01'): 
+                print(f"!!! Failure: credentials not created !!!\nDatabase: {self.dbname}\nor\nUser: {self.user}")
+                return False
+            if e.pgcode == '42P01':
+                print("Database exists, but one or more essential tables are missing.")
+                return False
+            print(f"Database check failed\n{e}")
+            return False
+        except Exception as e:
+            print(f"Unexpected error during database check: {e}")
+            return False
+        
+
     # This method controls the flow of the entire class.
     # Call this method in order to begin initalization fo the program.
     def run(self):
-
-
-    
-        # Run check_install to see if psql is installed.
-        if self.check_install() == False:
-            # ask if the user wants to automatically install psql
-            ans = input("Install PostgreSQL? (y/n): ").lower().strip()
-            # if running autoinstall manually set ans = "y" comment out line above.
-            if ans != "y":
-                print("PostgreSQL is required for this program to run.\nPlease install manually.\n!!! Aborting program launch !!!")
-                # Abort setup the user must install psql for the program to work
-                sleep(5)
-                return False
+        failure_detected = False
+        # Check/Install PostgreSQL
+        if not self.check_install():
+            ans = input("PostgreSQL not found. Install automatically? (y/n): ").lower().strip()
+            if ans == "y":
+                if not self.install_psql():
+                    print("!!! FATAL: Automatic PostgreSQL installation failed. Cannot proceed. !!!")
+                    failure_detected = True
             else:
-                # Install psql, works on most OS and Distros
-                print("Installing PostgreSQL.\n   !!! Make sure to remember your password. !!!")
-                if self.install_psql() == False:
-                    print("Failure: install_ psql\nPostgreSQL is required for this program to run.\nPlease install manually.\n!!! Aborting program launch !!!")
-                    sleep(5)
-                    return False
-        # Set up the database which the program will use.
-        print("Checking if databases have been created")
-        try:
-            # Connect to scanner with the postgre default user
-            connection = self.admin.connect()
-            if connection is not None:
-                print("Databases already created")
-            else:
-                self.create_database()
-                print("Success databases created")
-        except Exception as e:
-            print(f"Alert Database failed existence check: {e}")
-            print("Attempting to create Database anyways")
-            self.create_database()
-            print("Success databases created")
+                print("!!! FATAL: PostgreSQL is required and was not installed. Cannot proceed. !!!")
+                failure_detected = True
+        # Exit if installation failed or was refused
+        if failure_detected:
+            sleep(5)
+            return False
+
+        # Check/Create Databases
+        print("\n--- Database Setup ---")
+        if not self.check_database():
+            print("Attempting to create Database and User...")
+            if not self.create_database():
+                print("!!! FATAL: Database creation/verification failed. Cannot proceed. !!!")
+                failure_detected = True
+        else:
+            print("Database already exists. Setup skipped.")
+
+        # --- Final Status Check ---
+        if failure_detected:
+            print("\n!!! Program Initialization Failed !!!")
+            sleep(5)
+            return False
+        else:
+            print("\n>>> Program Initialization Successful <<<")
+            return True
 
     # Quick function to delete database to be used in debugging
     def drop_database(self, dropDB):
@@ -234,7 +258,6 @@ class Postgre_Install:
         except Exception as e:
             print(f"Failed to drop database:{e}")
 
-    
     # quick function to delete users to be used in bebugging
     def drop_user(self, dropUser):
         try:
@@ -244,4 +267,3 @@ class Postgre_Install:
             print(f"User {dropUser} deleted")
         except Exception as e:
             print(f"Failed to drop user '{dropUser}': {e}")
-

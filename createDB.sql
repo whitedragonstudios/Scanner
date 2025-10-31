@@ -1,17 +1,21 @@
----This SQL script creates the necessary database and tables for the Scanner application.
+-- This SQL script creates the necessary database and tables for the Scanner application.
 -- It sets up the config_database, people_database, and timesheet_database tables,
 -- and inserts initial configuration data into the config_database table.
 
---Note the scanner database as well as the user marcu are created in classInstall.py
---default password 'stoic'
+-- Note: the scanner database and user marcus are created in classInstall.py
+-- default password 'stoic'
 
--- Create config_database table to hold configuration settings
+DROP TABLE IF EXISTS timesheet_database CASCADE;
+DROP TABLE IF EXISTS people_database CASCADE;
+DROP TABLE IF EXISTS config_database CASCADE;
+
+-- Create config_database table
 CREATE TABLE config_database (
     key VARCHAR(50) PRIMARY KEY,
     value VARCHAR(128)
 );
---- Insert default configuration data into config_database 
---- If option 3 was chosen from psql_setup.sh this data will NOT be overwritten.
+
+-- Insert default config data
 INSERT INTO config_database (key, value) VALUES
     ('config_status', 'False'),
     ('config_date', '2025-01-01'),
@@ -29,8 +33,7 @@ INSERT INTO config_database (key, value) VALUES
     ('sidebar_color','#222222'),
     ('sidebar_text_color','#f5f5f5');
 
---- Create people_database table to hold employee information 
---- Data can be inserted via the web interface run by setttings.py
+-- Create people_database table
 CREATE TABLE people_database (
     id SERIAL PRIMARY KEY, 
     employee_id INTEGER UNIQUE,
@@ -42,44 +45,33 @@ CREATE TABLE people_database (
     employee_role VARCHAR(50),
     position VARCHAR(50),
     department VARCHAR(50)
-    );
+);
 
---- Create timesheet_database table to hold clock-in and clock-out records.
---- Reports will be generated from this data. 
+-- Create timesheet_database table
 CREATE TABLE timesheet_database (
     id SERIAL PRIMARY KEY,
-    employee_id INTEGER NOT NULL REFERENCES people_database(employee_id) ON DELETE CASCADE, -- Foreign key reference to people_database query can only be made using employee_id
+    employee_id INTEGER NOT NULL REFERENCES people_database(employee_id) ON DELETE CASCADE,
     clock_in TIMESTAMPTZ DEFAULT NOW(),
     clock_out TIMESTAMPTZ DEFAULT NOW(),
     work_date DATE DEFAULT CURRENT_DATE
-    );
+);
 
--- marcus will be the main user for the scanner database tables are made with defult postgres user but we need to give marcus access to them.
---GRANT ALL PRIVILEGES ON DATABASE scanner TO marcus;
+
 GRANT ALL PRIVILEGES ON DATABASE scanner TO marcus;
 GRANT ALL PRIVILEGES ON SCHEMA public TO marcus;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO marcus;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO marcus;
 
---- Update config status to True and set config date to current date 
---- main.py uses these two values to determine if initial setup has been completed.
---- These values can be reset in the setttings.py web interface re-enabling launch of initial setup. 
-UPDATE config_database SET value = 'True' WHERE key = 'config_status';
-UPDATE config_database SET value = CURRENT_DATE WHERE key = 'config_date';
 
+-- Update config status
+-- UPDATE config_database SET value = 'True' WHERE key = 'config_status';
+-- UPDATE config_database SET value = CURRENT_DATE WHERE key = 'config_date';
 
---- Below this line are options to verify database functionality. They will be left in for advanced users. 
-
--- Uncomment next line to verify config data insertion
--- SELECT * FROM config_database LIMIT (SELECT COUNT(*) FROM config_database)
-
--- Uncomment next three line to insert test data into people_database
+-- Optional test data
 -- INSERT INTO people_database (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES
-    --(0001, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '/images/0001.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
-    --(0002, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '/images/0002.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice');
+--     (0001, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '/images/0001.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
+--     (0002, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '/images/0002.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice');
 
--- Uncomment next three line to insert test data into timesheet_database
 -- INSERT INTO timesheet_database (employee_id, clock_in, clock_out, work_date) VALUES
-    --(2001, '2025-10-01 08:00:00+00', '2025-10-01 16:00:00+00', '2025-10-01'),
-    --(2002, '2025-10-01 08:00:00+00', '2025-10-01 16:00:00+00', '2025-10-01');
-
+--     (0001, '2025-10-01 08:00:00+00', '2025-10-01 16:00:00+00', '2025-10-01'),
+--     (0002, '2025-10-01 08:00:00+00', '2025-10-01 16:00:00+00', '2025-10-01');

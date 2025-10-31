@@ -33,14 +33,16 @@ class Handler:
 
     def report_error(self, e):
         print("\n\n!!! PostgreSQL Error !!!")
-        print(f"Message: {e.pgerror.strip()}")
-        if e.diag: 
+        msg = e.pgerror.strip() if e.pgerror else str(e)
+        print(f"Message: {msg}")
+        if hasattr(e, 'diag') and e.diag:
             print(f"SQLSTATE: {e.pgcode}")
-            if e.diag.message_detail:
+            if getattr(e.diag, 'message_detail', None):
                 print(f"Details: {e.diag.message_detail.strip()}")
-            if e.diag.context:
+            if getattr(e.diag, 'context', None):
                 print(f"Context: {e.diag.context.strip()}")
         print("\n\n")
+
     
 
     def send_command(self, cmd):
@@ -75,23 +77,28 @@ class Handler:
         try:
             conn = self.connect()
             cur = conn.cursor()
-            print(f"<<< Processing SQL script >>>")
-            print(filename)
+            print(f"<<< Processing SQL script >>>\n{filename}")
             with open(filename, 'r') as f:
                 sql_script = f.read()
-            for stmt in sql_script.split(";"):
+            # Split statements by semicolon
+            statements = sql_script.split(";")
+            # Clean statements: strip, skip empty or comment-only
+            clean_statements = []
+            for stmt in statements:
                 stmt = stmt.strip()
-                if stmt:
-                    print(stmt)
-                    cur.execute(stmt)
-            conn.commit() 
+                # Skip empty or pure comment statements
+                if stmt and not stmt.startswith("--"):
+                    clean_statements.append(stmt)
+            # Execute
+            for stmt in clean_statements:
+                print(stmt)
+                cur.execute(stmt)
+            conn.commit()
             print(f">>> Executed SQL file <<<")
-            for notice in conn.notices:
-                print("NOTICE:", notice)
         except psycopg2.Error as e:
             if conn and not conn.closed:
                 conn.rollback()
-            self._report_error(e)
+            self.report_error(e)
             raise e
         finally:
             if cur: cur.close()
@@ -119,7 +126,7 @@ class Handler:
                 print("NOTICE:", notice)
             return results
         except psycopg2.Error as e:
-            self._report_error(e)
+            self.report_error(e)
             raise e
         finally:
             if cur: cur.close()
@@ -140,7 +147,7 @@ class Handler:
             return config
         except psycopg2.Error as e:
             # We don't rollback for SELECT, just report and raise
-            self._report_error(e)
+            self.report_error(e)
             raise e
         finally:
             if cur: cur.close()
@@ -159,7 +166,7 @@ class Handler:
             print(f"Database error during config update: {e}")
             if conn and not conn.closed:
                 conn.rollback()
-            self._report_error(e)
+            self.report_error(e)
             raise e
         finally: 
             if cur: cur.close()

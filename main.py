@@ -21,8 +21,6 @@ if __name__ == "__main__":
     #print(data.company)
 
 
- 
-
 #setup wizzard is a flask based app to save config settings to postgreSQL DB NOTE convert config.json to postgreSQL in future
 
 # Event handler for opening Database
