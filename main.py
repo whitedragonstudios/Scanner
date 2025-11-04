@@ -1,11 +1,11 @@
-import classInstall, classSettings
+import classInstall, classSettings, databaseConfig
 import psycopg2
 
-user = "marcus"
-password = "stoic"
-db_name = "scanner"
-port = 5000
-host = "localhost"
+user = databaseConfig.databaseSettings["user"]
+password = databaseConfig.databaseSettings["password"]
+db_name = databaseConfig.databaseSettings["db_name"]
+port = databaseConfig.databaseSettings["port"]
+host = databaseConfig.databaseSettings["host"]
 
 if __name__ == "__main__":
     # Run classInstall and check the server connection works, if not updates path and installs psql.
