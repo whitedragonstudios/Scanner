@@ -3,8 +3,8 @@ from . import (
     classSettings,
     classHandler,
     person,
-    server,
-    settings
+    server_index,
+    server_menu
 )
 
 __all__ = [
@@ -12,6 +12,6 @@ __all__ = [
     "classHandler",
     "person",
     "classInstall",
-    "server",
-    "settings"
+    "server_index",
+    "server_menu"
 ]
