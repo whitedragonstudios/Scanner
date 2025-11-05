@@ -4,7 +4,9 @@ from . import (
     classHandler,
     person,
     server,
-    settings
+    server_menu,
+    databaseConfig,
+    classweather
 )
 
 __all__ = [
@@ -13,5 +15,20 @@ __all__ = [
     "person",
     "classInstall",
     "server",
-    "settings"
+    "server_menu",
+    "databaseConfig",
+    "classweather"
 ]
+
+
+# --- Flask app creation ---
+from flask import Flask
+
+def create_app():
+    frontend = Flask(__name__)
+
+    # Import and register blueprints
+    from .server import frontend
+    frontend.register_blueprint(frontend)
+
+    return frontend

@@ -204,7 +204,11 @@ class Postgre_Install:
                     ('button_border_color','#388E3C'),
                     ('button_border_hover_color','#2E7D32'),
                     ('sidebar_color','#222222'),
-                    ('sidebar_text_color','#f5f5f5');
+                    ('sidebar_text_color','#f5f5f5'),
+                    ('city', 'New York City'),
+                    ('lon', '-74.0060152'),
+                    ('lat', '40.7127281'),
+                    ('weather_key', 'baeb0ce1961c460b651e6a3a91bfeac6');
             """)
 
             # Create people_database table
