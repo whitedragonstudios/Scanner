@@ -3,10 +3,11 @@ from datetime import datetime as dt
 import json
 import os
 from classSettings import Setting
-import databaseConfig
+from classNews import News_Report
 from classQuotes import quote_generator
 from classWeather import weather_report
 
+import databaseConfig
 db = databaseConfig. databaseSettings()
 user = db["user"]
 password = db["password"]
@@ -15,6 +16,10 @@ port = db["port"]
 host = db["host"]
 
 
+config = Setting(user, password, db_name, port, host)
+weather_data = weather_report(config.city, config.weather_key)
+news = News_Report(config.country, config.news_key)
+#print(config.news_key)
 
 # Intialize flask server
 app = Flask(__name__)
@@ -22,8 +27,6 @@ app = Flask(__name__)
 frontend = Blueprint('frontend', __name__, template_folder='templates', static_folder='static')
 
 quoteOTDay = quote_generator().QotD
-config = Setting(user, password, db_name, port, host).assign_settings()
-weather_data = weather_report(config['city'], config['weather_key'])
 
 # Set default and index route
 @frontend.route ('/')
@@ -36,6 +39,8 @@ def home():
     scanned_id = request.args.get('idnumber')
     if scanned_id == None:
         scanned_id = "No ID"
+    
+    
     # Pass idnumber to person object. Person object returns name, group, time, and image (if availible)
     return render_template("home.html", 
                            idnumber=scanned_id,
@@ -47,7 +52,8 @@ def home():
                            cf = config,
                            quote = quoteOTDay[0],
                            author = quoteOTDay[1],
-                           wd = weather_data
+                           wd = weather_data,
+                           news_articles = news.articles
                            )
 
 

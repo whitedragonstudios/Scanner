@@ -22,16 +22,7 @@
 <body>
     <div class="page-wrapper">
         <div class="sidebar"> 
-             <div class="quotebox">
-                <h2 class="quotetitle">Quote of the Day</h2>
-                <br>
-                <ul>
-                    <li class="quote">{{quote}}</li>
-                </ul>
-                <br>
-                <h4 class="author">{{author}}</h4>
-            </div>
-            <br>
+             
             <div class="weather-box">
                 <h2>Weather</h2>
                 <h3>{{wd.city}}, {% if wd.state or wd.country %}<br>{{ wd.state|default('') }}{% if wd.state and wd.country %} - {% endif %}{{ wd.country|default('') }}{% endif %}</h3>
@@ -47,10 +38,23 @@
             </div>
             <br>
             <div>
-                <h2>News</h2>
+                <div class="'news-box">
+                    <h2>News</h2>
+                    <h3 id="news-src"></h3>
+                    <p id="news-art"></p>
+                    <a id="news-url" href="" target="_blank" rel="noopener noreferrer" class="news-button">Read more</a>
+                </div>
             </div>
             <br>
-           
+            <div class="quote-box">
+                    <h2 class="quotetitle">Quote of the Day</h2>
+                    <br>
+                    <ul>
+                        <li class="quote">{{quote}}</li>
+                    </ul>
+                    <br>
+                    <h4 class="author">{{author}}</h4>
+                </div>
         </div>
         <div class="main-content">
             <div class="top-menu">
@@ -81,5 +85,12 @@
             </div>
         </div>
     </div>
+
+    <script src="{{ url_for('static', filename='js/news_rotation.js') }}"></script>
+    <script>
+    const newsArticles = {{ news_articles|tojson }};
+    initNewsCycle(newsArticles);
+    </script>
+
 </body>
 </html>

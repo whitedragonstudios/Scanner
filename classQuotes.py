@@ -1,5 +1,4 @@
 from datetime import datetime
-import random
 
 class quote_generator:
     def __init__(self, autorun=True):

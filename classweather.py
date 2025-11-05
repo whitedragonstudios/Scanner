@@ -1,7 +1,15 @@
 import requests, json
 from classSettings import Setting
-import databaseConfig
+from classHandler import Handler
 
+
+import databaseConfig
+db = databaseConfig. databaseSettings()
+user = db["user"]
+password = db["password"]
+db_name = db["db_name"]
+port = db["port"]
+host = db["host"]
 
 class weather_report():
     def __init__(self, city_name, weather_key):
@@ -21,16 +29,18 @@ class weather_report():
         self.max = int((data['main']['temp_max']) * 1.8 - 459.67)
         self.humid = data['main']['humidity']
         self.clouds = data['clouds']['all']
-        print(self.icon)
+        self.update_config()
 
 
     def get_gps(self):
         try: 
             GPS_response = requests.get(f"http://api.openweathermap.org/geo/1.0/direct?q={self.city_name}&appid={self.weather_key}").json()
+            country = GPS_response[0]['country']
         except requests.exceptions.RequestException as e:
             print("ERROR: weather.get_gps >>> api request >>>", e)
             GPS_response = 40.7127281,-74.0060152 # Defaults to New York City
-        return [GPS_response[0]["lon"], GPS_response[0]["lat"], GPS_response[0]['name'], GPS_response[0]['state'], GPS_response[0]['country']]
+            country = 'us'
+        return [GPS_response[0]["lon"], GPS_response[0]["lat"], GPS_response[0]['name'], GPS_response[0]['state'], country]
     
 
     def get_weather(self):
@@ -40,4 +50,11 @@ class weather_report():
             print("ERROR: weather.get_weather >>> api request >>>", e)
             WEATHER_response = "Error Weather Data"
         return WEATHER_response
+    
 
+    def update_config(self):
+        conn = Handler(user, password, db_name, port, host)
+        conn.update_config('city', self.city)
+        conn.update_config('lon', self.longitude)
+        conn.update_config('lat', self.latitude)
+        conn.update_config('country', self.country)

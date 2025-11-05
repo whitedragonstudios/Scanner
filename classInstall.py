@@ -208,7 +208,9 @@ class Postgre_Install:
                     ('city', 'New York City'),
                     ('lon', '-74.0060152'),
                     ('lat', '40.7127281'),
-                    ('weather_key', 'baeb0ce1961c460b651e6a3a91bfeac6');
+                    ('weather_key', 'baeb0ce1961c460b651e6a3a91bfeac6'),
+                    ('country', 'us'),
+                    ('news_key', '04fbd2b9df7b49f6b6a626b4a4ae36be');
             """)
 
             # Create people_database table

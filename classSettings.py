@@ -10,6 +10,7 @@ class Setting:
         self.dbname = dbname
         self.port = port
         self.host = host
+        self.data = self.assign_settings()
         # These variables are unused may be intergrate as settings methods are added.
         #DBpeople = "people_database"
         #DBtime = "timesheet_database"
@@ -42,5 +43,7 @@ class Setting:
         self.lon = data["lon"]
         self.lat = data["lat"]
         self.weather_key=data["weather_key"]
+        self.country = data["country"]
+        self.news_key = data["news_key"]
         return data
         
