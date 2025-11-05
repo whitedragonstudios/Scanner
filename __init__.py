@@ -5,7 +5,8 @@ from . import (
     person,
     server,
     server_menu,
-    databaseConfig
+    databaseConfig,
+    classweather
 )
 
 __all__ = [
@@ -15,7 +16,8 @@ __all__ = [
     "classInstall",
     "server",
     "server_menu",
-    "databaseConfig"
+    "databaseConfig",
+    "classweather"
 ]
 
 

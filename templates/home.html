@@ -16,24 +16,14 @@
             --button-boarder-hover-color: {{cf.button_border_hover_color}};
             --sidebar-color: {{cf.sidebar_color}};
             --sidebar-text-color: {{cf.sidebar_text_color}};
-            --quote: {{quote}}
-            --author {{author}}
         }
     </style>
 </head>
 <body>
     <div class="page-wrapper">
         <div class="sidebar"> 
-            <div>
-                <h2>Weather</h2>
-            </div>
-            <br>
-            <div>
-                <h2>News</h2>
-            </div>
-            <br>
-            <div>
-                <h2>Quote of the Day</h2>
+             <div class="quotebox">
+                <h2 class="quotetitle">Quote of the Day</h2>
                 <br>
                 <ul>
                     <li class="quote">{{quote}}</li>
@@ -41,6 +31,26 @@
                 <br>
                 <h4 class="author">{{author}}</h4>
             </div>
+            <br>
+            <div class="weather-box">
+                <h2>Weather</h2>
+                <h3>{{description}}</h3>
+                 <img src="{{ url_for('static', filename='weather_icon/' + (icon or 'default.png')) }}" alt="Weather Icon" width="200" height="200">
+                <h3>{{city}}, {% if state or country %}<br>{{ state|default('') }}{% if state and country %} - {% endif %}{{ country|default('') }}{% endif %}</h3>
+                    <ul>
+                        <li>Feel: {{feel}}</li>
+                        <li>High: {{tmax}}</li>
+                        <li>Low: {{tmin}}</li>
+                        <li>Humidity: {{humid}}</li>
+                        <li>Clouds: {{clouds}}</li>
+                     </ul>
+            </div>
+            <br>
+            <div>
+                <h2>News</h2>
+            </div>
+            <br>
+           
         </div>
         <div class="main-content">
             <div class="top-menu">
@@ -66,7 +76,7 @@
                     <h3>{{date}}</h3>
                 </div>
                 <div class="right-div">
-                    <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="picture not found" width="256" height="256" />
+                    <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="picture not found" width="256" height="256">
                 </div>
             </div>
         </div>

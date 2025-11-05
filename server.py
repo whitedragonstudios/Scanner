@@ -5,6 +5,7 @@ import os
 from classSettings import Setting
 import databaseConfig
 from quotes import quote_generator
+from classweather import weather_report
 
 db = databaseConfig. databaseSettings()
 user = db["user"]
@@ -22,7 +23,7 @@ frontend = Blueprint('frontend', __name__, template_folder='templates', static_f
 
 config = Setting(user, password, db_name, port, host).assign_settings()
 
-
+weather = weather_report(config['city'], config['weather_key'])
 
 # Set default and index route
 @frontend.route ('/')
@@ -45,7 +46,17 @@ def home():
                            picture = "default.jpg",
                            cf = config,
                            quote = quoteOTDay[0],
-                           author = quoteOTDay[1]
+                           author = quoteOTDay[1],
+                           city = weather.city,
+                           state = weather.state,
+                           country = weather.country,
+                           icon = weather.icon, 
+                           description = weather.description, 
+                           feel = weather.feel, 
+                           tmin = weather.min, 
+                           tmax = weather.max, 
+                           humid = weather.humid, 
+                           clouds = weather.clouds
                            )
 
 

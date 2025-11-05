@@ -38,5 +38,9 @@ class Setting:
         self.button_border_hover_color = data["button_border_hover_color"]
         self.sidebar_color = data["sidebar_color"]
         self.sidebar_text_color = data["sidebar_text_color"]
+        self.city = data["city"]
+        self.lon = data["lon"]
+        self.lat = data["lat"]
+        self.weather_key=data["weather_key"]
         return data
         

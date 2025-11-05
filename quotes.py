@@ -7,7 +7,6 @@ class quote_generator:
         self.autorun = autorun or True
         if autorun:
             self.update()
-            print(self.QotD)
         else: self.QotD = ["If it is not right, do not do it; if it is not true, do not say it.", "Marcus Aurelius"]
 
 
@@ -394,7 +393,6 @@ class quote_generator:
         base = (y * 10000) + (m * 100) + d
         n = (d * 31 + m * 12 + y * 17 + (d * m * y))  
         result = (n + base) % 366 + 1
-        print(result)
         quote = self.quote_list()[result]
         return quote
     
@@ -406,6 +404,3 @@ class quote_generator:
             self.date = date_str
         self.QotD = self.make(self.date)
         return self.QotD
-
-
-test = quote_generator()
