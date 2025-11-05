@@ -1,13 +1,14 @@
 from flask import Flask, render_template, request
 from datetime import datetime as dt
 from classSettings import Setting
+from databaseConfig import databaseSettings
 
 
-user = "marcus"
-password = "stoic"
-db_name = "scanner"
-port = 5000
-host = "localhost"
+user = databaseSettings["user"]
+password = databaseSettings["password"]
+db_name = databaseSettings["db_name"]
+port = databaseSettings["port"]
+host = databaseSettings["host"]
 
 
 config = Setting(user, password, db_name, port, host).assign_settings()

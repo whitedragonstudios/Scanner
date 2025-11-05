@@ -3,8 +3,9 @@ from . import (
     classSettings,
     classHandler,
     person,
-    server_index,
-    server_menu
+    server,
+    server_menu,
+    databaseConfig
 )
 
 __all__ = [
@@ -12,6 +13,20 @@ __all__ = [
     "classHandler",
     "person",
     "classInstall",
-    "server_index",
-    "server_menu"
+    "server",
+    "server_menu",
+    "databaseConfig"
 ]
+
+
+# --- Flask app creation ---
+from flask import Flask
+
+def create_app():
+    frontend = Flask(__name__)
+
+    # Import and register blueprints
+    from .server import frontend
+    frontend.register_blueprint(frontend)
+
+    return frontend

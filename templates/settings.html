@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration Menu</title>
+    <!-- link css stylesheet for flask -->
+    <link href="{{url_for('static', filename='styles/style.css')}}" rel="stylesheet"/>
+    <style>
+        :root {
+            --bg-color: {{ cf.main_background_color }};
+            --text-color: {{ cf.main_text_color }};
+            --button-color: {{ cf.button_color }};
+            --button-text-color: {{ cf.button_text_color }};
+            --button-border-color: {{ cf.button_border_color }};
+            --button-border-hover-color: {{ cf.button_border_hover_color }};
+            --sidebar-color: {{ cf.sidebar_color }};
+            --sidebar-text-color: {{ cf.sidebar_text_color }};
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar"> 
+            <h1>Technical Settings</h1>
+            <h2>File paths</h2>
+            <p class="sidetext">
+                In order to facilitate easy data entry you can enter custom paths to different files which you wish to enter into the database.
+                CSV, XLSX, and JSON formats are accepted at this time. Simply copy paste the file path into the text box. 
+                For organization we recommend keeping the files in the same folder as the Scanner installation. 
+                Then click Update Database and the file will be added to the database. See database Schema for file formatting.
+            </p>
+            <form> 
+                <input class="pathbox" type="text" name="filepaths" id="filepaths" placeholder="Enter Path like C:\Program Files\Scanner" maxlength="128" required>
+                <button class="updateDB" type="submit">Update Database</button>
+            </form>
+            <h1 style="color:red">Caution</h1>
+            <button>Reset/Re-Install</button>
+            <p class="sidetext">
+                By clicking this button you will set the flag for PostgreSQL setup to false. 
+                Next time you launch the app you will be prompted to walk through the installation process. 
+                There are options to delete all Databases and start a clean install. Only reset the configuration settings. 
+                Or leave all databases. This option should only be used if there is a catastrophic error in the app.
+            </p>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <!-- Top menu bar -->
+            <div class="top-menu">
+                <a href="/home">Home</a>
+                <a href="/reports">Reports</a>
+                <a href="/settings">Settings</a>
+            </div>
+
+            <h1>Settings Menu</h1>
+
+            <div class="content">
+                <!-- Left Div: forms -->
+                <div class="left-div">
+                    <h2>Change Company Name<br>Current name: {{ cf.company }}</h2>
+                    <form action="/menu" method="post">
+                        <input class="textBox" type="text" name="new_companyname" id="new_companyname" placeholder="Enter company name" maxlength="50" required>
+                        <button class="buttonM" type="submit">Submit</button>
+                    </form>
+
+                    <h2>Change Webpage Title<br>Current Title: {{ cf.webpage_title }}</h2>
+                    <form action="/menu" method="post">
+                        <input class="textBox" type="text" name="new_title" id="new_title" placeholder="Enter webpage title" maxlength="50" required>
+                        <button class="buttonM" type="submit">Submit</button>
+                    </form>
+
+                    <h2>Change Background Color<br>Current Color: {{ cf.main_background_color }}</h2>
+                    <form action="/menu" method="post">
+                        <input class="textBox" type="text" name="bgcolor" id="bgcolor" placeholder="Enter Background Color" maxlength="50" required>
+                        <button class="buttonM" type="submit">Submit</button>
+                    </form>
+
+                    <h2>Change Text Color<br>Current Color: {{ cf.main_text_color }}</h2>
+                    <form action="/menu" method="post">
+                        <input class="textBox" type="text" name="txtcolor" id="txtcolor" placeholder="Enter Text Color" maxlength="50" required>
+                        <button class="buttonM" type="submit">Submit</button>
+                    </form>
+                </div>
+
+                <!-- Right Div: color picker -->
+                <div class="right-div">
+                    <div class="color-picker-wrapper">
+                        <h1>Color Picker</h1>
+                        <input type="color" id="colorPicker" value="#00aaff">
+                        <div class="color-info">
+                            <div>Hex: <span id="hexValue">#00aaff</span></div>
+                            <div>RGB: <span id="rgbValue">rgb(0, 170, 255)</span></div>
+                        </div>
+                        <div class="preview-box" id="previewBox" style="background-color: #00aaff;"></div>
+                        <button id="copyButton">Copy Hex</button>
+                    </div>
+                    <script src="script.js"></script>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

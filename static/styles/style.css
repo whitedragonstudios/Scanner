@@ -17,6 +17,9 @@ body {
     width: 100%;
 }
 
+
+/* Sidebar */
+
 .sidebar {
     width: 250px;
     background-color: var(--sidebar-color);
@@ -42,12 +45,15 @@ body {
     height: 50px;
     background-color: var(--button-color);
     color: var(--button-text-color);
-    border: 2px solid var((--button-border-color));
+    border: 2px solid var(--button-border-color);
 }
 
 .button1:hover {
     background-color: var(--button_hover_color);
 }
+
+
+/* Content */
 
 .main-content {
     flex: 1; 
@@ -78,6 +84,9 @@ h1 {
     border-radius: 10px;
 }
 
+
+/* LR dividers */
+
 .left-div {
     text-align: left;
     background-color: #444;
@@ -89,10 +98,7 @@ h1 {
 }
 
 
-/* -------------------- */
-/* COLOR PICKER STYLES  */
-/* Scoped under .color-picker-wrapper */
-/* -------------------- */
+/* Color Picker  */
 
 .color-picker-wrapper {
     display: flex;
@@ -147,4 +153,62 @@ h1 {
 
 .color-picker-wrapper button:hover {
     background: #666;
+}
+
+
+/* Top menu  */
+
+.top-menu {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--bg-color);
+    border-bottom: 2px solid var(--text-color);
+    border-radius: 10px 10px 0 0;
+    box-sizing: border-box;
+}
+
+.top-menu a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: all 0.2s ease-in-out;
+}
+
+.top-menu a:hover {
+    background-color: var(--button-color);
+    color: var(--button-text-color);
+}
+
+
+.main-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+}
+
+
+.quote {
+    margin-left: 40px; 
+    list-style-type: none;
+    padding-left: 0;
+    position: relative;
+}
+
+.quote::before {
+    content: "⭐";
+    font-size: 1.4em;
+    position: absolute;
+    left: -1.6em;
+    top: 0;
+}
+
+.author {
+    text-align: right;
 }
