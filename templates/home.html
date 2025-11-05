@@ -34,15 +34,15 @@
             <br>
             <div class="weather-box">
                 <h2>Weather</h2>
-                <h3>{{description}}</h3>
-                 <img src="{{ url_for('static', filename='weather_icon/' + (icon or 'default.png')) }}" alt="Weather Icon" width="200" height="200">
-                <h3>{{city}}, {% if state or country %}<br>{{ state|default('') }}{% if state and country %} - {% endif %}{{ country|default('') }}{% endif %}</h3>
+                <h3>{{wd.city}}, {% if wd.state or wd.country %}<br>{{ wd.state|default('') }}{% if wd.state and wd.country %} - {% endif %}{{ wd.country|default('') }}{% endif %}</h3>
+                 <img src="{{ url_for('static', filename='weather_icon/' + (wd.icon or 'default.png')) }}" alt="Weather Icon" width="200" height="200">
+                    <h3>{{wd.description}}</h3>
                     <ul>
-                        <li>Feel: {{feel}}</li>
-                        <li>High: {{tmax}}</li>
-                        <li>Low: {{tmin}}</li>
-                        <li>Humidity: {{humid}}</li>
-                        <li>Clouds: {{clouds}}</li>
+                        <li>Feel -------- {{wd.feel}}</li>
+                        <li>High -------- {{wd.max}}</li>
+                        <li>Low --------- {{wd.min}}</li>
+                        <li>Humidity --- {{wd.humid}}</li>
+                        <li>Clouds ------ {{wd.clouds}}</li>
                      </ul>
             </div>
             <br>
