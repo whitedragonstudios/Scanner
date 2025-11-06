@@ -7,10 +7,12 @@ from . import (
     server_menu,
     databaseConfig,
     classWeather,
-    classQuotes
+    classQuotes,
+    classNews
 )
 
 __all__ = [
+    "classNews",
     "classQuotes",
     "classSettings",
     "classHandler",

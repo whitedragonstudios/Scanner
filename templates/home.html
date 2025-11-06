@@ -8,27 +8,33 @@
     <link href="{{url_for('static', filename='styles/style.css')}}" rel="stylesheet"/>
     <style>
         :root {
-            --bg-color: {{ cf.main_background_color}};
-            --text-color: {{cf.main_text_color}};
-            --button-color: {{cf.button_color}};
-            --button-text-color: {{cf.button_text_color}};
-            --button-boarder-color: {{cf.button_border_color}};
-            --button-boarder-hover-color: {{cf.button_border_hover_color}};
-            --sidebar-color: {{cf.sidebar_color}};
-            --sidebar-text-color: {{cf.sidebar_text_color}};
+            /* Main */
+            --bg-color: {{cf.main_background_color or '#0a0a1f'}};
+            --text-color: {{cf.main_text_color or '#f0f0f0'}};
+            /* Content */
+            --content-color: {{cf.content_color or '#1c1c33'}};
+            --content-text-color: {{cf.content_text_color or' #ffffff'}};
+            /* Sidebar */
+            --sidebar-color: {{cf.sidebar_color or '#193763'}};
+            --sidebar-text-color: {{cf.sidebar_text_color or '#ffffff'}};
+            /* Buttons */
+            --button-color: {{cf.button_color or '#1a73ff'}};
+            --button-text-color: {{cf.button_text_color or '#ffffff'}};
+            --button-hover-color: {{cf.button_hover_color or '#0050b3'}};
+            /* Borders */
+            --border-color: {{cf.border_color or' #3399ff'}};
         }
     </style>
 </head>
 <body>
     <div class="page-wrapper">
         <div class="sidebar"> 
-             
-            <div class="weather-box">
+            <div class="box">
                 <h2>Weather</h2>
                 <h3>{{wd.city}}, {% if wd.state or wd.country %}<br>{{ wd.state|default('') }}{% if wd.state and wd.country %} - {% endif %}{{ wd.country|default('') }}{% endif %}</h3>
                  <img src="{{ url_for('static', filename='weather_icon/' + (wd.icon or 'default.png')) }}" alt="Weather Icon" width="200" height="200">
                     <h3>{{wd.description}}</h3>
-                    <ul>
+                    <ul class="weather-box">
                         <li>Feel -------- {{wd.feel}}</li>
                         <li>High -------- {{wd.max}}</li>
                         <li>Low --------- {{wd.min}}</li>
@@ -38,16 +44,16 @@
             </div>
             <br>
             <div>
-                <div class="'news-box">
+                <div class="box">
                     <h2>News</h2>
                     <h3 id="news-src"></h3>
                     <p id="news-art"></p>
-                    <a id="news-url" href="" target="_blank" rel="noopener noreferrer" class="news-button">Read more</a>
+                    <a id="news-url" href="" target="_blank" rel="noopener noreferrer">Read more</a>
                 </div>
             </div>
             <br>
-            <div class="quote-box">
-                    <h2 class="quotetitle">Quote of the Day</h2>
+            <div class="box">
+                    <h2>Quote of the Day</h2>
                     <br>
                     <ul>
                         <li class="quote">{{quote}}</li>
@@ -67,8 +73,8 @@
                 <h1>{{cf.company}}</h1>
                 
                 <form action="/index" method="post">
-                    <input class="resizedTextbox" type="text" name="idnumber" id="idnumber" placeholder="Scan or Enter ID" maxlength="8" required>
-                    <button class="button1" type="submit">Clock In</button>
+                    <input class="largeTextbox" type="text" name="idnumber" id="idnumber" placeholder="Scan or Enter ID" maxlength="8" required>
+                    <button class="largeButton" type="submit">Clock In</button>
                 </form>
             </div>
 
