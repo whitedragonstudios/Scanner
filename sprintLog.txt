@@ -5,7 +5,11 @@ Future Backlog
 Fourth Sprint 11/3 - present
 1) intergrate server.py and settings.py into one script.
 2) Make functions to update config settings from menu.HTML
-3) Create class for unified html to postgresql interchange. 
+3) Create class for unified html to postgresql interchange.
+** Sprint change before making db to html interactions html should be close to done
+4) Make classWeather to get api weather reports and route to html.
+5) Make classNews to get api new reports and route to html.
+6) make classQuote to display different quotes on homepage.
 
 Thrid Sprint 10/23 - 10/31 2025
 Primary Goal: Establish I/O between settings page and database

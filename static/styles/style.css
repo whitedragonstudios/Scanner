@@ -20,9 +20,9 @@ body {
 
 button {
     display: inline-block;
-    width: 150px;
+    width: 100px;
     height: 50px;
-    font-size: 30px;
+    font-size: 16px;
     background-color: var(--button-color);
     color: var(--button-text-color);
     border: 2px solid var(--button-border-color);
@@ -37,6 +37,19 @@ button {
 
 button:hover {
     background-color: var(--button-hover-color);
+}
+
+.largeButton {
+    width: 150px;
+    height: 50px;
+    font-size: 30px;
+}
+
+
+.largeTextbox {
+    width: 240px;
+    height: 50px;
+    font-size: 30px;
 }
 
 
@@ -176,263 +189,47 @@ h1 {
     margin-bottom: 1rem;
 }
 
-.content {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 800px;
-    gap: 1rem;
-}
-
-.left-div, .right-div {
-    flex: 1;
-    padding: 1rem;
-    border-radius: 10px;
-}
-
-.left-div {
-    text-align: left;
-    background-color: var(--content-color);
-}
-
-.right-div {
-    text-align: right;
-    background-color: var(--content-color);
-}
-
-.largeButton {
-    width: 150px;
-    height: 50px;
-    font-size: 30px;
-}
-
-
-.largeTextbox {
-    width: 240px;
-    height: 50px;
-    font-size: 30px;
-}
-
-
-
-
-/* ==========================
-   VARIABLES
-   ========================== */
-:root {
-    /* Colors */
-    --bg-color: #0c003f;
-    --text-color: #333;
-    --content-color: #444;
-
-    --sidebar-color: #222;
-    --sidebar-text-color: #fff;
-
-    --button-color: #007BFF;
-    --button-text-color: #fff;
-    --button-hover-color: #0056b3;
-
-    --border-color: #0080bb;
-
-}
-
-/* GLOBAL ===================================================================================================================================================== GLOBAL  */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    min-height: 100vh;
-    display: flex;
-    font-family: Arial, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-}
-
-
-.page-wrapper {
-    display: flex;
-    width: 100%;
-}
-
-button {
-    display: inline-block;
-    width: 150px;
-    height: 50px;
-    font-size: 30px;
-    background-color: var(--button-color);
-    color: var(--button-text-color);
-    border: 2px solid var(--button-border-color);
-    border-radius: 5px;
-    transition: 0.4s;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.3s, transform 0.2s;
-    padding: 10px 20px;
-}
-
-
-button:hover {
-    background-color: var(--button-hover-color);
-}
-
-
-
-/* TOP MENU ======================================================================================================================================================= TOP MENU */
-.top-menu {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    width: 100%;
-    padding: 1rem;
-    border-bottom: 2px solid var(--text-color);
-    border-radius: 10px 10px 0 0;
-}
-
-.top-menu a {
-    text-decoration: none;
-    color: var(--text-color);
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    transition: all 0.2s ease-in-out;
-    font-size: 40px;
-}
-
-.top-menu a:hover {
-    background-color: var(--button-hover-color);
-    color: var(--button-text-color);
-}
-
-
-/* SIDEBAR ========================================================================================================================================================= SIDEBAR */
-.sidebar {
-    width: 15%;
-    background-color: var(--sidebar-color);
-    color: var(--sidebar-text-color);
-    padding: 1rem;
-    border-radius: 0 10px 10px 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-}
-
-
-.box {
-  background-color: var(--sidebar-color);
-  border: 1px solid var(--border-color);
-  border-radius: 5px;
-  padding: 2%;
-  text-align: center;
-  transition: transform 0.25s, box-shadow 0.25s;
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  position: relative;
-  text-align: center; 
-}
-
-
-.box:hover {
-  transform: translateY(-4px);
-}
-
-.weather-box {
-    padding: 10px;
-    display: inline-block;
-    text-align: left;
-}
-.quote {
-  display: inline-block;
-  text-align: left;
-}
-
-.box ul {
-  padding-left: 1.5em;
-  margin: 0;
-  list-style: none;
-}
-
-.box .quote::before {
-  content: "⭐";
-  font-size: 1.2em;
-  position: absolute;
-  left: 0;
-  top: -20;
-}
-
-
-
-.author {
-  display: block;
-  text-align: right;
-  margin-top: 0.5rem;
-  font-style: italic;
-  font-size: 0.9rem;
-}
-
-
-/* ==========================
-   MAIN CONTENT
-   ========================== */
-.main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem;
-    gap: 2rem;
-    background-color: var(--bg-color);
-}
-
-
-h1 {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 1rem;
-}
 
 .content {
     display: flex;
     justify-content: space-between;
-    width: 100%;
-    max-width: 800px;
-    gap: 1rem;
-}
-
-.left-div, .right-div {
-    flex: 1;
-    padding: 1rem;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    background-color: var(--content-color);
+    color: var(--content-text-color);
     border-radius: 10px;
 }
 
+
+.left-div, .middle-div, .right-div {
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+
 .left-div {
-    text-align: left;
-    background-color: --content-color;
+    margin-right: 10px;
 }
-
+.middle-div {
+    margin: 0 10px;
+}
 .right-div {
-    text-align: right;
-    background-color: --content-color;
+    margin-left: 10px;
 }
 
-.largeButton {
-    width: 150px;
-    height: 50px;
-    font-size: 30px;
+/* Responsive collapse */
+@media (max-width: 1000px) {
+    .content {
+        flex-direction: column;
+    }
+    .left-div, .middle-div, .right-div {
+        margin: 10px 0;
+    }
 }
-
-
-.largeTextbox {
-    width: 240px;
-    height: 50px;
-    font-size: 30px;
-}
-
-
-
 
 
 /* ==========================

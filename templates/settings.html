@@ -8,14 +8,21 @@
     <link href="{{url_for('static', filename='styles/style.css')}}" rel="stylesheet"/>
     <style>
         :root {
-            --bg-color: {{ cf.main_background_color }};
-            --text-color: {{ cf.main_text_color }};
-            --button-color: {{ cf.button_color }};
-            --button-text-color: {{ cf.button_text_color }};
-            --button-border-color: {{ cf.button_border_color }};
-            --button-border-hover-color: {{ cf.button_border_hover_color }};
-            --sidebar-color: {{ cf.sidebar_color }};
-            --sidebar-text-color: {{ cf.sidebar_text_color }};
+            /* Main */
+            --bg-color: {{cf.main_background_color or '#0a0a1f'}};
+            --text-color: {{cf.main_text_color or '#f0f0f0'}};
+            /* Content */
+            --content-color: {{cf.content_color or '#1c1c33'}};
+            --content-text-color: {{cf.content_text_color or' #ffffff'}};
+            /* Sidebar */
+            --sidebar-color: {{cf.sidebar_color or '#193763'}};
+            --sidebar-text-color: {{cf.sidebar_text_color or '#ffffff'}};
+            /* Buttons */
+            --button-color: {{cf.button_color or '#1a73ff'}};
+            --button-text-color: {{cf.button_text_color or '#ffffff'}};
+            --button-hover-color: {{cf.button_hover_color or '#0050b3'}};
+            /* Borders */
+            --border-color: {{cf.border_color or' #3399ff'}};
         }
     </style>
 </head>
@@ -54,11 +61,12 @@
                 <a href="/settings">Settings</a>
             </div>
 
-            <h1>Settings Menu</h1>
+            <h1>Configuration Settings</h1>
 
             <div class="content">
                 <!-- Left Div: forms -->
                 <div class="left-div">
+                    <h1> Change Names</h1>
                     <h2>Change Company Name<br>Current name: {{ cf.company }}</h2>
                     <form action="/menu" method="post">
                         <input class="textBox" type="text" name="new_companyname" id="new_companyname" placeholder="Enter company name" maxlength="50" required>
@@ -70,7 +78,10 @@
                         <input class="textBox" type="text" name="new_title" id="new_title" placeholder="Enter webpage title" maxlength="50" required>
                         <button class="button" type="submit">Submit</button>
                     </form>
-
+                </div>
+                    
+                <div class="middle-div">
+                    <h1>Color Schemes</h1>
                     <h2>Change Background Color<br>Current Color: {{ cf.main_background_color }}</h2>
                     <form action="/menu" method="post">
                         <input class="textBox" type="text" name="bgcolor" id="bgcolor" placeholder="Enter Background Color" maxlength="50" required>
@@ -83,7 +94,7 @@
                         <button class="button" type="submit">Submit</button>
                     </form>
                 </div>
-
+                
                 <!-- Right Div: color picker -->
                 <div class="right-div">
                     <div class="color-picker-wrapper">
