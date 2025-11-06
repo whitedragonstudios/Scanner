@@ -45,7 +45,24 @@ button:hover {
     font-size: 30px;
 }
 
+.middle-div form{
+    display: flex;
+    align-items: center; 
+}
+.color_button{
+    width: 120px;
+    height: 28px;
+    font-size: 12px;
 
+}
+
+.color-text-box{
+    width: 100px;
+    height: 30px;
+    font-size: 12px;
+    display: flex;
+  align-items: center; 
+}
 .largeTextbox {
     width: 240px;
     height: 50px;
@@ -169,6 +186,36 @@ button:hover {
   font-style: italic;
   font-size: 0.9rem;
 }
+/* Danger Zone ================================================================================================================================================== Danger Zone*/
+.danger {
+    background-color: #2a0000;
+    border: 1px solid #ff3333;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.danger h1 h2 {
+    text-align: center;
+}
+
+.danger button {
+    background-color: #b30000;
+    color: white;
+    border: 1px solid #ff4d4d;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 8px 0;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.danger button:hover {
+    background-color: #ff1a1a;
+    transform: scale(1.05);
+}
+
+
 
 
 /* ==========================

@@ -30,28 +30,26 @@
     <div class="page-wrapper">
         <!-- Sidebar -->
         <div class="sidebar"> 
-            <h1>Technical Settings</h1>
-            <h2>File paths</h2>
-            <p class="sidetext">
-                In order to facilitate easy data entry you can enter custom paths to different files which you wish to enter into the database.
-                CSV, XLSX, and JSON formats are accepted at this time. Simply copy paste the file path into the text box. 
-                For organization we recommend keeping the files in the same folder as the Scanner installation. 
-                Then click Update Database and the file will be added to the database. See database Schema for file formatting.
-            </p>
-            <form> 
-                <input class="pathbox" type="text" name="filepaths" id="filepaths" placeholder="Enter Path like C:\Program Files\Scanner" maxlength="128" required>
-                <button class="updateDB" type="submit">Update Database</button>
-            </form>
-            <h1 style="color:red">Caution</h1>
-            <button>Reset/Re-Install</button>
-            <p class="sidetext">
-                By clicking this button you will set the flag for PostgreSQL setup to false. 
-                Next time you launch the app you will be prompted to walk through the installation process. 
-                There are options to delete all Databases and start a clean install. Only reset the configuration settings. 
-                Or leave all databases. This option should only be used if there is a catastrophic error in the app.
-            </p>
+            <h1 style="color:red;">Danger Zone</h1>
+            <div class="danger">
+                <h3>Restore default configuration settings</h3>
+                <button id="restoreBtn" 
+                title="This will reset your configuration settings to factory defaults. ALL color schemes and API keys will be permanently lost">
+                Restore</button>
+                <h3> Reset email list</h3>
+                <button id="clearEmails" 
+                title="This will permanently delete all emails which reports are sent to">
+                Reset</button>
+                <h3>Delete employee database and timesheets</h3>
+                <button id="deleteBtn" 
+                title="This will permanently delete all employee data and timesheets. Epmloyee information will a have to be re-entered any all timsehets will be lost forever">
+                Delete</button>
+                <h3>Delete all databases and start a clean install of the entire program</h3>
+                <button id="reinstallBtn" 
+                title="This will remove ALL data and reinitialize the entire system. Only use if there is a catastrophic failure and other troubleshooting is exhausted.">
+                Reinstall</button>
+            </div>
         </div>
-
         <!-- Main content -->
         <div class="main-content">
             <!-- Top menu bar -->
@@ -60,43 +58,129 @@
                 <a href="/reports">Reports</a>
                 <a href="/settings">Settings</a>
             </div>
-
             <h1>Configuration Settings</h1>
-
             <div class="content">
                 <!-- Left Div: forms -->
                 <div class="left-div">
+                    <h2>API Keys</h2>
+                    <p>
+                    In order to make the weather and news applets work you must get an API key from openweathermaps.com and newapi.org. Once you have these keys you can update the keys stored in the database.
+                    </p>
+                    <form> 
+                        <input class="wkey" type="text" name="filepaths" id="filepaths" placeholder="openweathermaps.com API key" maxlength="32" required>
+                        <input class="wkey" type="text" name="filepaths" id="filepaths" placeholder="newsapi.com API key" maxlength="32" required>
+                        <button class="updateDB" type="submit">Update APIKeys</button>
+                    </form>
+                    <br>
+                    <h2> Email Notifications</h2>
+                    <p> Enter the email addresses where reports can be sent to.</p>
+                    <form>
+                        <input type="email" name="emails" multiple name="emails" id="emails" placeholder="marcus.aurelius@scanner.com" maxlength="50" required title="You may enter multiple emails seperated by commass. Or enter each email and frequency seperately">
+                        <p>Select how frequently reports should be e-mailed</p>
+                        <input type="radio" id="daily" name="send-reports" value="daily">
+                        <label for="html">Daily</label>
+                        <input type="radio" id="weekly" name="send-reports" value="weekly">
+                        <label for="css">Weekly</label>
+                        <input type="radio" id="monthly" name="send-reports" value="monthly">
+                        <label for="javascript">Monthly</label>
+                        <button>Submit</button>
+                    </form>
                     <h1> Change Names</h1>
-                    <h2>Change Company Name<br>Current name: {{ cf.company }}</h2>
+                    <h3>Change Company Name</h3>
                     <form action="/menu" method="post">
-                        <input class="textBox" type="text" name="new_companyname" id="new_companyname" placeholder="Enter company name" maxlength="50" required>
+                        <input class="textBox" type="text" name="new_companyname" id="new_companyname" placeholder="{{ cf.company }}" maxlength="50" required>
                         <button class="button" type="submit">Submit</button>
                     </form>
-
-                    <h2>Change Webpage Title<br>Current Title: {{ cf.webpage_title }}</h2>
+                    <h3>Change Webpage Title</h3>
                     <form action="/menu" method="post">
-                        <input class="textBox" type="text" name="new_title" id="new_title" placeholder="Enter webpage title" maxlength="50" required>
+                        <input class="textBox" type="text" name="new_title" id="new_title" placeholder="{{ cf.webpage_title }}" maxlength="50" required>
                         <button class="button" type="submit">Submit</button>
                     </form>
                 </div>
-                    
                 <div class="middle-div">
                     <h1>Color Schemes</h1>
-                    <h2>Change Background Color<br>Current Color: {{ cf.main_background_color }}</h2>
+                    <!-- Main -->
+                    <h3>Main Background</h3>
                     <form action="/menu" method="post">
-                        <input class="textBox" type="text" name="bgcolor" id="bgcolor" placeholder="Enter Background Color" maxlength="50" required>
-                        <button class="button" type="submit">Submit</button>
+                        <input class="color-text-box" type="color" name="mbgcolor" id="mbgcolor" value="{{ cf.main_background_color }}" required>
+                        <button class="color_button" type="submit">Update Color</button>
                     </form>
-
-                    <h2>Change Text Color<br>Current Color: {{ cf.main_text_color }}</h2>
                     <form action="/menu" method="post">
-                        <input class="textBox" type="text" name="txtcolor" id="txtcolor" placeholder="Enter Text Color" maxlength="50" required>
-                        <button class="button" type="submit">Submit</button>
+                        <input class="color-text-box" type="color" name="mtxtcolor" id="mtxtcolor" value="{{ cf.main_text_color }}" required>
+                        <button class="color_button" type="submit">Update Text</button>
+                    </form>
+                    <!-- Content -->
+                    <h3>Content</h3>
+                    <form action="/menu" method="post">
+                        <input class="color-text-box" type="color" name="cbgcolor" id="cbgcolor" value="{{ cf.content_color }}" required>
+                        <button class="color_button" type="submit">Update Color</button>
+                    </form>
+                    <form action="/menu" method="post">
+                        <input class="color-text-box" type="color" name="ctxtcolor" id="ctxtcolor" value="{{ cf.content_text_color }}" required>
+                        <button class="color_button" type="submit">Update Text</button>
+                    </form>
+                    <h3>Sidebar</h3>
+                    <form action="/menu" method="post">
+                        <input class="color-text-box" type="color" name="sbgcolor" id="sbgcolor" value="{{ cf.sidebar_color }}" required>
+                        <button class="color_button" type="submit">Update Color</button>
+                    </form>
+                    <form action="/menu" method="post">
+                        <input class="color-text-box" type="color" name="stxtcolor" id="stxtcolor" value="{{ cf.sidebar_text_color }}" required>
+                        <button class="color_button" type="submit">Update Text</button>
+                    </form>
+                    <h3>Buttons</h3>
+                    <form action="/menu" method="post">
+                        <input class="color-text-box" type="color" name="bbgcolor" id="bbgcolor" value="{{ cf.button_color }}" required>
+                        <button class="color_button" type="submit">Update Color</button>
+                    </form>
+                    <form action="/menu" method="post">
+                        <input class="color-text-box" type="color" name="btxtcolor" id="btxtcolor" value="{{ cf.button_text_color }}" required>
+                        <button class="color_button" type="submit">Update Text</button>
+                    </form>
+                    <form action="/menu" method="post">
+                        <input class="color-text-box" type="color" name="bhovercolor" id="bhovercolor" value="{{ cf.button_hover_color }}" required>
+                        <button class="color_button" type="submit">Update Hover</button>
+                    </form>
+                    <h3>Border</h3>
+                    <form action="/menu" method="post">
+                        <input class="color-text-box" type="color" name="bordercolor" id="bordercolor" value="{{ cf.border_color }}" required>
+                        <button class="color_button" type="submit">Update Border</button>
                     </form>
                 </div>
-                
-                <!-- Right Div: color picker -->
+
                 <div class="right-div">
+                   <h1> Update Database</h1>
+                   <p> In order to facilitate easy data entry you can UPLOAD CSV, XLSX, and JSON files directly to the employee database.
+                        <br>Please refer to documentation for the schema of these files.
+                    </p>
+                    <br>
+                    <form action="/upload" method="post" enctype="multipart/form-data">
+                        <label for="fileUpload">Select a file:</label>
+                        <input type="file" id="fileUpload" name="fileUpload" accept=".csv, .xlsx, .json" required>
+                        <button class = "color_button" type="submit">Upload</button>
+                    </form>
+                    <br>
+                    <h2>Manual Entry</h2>
+                    <p> You can also enter each empplyees manually. Use commas to seperate each colmn, leave empty space for any blank entries. </p>
+                    <p> The database expects: id, first name, last name, email, phone, picture's filename, employee role, position, department </p>
+                    <form action="/manual" method="post">
+                        <input type="text" id="fileUpload" name="manual" required>
+                        <button class = "color_button" type="Submit">Upload</button>
+                    </form>
+                    <h2>Update Entry</h2>
+                    <p> You can make a change to a single entry in the database.</p>
+                    <p> Enter the id number of the empolyee you want to edit ie: 0001 then the name of the key you want to change ie: employee role and the value you want to change it to ie: VP of Scoundrels </p>
+                    <form action="/manual" method="post">
+                        <input type="text" id="updateDB-id" name="updateDB-id" required placeholder="id: 0001">
+                        <input type="text" id="updateDB-key" name="updateDB-key" required placeholder="key: Employee Role">
+                        <input type="text" id="updateDB-value" name="updateDB-value" required placeholder="value: VP of Scoundrels">
+                        <button class = "color_button" type="Submit">Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--
                     <div class="color-picker-wrapper">
                         <h1>Color Picker</h1>
                         <input type="color" id="colorPicker" value="#00aaff">
@@ -107,13 +191,8 @@
                         <div class="preview-box" id="previewBox" style="background-color: #00aaff;"></div>
                         <button id="copyButton">Copy Hex</button>
                     </div>
-                    
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="{{ url_for('static', filename='js/color_picker.js') }}"></script>
-    
+    --->
+    <script src="{{ url_for('static', filename='js/danger.js') }}"></script>
 </body>
 </html>
