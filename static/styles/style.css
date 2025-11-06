@@ -95,6 +95,29 @@ button:hover {
   text-align: center; 
 }
 
+.url-button{
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #0016d8;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    border: 2px solid #0a0099;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    text-align: center;
+    transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.url-button:hover{
+    background-color: #4a47ec;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+.url-button:active{
+    background-color: #8d8d8d;
+}
 
 .box:hover {
   transform: translateY(-4px);
