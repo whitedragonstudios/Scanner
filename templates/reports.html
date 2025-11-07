@@ -8,14 +8,21 @@
     <link href="{{url_for('static', filename='styles/style.css')}}" rel="stylesheet"/>
     <style>
         :root {
-            --bg-color: {{ cf.main_background_color}};
-            --text-color: {{cf.main_text_color}};
-            --button-color: {{cf.button_color}};
-            --button-text-color: {{cf.button_text_color}};
-            --button-boarder-color: {{cf.button_border_color}};
-            --button-boarder-hover-color: {{cf.button_border_hover_color}};
-            --sidebar-color: {{cf.sidebar_color}};
-            --sidebar-text-color: {{cf.sidebar_text_color}};
+            /* Main */
+            --bg-color: {{cf.main_background_color or '#0a0a1f'}};
+            --text-color: {{cf.main_text_color or '#f0f0f0'}};
+            /* Content */
+            --content-color: {{cf.content_color or '#1c1c33'}};
+            --content-text-color: {{cf.content_text_color or' #ffffff'}};
+            /* Sidebar */
+            --sidebar-color: {{cf.sidebar_color or '#193763'}};
+            --sidebar-text-color: {{cf.sidebar_text_color or '#ffffff'}};
+            /* Buttons */
+            --button-color: {{cf.button_color or '#1a73ff'}};
+            --button-text-color: {{cf.button_text_color or '#ffffff'}};
+            --button-hover-color: {{cf.button_hover_color or '#0050b3'}};
+            /* Borders */
+            --border-color: {{cf.border_color or' #3399ff'}};
         }
     </style>
 </head>
@@ -23,6 +30,12 @@
     <div class="page-wrapper">
         <div class="sidebar"> 
             Live Reports 
+            <div>
+                <ul>
+                    <li>
+                    </li>
+                </ul>
+            </div>
         </div>
         <div class="main-content">
             <div class="top-menu">
@@ -30,25 +43,36 @@
                 <a href="/reports">Reports</a>
                 <a href="/settings">Settings</a>
             </div>
-
-            <div class="main-header">
-                <h1>Reports</h1>
-                
-                <form action="/index" method="post">
-                    <input class="resizedTextbox" type="text" name="idnumber" id="idnumber" placeholder="Scan or Enter ID" maxlength="8" required>
-                    <button class="button1" type="submit">Clock In</button>
-                </form>
-            </div>
-
+            <h1>Reports</h1>
             <div class="content"> 
+                <!-- Left Div: forms -->
                 <div class="left-div">
-                    <h2>{{ idnumber }} {{ name }}</h2>
-                    <p>{{ group }}</p>
-                    <h3>{{time}}</h3>
-                    <h3>{{date}}</h3>
+                    <h1> Search</h1>
+                    <h2> Search by name or ID</h2>
+                    <form> 
+                        <input class="name" type="text" name="searchname" id="searchname" placeholder="Han Solo" maxlength="50" required>
+                        <button class="updateDB" type="submit">Search</button>
+                    </form>
+                    <br>
+                </div>
+                <div class="middle-div">
+                    <h1>Clocked in </h1>
+                    <div>
+                        <ul>
+                            <li>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="right-div">
-                    <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="picture not found" width="256" height="256" />
+                   <h1> Update Database</h1>
+                    <br>
+                    <h2>Custom Search </h2>
+                    <p> You can enter your own PostgreSQL searches here </p>
+                    <form action="/manual" method="post">
+                        <input type="text" id="fileUpload" name="manual" required>
+                        <button class = "color_button" type="Submit">Upload</button>
+                    </form>
                 </div>
             </div>
         </div>

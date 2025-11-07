@@ -1,0 +1,101 @@
+employee_id,first_name,last_name,email,phone,pic_path,employee_role,position,department
+14850508,Finn,Unknown,finn.unknown@scanner.com,+1-555-567-6462,/images/14850508.jpg,Emperor Whisperer,Smuggler,Rebellion Outreach
+62747548,Phasma,Ackbar,phasma.ackbar@scanner.com,+1-555-487-4449,/images/62747548.jpg,Emperor Whisperer,Encryption Intern,Galactic Operations
+71373859,Unkar,Nest,unkar.nest@scanner.com,+1-555-449-9462,/images/71373859.jpg,Senior Ghost Consultant,Negotiation Expert,Clone Management
+10777767,Figrin,DJ,figrin.dj@scanner.com,+1-555-939-4395,/images/10777767.jpg,Chief Negotiation Gambler,Spy,IT
+28785116,Luke,Skywalker,luke.skywalker@scanner.com,+1-555-722-5564,/images/28785116.jpg,Head of Overexplaining,PR Specialist,Transportation
+62224266,Dexter,Dravian,dexter.dravian@scanner.com,+1-555-891-2682,/images/62224266.jpg,Emperor Whisperer,Jedi Mentor,Operations
+64398194,Bith,Nunb,bith.nunb@scanner.com,+1-555-428-2088,/images/64398194.jpg,Director of Unintelligible Communication,Bounty Hunter,Human Resources
+16103784,Cody,Snootles,cody.snootles@scanner.com,+1-555-566-1809,/images/16103784.jpg,Political Strategist,Communications Officer,Engineering
+42280268,Chewbacca,Watto,chewbacca.watto@scanner.com,+1-555-106-5904,/images/42280268.jpg,Head of Diplomacy & Sass,PR Specialist,Security
+47968237,R2,Syndulla,r2.syndulla@scanner.com,+1-555-767-8737,/images/47968237.jpg,Intern of Destiny,Maintenance Droid,Sith Affairs
+87032725,Piett,Secura,piett.secura@scanner.com,+1-555-931-9626,/images/87032725.jpg,Galaxy Relations Lead,Maintenance Droid,Future Leadership
+40383166,Ahsoka,Dooku,ahsoka.dooku@scanner.com,+1-555-965-8386,/images/40383166.jpg,Holocron Curator,Saboteur,Human Resources
+42794558,Grogu,Skyguy,grogu.skyguy@scanner.com,+1-555-890-6610,/images/42794558.jpg,Political Strategist,Pilot,Customer Service
+93248472,Wicket,D2,wicket.d2@scanner.com,+1-555-574-4908,/images/93248472.jpg,Logistics Maverick,Maintenance Droid,Operations
+47313709,Aayla,Jetster,aayla.jetster@scanner.com,+1-555-957-6934,/images/47313709.jpg,Galaxy Relations Lead,Force Trainer,Security
+96265373,Val,Watto,val.watto@scanner.com,+1-555-453-5023,/images/96265373.jpg,Intern of Destiny,Astromech Programmer,Operations
+91781310,Saw,Vader,saw.vader@scanner.com,+1-555-282-6395,/images/91781310.jpg,Code Reviewer,Spy,Public Affairs
+58033723,Rey,Mothma,rey.mothma@scanner.com,+1-555-873-3693,/images/58033723.jpg,Chief Breathing Officer,Bounty Hunter,Transportation
+81197326,Kylo,Jinn,kylo.jinn@scanner.com,+1-555-272-4703,/images/81197326.jpg,Senior Ghost Consultant,Bounty Hunter,Operations
+65443111,Qi'ra,Lobot,qira.lobot@scanner.com,+1-555-879-6959,/images/65443111.jpg,Political Strategist,Cargo Loader,Sith Affairs
+49564641,Shaak,Fives,shaak.fives@scanner.com,+1-555-880-7556,/images/49564641.jpg,Protocol Droid Liaison,Spy,IT
+70736554,Admiral,Ackbar,admiral.ackbar@scanner.com,+1-555-261-5412,/images/70736554.jpg,Head of Diplomacy & Sass,Spy,Rebellion Outreach
+16813920,Hera,Greedo,hera.greedo@scanner.com,+1-555-416-1147,/images/16813920.jpg,Chief Breathing Officer,Saboteur,Customer Service
+26161145,Ahsoka,Îmwe,ahsoka.îmwe@scanner.com,+1-555-355-6257,/images/26161145.jpg,Political Strategist,Cargo Loader,Sith Affairs
+41497136,Maz,Unknown,maz.unknown@scanner.com,+1-555-957-5158,/images/41497136.jpg,Senior Ghost Consultant,Pilot,Human Resources
+56699597,Cara,IG-88,cara.ig-88@scanner.com,+1-555-859-1391,/images/56699597.jpg,Protocol Droid Liaison,Spy,Public Affairs
+60058496,Sy,Beckett,sy.beckett@scanner.com,+1-555-301-8668,/images/60058496.jpg,Head of Overexplaining,Archivist,Security
+21516780,Luke,Veers,luke.veers@scanner.com,+1-555-284-7340,/images/21516780.jpg,Rebel Without a Plan,Smuggler,Quality Assurance
+42408210,Saw,Tico,saw.tico@scanner.com,+1-555-347-5744,/images/42408210.jpg,Head of Overexplaining,Co-Pilot,Quality Assurance
+44328657,Lobot,Bridger,lobot.bridger@scanner.com,+1-555-754-4771,/images/44328657.jpg,Force Compliance Officer,Saboteur,Marketing
+99384657,Finn,Wesell,finn.wesell@scanner.com,+1-555-337-2852,/images/99384657.jpg,Holocron Curator,Communications Officer,Customer Service
+34761552,Veers,Erso,veers.erso@scanner.com,+1-555-503-7161,/images/34761552.jpg,Force Compliance Officer,Rebel Strategist,Transportation
+89903043,Din,Skywalker,din.skywalker@scanner.com,+1-555-484-9619,/images/89903043.jpg,Data Beep Specialist,Communications Officer,Public Relations
+17691308,Luke,Fortuna,luke.fortuna@scanner.com,+1-555-720-2775,/images/17691308.jpg,Galaxy Relations Lead,Moisture Farm Intern,Customer Service
+97479095,Lobot,Îmwe,lobot.îmwe@scanner.com,+1-555-803-1722,/images/97479095.jpg,Logistics Maverick,Archivist,Public Relations
+46241830,Ackbar,Rebo,ackbar.rebo@scanner.com,+1-555-324-9781,/images/46241830.jpg,Senior Ghost Consultant,Spy,Sith Affairs
+42735287,Kylo,Dameron,kylo.dameron@scanner.com,+1-555-256-9551,/images/42735287.jpg,Senior Ghost Consultant,Navigator,Training & Development
+83042730,Thrawn,Calrissian,thrawn.calrissian@scanner.com,+1-555-378-4301,/images/83042730.jpg,Senior Ghost Consultant,Pilot,Sith Affairs
+84898513,Cliegg,Bossk,cliegg.bossk@scanner.com,+1-555-303-3824,/images/84898513.jpg,Freelance Termination Expert,Cantina Musician,Quality Assurance
+31954604,Ozzel,Fett,ozzel.fett@scanner.com,+1-555-241-1877,/images/31954604.jpg,Rebel Without a Plan,Jedi Mentor,Galactic Operations
+81627783,Sebulba,Bridger,sebulba.bridger@scanner.com,+1-555-719-9032,/images/81627783.jpg,Galactic Janitorial Supervisor,Bounty Hunter,IT
+11115467,Unkar,Fett,unkar.fett@scanner.com,+1-555-736-8754,/images/11115467.jpg,Master of Syntax Errors,Communications Officer,Customer Service
+27170331,Poe,Bane,poe.bane@scanner.com,+1-555-851-6314,/images/27170331.jpg,Head of Overexplaining,Astromech Programmer,Starship Engineering
+22738768,Aayla,Ithano,aayla.ithano@scanner.com,+1-555-796-6039,/images/22738768.jpg,Head of Overexplaining,Maintenance Droid,Galactic Operations
+79869758,Shmi,Windu,shmi.windu@scanner.com,+1-555-345-3885,/images/79869758.jpg,Galactic Janitorial Supervisor,Force Trainer,Security
+34239551,Echo,McCool,echo.mccool@scanner.com,+1-555-244-8029,/images/34239551.jpg,Smuggling Coordinator,Spy,Future Leadership
+41517666,Sidon,Syndulla,sidon.syndulla@scanner.com,+1-555-172-4149,/images/41517666.jpg,Holocron Curator,Fleet Commander,Future Leadership
+57817707,Enfys,Antilles,enfys.antilles@scanner.com,+1-555-229-5346,/images/57817707.jpg,Galaxy Relations Lead,Force Trainer,Human Resources
+76455609,Ahsoka,Syndulla,ahsoka.syndulla@scanner.com,+1-555-286-4719,/images/76455609.jpg,Astromech Technician,Navigator,Human Resources
+39439735,Dodonna,Greedo,dodonna.greedo@scanner.com,+1-555-252-3093,/images/39439735.jpg,Head of Overexplaining,Navigator,Quality Assurance
+94833046,Thrawn,Tarkin,thrawn.tarkin@scanner.com,+1-555-454-8743,/images/94833046.jpg,Head of Overexplaining,Co-Pilot,Operations
+39386772,Rieekan,Gerrera,rieekan.gerrera@scanner.com,+1-555-250-3458,/images/39386772.jpg,Chief Mood Officer,Fleet Commander,Future Leadership
+20197814,Rex,Ren,rex.ren@scanner.com,+1-555-998-2069,/images/20197814.jpg,Head of Diplomacy & Sass,Maintenance Droid,Transportation
+13524664,Ezra,Ti,ezra.ti@scanner.com,+1-555-624-2550,/images/13524664.jpg,Chief Breathing Officer,Rebel Liaison,Transportation
+92269337,Dryden,Needa,dryden.needa@scanner.com,+1-555-815-8976,/images/92269337.jpg,Astromech Technician,Cargo Loader,Public Affairs
+58380179,Cara,Beckett,cara.beckett@scanner.com,+1-555-934-8314,/images/58380179.jpg,Senior Ghost Consultant,Jedi Mentor,Marketing
+88868462,IG-88,Sing,ig-88.sing@scanner.com,+1-555-411-7847,/images/88868462.jpg,Political Strategist,Force Trainer,Starship Engineering
+52680411,Lobot,Nest,lobot.nest@scanner.com,+1-555-280-8430,/images/52680411.jpg,Chief Breathing Officer,Maintenance Droid,Human Resources
+23485504,Nien,Fortuna,nien.fortuna@scanner.com,+1-555-137-9790,/images/23485504.jpg,Intern of Destiny,Smuggler,Engineering
+82537979,Wicket,Bane,wicket.bane@scanner.com,+1-555-297-5463,/images/82537979.jpg,Emperor Whisperer,Astromech Programmer,Galactic Operations
+23591259,Wedge,Maul,wedge.maul@scanner.com,+1-555-661-1443,/images/23591259.jpg,Emperor Whisperer,Astromech Programmer,Marketing
+79353515,Padmé,Windu,padmé.windu@scanner.com,+1-555-451-9727,/images/79353515.jpg,Head of Diplomacy & Sass,Force Trainer,Operations
+96835702,Qi'ra,Wesell,qira.wesell@scanner.com,+1-555-399-4721,/images/96835702.jpg,Senior Ghost Consultant,Rebel Strategist,Starship Engineering
+74940643,Finn,Val,finn.val@scanner.com,+1-555-518-2945,/images/74940643.jpg,Astromech Technician,Stormtrooper Analyst,Corporate Strategy
+41693444,Din,Bane,din.bane@scanner.com,+1-555-638-2116,/images/41693444.jpg,Holocron Curator,Bounty Hunter,Droid Services
+26807418,Maul,Wesell,maul.wesell@scanner.com,+1-555-378-8093,/images/26807418.jpg,Data Beep Specialist,Stormtrooper Analyst,Public Relations
+37675077,Unkar,Dameron,unkar.dameron@scanner.com,+1-555-962-3382,/images/37675077.jpg,Master of Syntax Errors,Force Trainer,Training & Development
+95672744,Maul,Jerjerrod,maul.jerjerrod@scanner.com,+1-555-586-8137,/images/95672744.jpg,Dark Side PR Rep,Temple Librarian,Engineering
+89124077,Qui-Gon,Erso,qui-gon.erso@scanner.com,+1-555-161-7082,/images/89124077.jpg,Logistics Maverick,Astromech Programmer,Public Affairs
+52091291,Needa,Jetster,needa.jetster@scanner.com,+1-555-635-2897,/images/52091291.jpg,Logistics Maverick,Negotiation Expert,IT
+62960384,Han,Veers,han.veers@scanner.com,+1-555-316-3752,/images/62960384.jpg,Chief Breathing Officer,Moisture Farm Intern,Future Leadership
+37770849,Cliegg,Dune,cliegg.dune@scanner.com,+1-555-701-6714,/images/37770849.jpg,Force Compliance Officer,Bounty Hunter,Public Relations
+30662934,Aayla,Sleazebaggano,aayla.sleazebaggano@scanner.com,+1-555-970-8009,/images/30662934.jpg,Chief Negotiation Gambler,Stormtrooper Analyst,Starship Engineering
+41540429,Hondo,Ti,hondo.ti@scanner.com,+1-555-391-7897,/images/41540429.jpg,Political Strategist,Smuggler,Droid Services
+15274032,Barriss,Antilles,barriss.antilles@scanner.com,+1-555-992-6726,/images/15274032.jpg,Astromech Technician,Jedi Mentor,IT
+74748466,Wicket,D'an,wicket.dan@scanner.com,+1-555-470-5894,/images/74748466.jpg,Data Beep Specialist,Sith Apprentice,Corporate Strategy
+19633394,Holdo,Kanata,holdo.kanata@scanner.com,+1-555-751-2257,/images/19633394.jpg,Code Reviewer,Archivist,Starship Engineering
+10039225,Hondo,Wren,hondo.wren@scanner.com,+1-555-990-5199,/images/10039225.jpg,Starship Maintenance Lead,Rebel Strategist,Droid Services
+59685822,Mace,Ren,mace.ren@scanner.com,+1-555-460-6289,/images/59685822.jpg,Galaxy Relations Lead,Saboteur,Operations
+51775234,Ackbar,Kloo,ackbar.kloo@scanner.com,+1-555-796-1876,/images/51775234.jpg,Astromech Technician,Security Intern,Corporate Strategy
+19098719,Padmé,Nunb,padmé.nunb@scanner.com,+1-555-321-4294,/images/19098719.jpg,Protocol Droid Liaison,Communications Officer,Human Resources
+76176299,Mace,Jinn,mace.jinn@scanner.com,+1-555-561-1392,/images/76176299.jpg,Rebel Without a Plan,Astromech Programmer,IT
+24227365,Dodonna,Organa,dodonna.organa@scanner.com,+1-555-559-6049,/images/24227365.jpg,Galaxy Relations Lead,Security Intern,Engineering
+17265876,Rex,Skywalker,rex.skywalker@scanner.com,+1-555-716-8386,/images/17265876.jpg,Chief Breathing Officer,Rebel Liaison,Security
+79036674,Hondo,McCool,hondo.mccool@scanner.com,+1-555-436-6013,/images/79036674.jpg,Code Reviewer,Cargo Loader,Operations
+49043240,Bo-Katan,Plutt,bo-katan.plutt@scanner.com,+1-555-465-7086,/images/49043240.jpg,Dark Side PR Rep,Temple Librarian,IT
+17757655,Bib,Fives,bib.fives@scanner.com,+1-555-104-6965,/images/17757655.jpg,Head of Diplomacy & Sass,Protocol Droid,Public Relations
+79035408,Lando,D'an,lando.dan@scanner.com,+1-555-466-4573,/images/79035408.jpg,Senior Ghost Consultant,Spy,Quality Assurance
+25544230,Ahsoka,Andor,ahsoka.andor@scanner.com,+1-555-697-5636,/images/25544230.jpg,Code Reviewer,Fleet Mechanic,IT
+98325264,Jyn,Echo,jyn.echo@scanner.com,+1-555-984-2988,/images/98325264.jpg,Chief Breathing Officer,Smuggler,Operations
+65273456,Fives,Organa,fives.organa@scanner.com,+1-555-385-3966,/images/65273456.jpg,Chief Breathing Officer,Negotiation Expert,Training & Development
+58416204,Phasma,Wookiee,phasma.wookiee@scanner.com,+1-555-672-5417,/images/58416204.jpg,Galactic Janitorial Supervisor,Fleet Commander,Clone Management
+65553048,Sabine,Watto,sabine.watto@scanner.com,+1-555-979-6252,/images/65553048.jpg,Head of Diplomacy & Sass,Communications Officer,Engineering
+35713749,Hux,Wesell,hux.wesell@scanner.com,+1-555-625-7481,/images/35713749.jpg,Senior Ghost Consultant,Encryption Intern,Security
+52103741,Snoke,Lobot,snoke.lobot@scanner.com,+1-555-724-7592,/images/52103741.jpg,Chief Breathing Officer,Spy,Clone Management
+83924501,Val,Nest,val.nest@scanner.com,+1-555-135-7366,/images/83924501.jpg,Starship Maintenance Lead,Communications Officer,Operations
+66085430,Darth,Windu,darth.windu@scanner.com,+1-555-893-1644,/images/66085430.jpg,Rebel Without a Plan,Archivist,Customer Service
+89577837,Sy,Ackbar,sy.ackbar@scanner.com,+1-555-713-6844,/images/89577837.jpg,Intern of Destiny,Fleet Commander,Sith Affairs
+75075527,Poe,Djarin,poe.djarin@scanner.com,+1-555-399-5814,/images/75075527.jpg,Master of Syntax Errors,PR Specialist,Corporate Strategy
+41940547,Needa,Vader,needa.vader@scanner.com,+1-555-344-7311,/images/41940547.jpg,Political Strategist,Co-Pilot,Operations
