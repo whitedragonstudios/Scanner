@@ -6,6 +6,8 @@ from classSettings import Setting
 from classNews import News_Report
 from classQuotes import quote_generator
 from classWeather import weather_report
+from classHandler import Handler
+from classPerson import Person, Default_Person
 
 import databaseConfig
 db = databaseConfig. databaseSettings()
@@ -19,6 +21,8 @@ host = db["host"]
 config = Setting(user, password, db_name, port, host)
 weather_data = weather_report(config.city, config.weather_key)
 news = News_Report(config.country, config.news_key)
+quoteOTDay = quote_generator().QotD
+
 #print(config.news_key)
 
 # Intialize flask server
@@ -26,29 +30,27 @@ app = Flask(__name__)
 
 frontend = Blueprint('frontend', __name__, template_folder='templates', static_folder='static')
 
-quoteOTDay = quote_generator().QotD
-
 # Set default and index route
 @frontend.route ('/')
 def index():
     return redirect('/home')
+
+
 # Render updates from person to webpage
-@frontend.route ('/home')
+@frontend.route ('/home', methods=['GET', 'POST'])
 def home():
-    # Get text from input box on webpage
-    scanned_id = request.args.get('idnumber')
-    if scanned_id == None:
-        scanned_id = "No ID"
-    
-    
+    employee = None
+    if request.method == 'POST':
+        idscan = request.form.get('idscan')
+        employee = Person(idscan)
+
+        # update timesheet here
+
     # Pass idnumber to person object. Person object returns name, group, time, and image (if availible)
     return render_template("home.html", 
-                           idnumber=scanned_id,
-                           name="Marcus Aurelius",
-                           group="Emperor of Rome", 
+                           scan = employee or Default_Person(),
                            date=dt.now().strftime("%m-%d-%y"),
-                           time=dt.now().strftime("%H:%M"),
-                           picture = "default.jpg",
+                            time=dt.now().strftime("%H:%M"),
                            cf = config,
                            quote = quoteOTDay[0],
                            author = quoteOTDay[1],

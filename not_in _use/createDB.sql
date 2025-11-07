@@ -68,10 +68,10 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO marcus;
 -- UPDATE config_database SET value = CURRENT_DATE WHERE key = 'config_date';
 
 -- Optional test data
--- INSERT INTO people_database (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES
---     (0001, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '/images/0001.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
---     (0002, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '/images/0002.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice');
+INSERT INTO people_database (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES
+(0001, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '/images/0001.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
+(0002, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '/images/0002.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice');
 
--- INSERT INTO timesheet_database (employee_id, clock_in, clock_out, work_date) VALUES
---     (0001, '2025-10-01 08:00:00+00', '2025-10-01 16:00:00+00', '2025-10-01'),
---     (0002, '2025-10-01 08:00:00+00', '2025-10-01 16:00:00+00', '2025-10-01');
+INSERT INTO timesheet_database (employee_id, clock_in, clock_out, work_date) VALUES
+(0001, '2025-10-01 08:00:00+00', '2025-10-01 16:00:00+00', '2025-10-01'),
+(0002, '2025-10-01 08:00:00+00', '2025-10-01 16:00:00+00', '2025-10-01');

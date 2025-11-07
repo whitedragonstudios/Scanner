@@ -1,8 +1,8 @@
 from . import (
     classInstall,
+    classPerson,
     classSettings,
     classHandler,
-    person,
     server,
     server_menu,
     databaseConfig,
@@ -16,7 +16,7 @@ __all__ = [
     "classQuotes",
     "classSettings",
     "classHandler",
-    "person",
+    "classPerson",
     "classInstall",
     "server",
     "server_menu",

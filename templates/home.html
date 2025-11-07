@@ -73,22 +73,25 @@
             <div class="main-header">
                 <h1>{{cf.company}}</h1>
                 
-                <form action="/index" method="post">
-                    <input class="largeTextbox" type="text" name="idnumber" id="idnumber" placeholder="Scan or Enter ID" maxlength="8" required>
+                <form action="{{ url_for('frontend.home') }}" method="POST">
+                    <input class="largeTextbox" type="text" name="idscan" id="idscan" placeholder="Scan or Enter ID" maxlength="32" required>
                     <button class="largeButton" type="submit">Clock In</button>
                 </form>
             </div>
 
             <div class="content"> 
                 <div class="left-div">
-                    <h2>{{ name }}</h2>
-                    <h3>{{ idnumber }} </h2>
-                    <p>{{ group }}</p>
+                    <h2>{{scan.fname}}, {{scan.lname}}</h2>
+                    <h3>{{scan.idnumber}} </h3>
+                    <p>{{scan.role}} -- {{scan.position}}<br>{{scan.department}}</p>
                     <h3>{{time}}</h3>
                     <h3>{{date}}</h3>
                 </div>
                 <div class="right-div">
-                    <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="picture not found" width="256" height="256">
+                    <!--<img src="{{ url_for('static', filename='images/' ~ scan.pic_path) }}" alt="picture not found" width="256" height="256">-->
+                    <img src="{{ url_for('static', filename='images/' ~ scan.pic) }}"alt="picture not found" width="256" height="256">
+
+
                 </div>
             </div>
         </div>
