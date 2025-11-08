@@ -15,6 +15,7 @@ if __name__ == "__main__":
     server.drop_user(user) #uncomment if you need to reset user
     # run controls the flow of classInstall
     server.run()
+    server.insert_test_data()
  
     # Load a config file which allows users to easily change settings
     cf = classSettings.Setting(user, password, db_name, port, host)

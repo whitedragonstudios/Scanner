@@ -11,6 +11,15 @@ Fourth Sprint 11/3 - present
 5) Make classNews to get api new reports and route to html.
 6) make classQuote to display different quotes on homepage.
 
+Review:
+1) intergration was easy. Shoudl research classses in flask for further extensibility
+2) 
+
+3) 
+4) completed weather class and implimented in home.html
+5) completed news class and implimented in home.html may need to adjust to refresh periodically.
+6) completed quote class and implimented in home.html
+
 Thrid Sprint 10/23 - 10/31 2025
 Primary Goal: Establish I/O between settings page and database
 

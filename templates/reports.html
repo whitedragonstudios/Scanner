@@ -31,10 +31,13 @@
         <div class="sidebar"> 
             Live Reports 
             <div>
-                <ul>
-                    <li>
-                    </li>
-                </ul>
+                <h1>Clocked in </h1>
+                    <div>
+                        <ul>
+                            <li>
+                            </li>
+                        </ul>
+                    </div>
             </div>
         </div>
         <div class="main-content">
@@ -54,25 +57,22 @@
                         <button class="updateDB" type="submit">Search</button>
                     </form>
                     <br>
-                </div>
-                <div class="middle-div">
-                    <h1>Clocked in </h1>
-                    <div>
-                        <ul>
-                            <li>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="right-div">
-                   <h1> Update Database</h1>
-                    <br>
                     <h2>Custom Search </h2>
                     <p> You can enter your own PostgreSQL searches here </p>
                     <form action="/manual" method="post">
                         <input type="text" id="fileUpload" name="manual" required>
-                        <button class = "color_button" type="Submit">Upload</button>
+                        <button class = "updateDB" type="Submit">Search</button>
                     </form>
+                </div>
+                <div class="middle-div">
+                    
+                    
+                </div>
+                <div class="right-div">
+                    <h1> Recent </h1>
+                    <ul>{% for person in recent_people %}
+                            <li>{{ person }}</li>
+                    {% endfor %} </ul>
                 </div>
             </div>
         </div>

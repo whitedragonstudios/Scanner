@@ -52,7 +52,7 @@ CREATE TABLE timesheet_database (
     id SERIAL PRIMARY KEY,
     employee_id INTEGER NOT NULL REFERENCES people_database(employee_id) ON DELETE CASCADE,
     clock_in TIMESTAMPTZ DEFAULT NOW(),
-    clock_out TIMESTAMPTZ DEFAULT NOW(),
+    clock_out TIMESTAMPTZ,
     work_date DATE DEFAULT CURRENT_DATE
 );
 
@@ -69,8 +69,8 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO marcus;
 
 -- Optional test data
 INSERT INTO people_database (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES
-(0001, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '/images/0001.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
-(0002, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '/images/0002.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice');
+(1111, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '1111.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
+(1112, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '1112.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice');
 
 INSERT INTO timesheet_database (employee_id, clock_in, clock_out, work_date) VALUES
 (0001, '2025-10-01 08:00:00+00', '2025-10-01 16:00:00+00', '2025-10-01'),

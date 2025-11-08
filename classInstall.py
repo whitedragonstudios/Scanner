@@ -237,7 +237,7 @@ class Postgre_Install:
                     id SERIAL PRIMARY KEY,
                     employee_id INTEGER NOT NULL REFERENCES people_database(employee_id) ON DELETE CASCADE,
                     clock_in TIMESTAMPTZ DEFAULT NOW(),
-                    clock_out TIMESTAMPTZ DEFAULT NOW(),
+                    clock_out TIMESTAMPTZ,
                     work_date DATE DEFAULT CURRENT_DATE
                 );
             """)
@@ -290,7 +290,27 @@ class Postgre_Install:
         except Exception as e:
             print(f"Unexpected error during database check: {e}")
             return False
-        
+
+
+    def insert_test_data(self):
+
+        user_handle = Handler(dbname=self.dbname, user=self.user, password=self.password)
+        user_handle.send_command("""INSERT INTO people_database (
+    employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department
+) VALUES
+    (1111, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '1111.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
+    (1112, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '1112.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice')
+ON CONFLICT (employee_id)
+DO UPDATE SET
+    first_name = EXCLUDED.first_name,
+    last_name = EXCLUDED.last_name,
+    email = EXCLUDED.email,
+    phone = EXCLUDED.phone,
+    pic_path = EXCLUDED.pic_path,
+    employee_role = EXCLUDED.employee_role,
+    position = EXCLUDED.position,
+    department = EXCLUDED.department;""")
+
 
     # This method controls the flow of the entire class.
     # Call this method in order to begin initalization fo the program.

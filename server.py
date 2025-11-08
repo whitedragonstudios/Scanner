@@ -23,13 +23,12 @@ weather_data = weather_report(config.city, config.weather_key)
 news = News_Report(config.country, config.news_key)
 quoteOTDay = quote_generator().QotD
 
-#print(config.news_key)
 
 # Intialize flask server
 app = Flask(__name__)
 
 frontend = Blueprint('frontend', __name__, template_folder='templates', static_folder='static')
-
+recent_list = []
 # Set default and index route
 @frontend.route ('/')
 def index():
@@ -39,16 +38,26 @@ def index():
 # Render updates from person to webpage
 @frontend.route ('/home', methods=['GET', 'POST'])
 def home():
+    global recent_list
     employee = None
     if request.method == 'POST':
         idscan = request.form.get('idscan')
-        employee = Person(idscan)
+        if not idscan:
+            employee = Default_Person(recent_list)
+        else:
+            try:
+                employee = Person(idscan, recent_list)
+            except Exception as e:
+                print(f"Error: home Person failed to find mathcing ID {e}")
+                employee = Default_Person(recent_list)
+        recent_list = employee.recent_list(25)
 
         # update timesheet here
 
     # Pass idnumber to person object. Person object returns name, group, time, and image (if availible)
     return render_template("home.html", 
-                           scan = employee or Default_Person(),
+                           recent_people = recent_list,
+                           scan = employee or Default_Person(recent_list),
                            date=dt.now().strftime("%m-%d-%y"),
                             time=dt.now().strftime("%H:%M"),
                            cf = config,
@@ -61,12 +70,16 @@ def home():
 
 @frontend.route('/settings')
 def settings():
-    return render_template("settings.html", cf = config)
+    return render_template("settings.html", 
+        cf = config)
 
 
 @frontend.route('/reports')
 def reports():
-    return render_template("reports.html", cf = config)
+    return render_template("reports.html", 
+        cf = config, 
+        recent_people = recent_list
+        )
     
 app.register_blueprint(frontend)
 

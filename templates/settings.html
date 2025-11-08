@@ -62,6 +62,11 @@
             <div class="content">
                 <!-- Left Div: forms -->
                 <div class="left-div">
+                    <h2>Change City</h2>
+                    <form action="/menu" method="post">
+                        <input class="textBox" type="text" name="new_city" id="new_city" placeholder="{{ cf.webpage_title }}" maxlength="50" required>
+                        <button class="button" type="submit">Submit</button>
+                    </form>
                     <h2>API Keys</h2>
                     <p>
                     In order to make the weather and news applets work you must get an API key from openweathermaps.com and newapi.org. Once you have these keys you can update the keys stored in the database.
@@ -85,15 +90,9 @@
                         <label for="javascript">Monthly</label>
                         <button>Submit</button>
                     </form>
-                    <h1> Change Names</h1>
                     <h3>Change Company Name</h3>
                     <form action="/menu" method="post">
                         <input class="textBox" type="text" name="new_companyname" id="new_companyname" placeholder="{{ cf.company }}" maxlength="50" required>
-                        <button class="button" type="submit">Submit</button>
-                    </form>
-                    <h3>Change Webpage Title</h3>
-                    <form action="/menu" method="post">
-                        <input class="textBox" type="text" name="new_title" id="new_title" placeholder="{{ cf.webpage_title }}" maxlength="50" required>
                         <button class="button" type="submit">Submit</button>
                     </form>
                 </div>
