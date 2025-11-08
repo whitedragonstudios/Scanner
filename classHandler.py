@@ -178,10 +178,3 @@ class Handler:
         finally: 
             if cur: cur.close()
             if conn: conn.close()
-
-
-
-print("Connecting to database:", "scanner", "host:", "localhost", "port:", 5000)
-h = Handler("marcus", "stoic", "scanner", 5000, "localhost")
-rows = h.send_query("SELECT * FROM people_database;")
-print("Rows in database:", rows)
