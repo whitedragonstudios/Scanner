@@ -50,8 +50,7 @@ def home():
             except Exception as e:
                 print(f"Error: home Person failed to find mathcing ID {e}")
                 employee = Default_Person(recent_list)
-        recent_list = employee.recent_list(25)
-
+        recent_list = employee.recent
         # update timesheet here
 
     # Pass idnumber to person object. Person object returns name, group, time, and image (if availible)

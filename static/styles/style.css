@@ -218,9 +218,7 @@ button:hover {
 
 
 
-/* ==========================
-   MAIN CONTENT
-   ========================== */
+/* MAIN CONTENT ================================================================================================================================================================= */
 .main-content {
     flex: 1;
     display: flex;
@@ -251,6 +249,7 @@ h1 {
 
 .left-div, .middle-div, .right-div {
     flex: 1;
+
     background-color: rgba(255, 255, 255, 0.05);
     padding: 20px;
     border: 1px solid var(--border-color);
@@ -259,12 +258,14 @@ h1 {
 
 
 .left-div {
+    flex :1.5;
     margin-right: 10px;
 }
 .middle-div {
     margin: 0 10px;
 }
 .right-div {
+    flex: 2;
     margin-left: 10px;
 }
 

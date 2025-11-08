@@ -14,16 +14,15 @@ class Person():
         self.id = int(idnumber)
         self.recent = recent_list
         self.handle = Handler(user=user, password=password, dbname=db_name, port=port, host=host)
-        #self.insert_test()
         data = self.look_up()
         if data:
             self.assign(data)
-            #self.update_DB()
+            self.update_DB()
+            self.recent_list(20)
         else:
-            # fallback to default person
             data = Default_Person(self.recent)
             self.assign([data.idnumber, data.fname, data.lname, data.email, data.phone, data.pic, data.role, data.position, data.department])
-
+        
 
 
     def look_up(self):
@@ -52,23 +51,72 @@ class Person():
         return data
 
     def recent_list(self, length):
-        person_string = f"{self.time} ==> {self.fname} {self.lname}"
-        self.recent.insert(0, person_string)
+        self.recent.insert(0, self.return_data)
         while len(self.recent) > length:
             self.recent.pop(-1)
         return self.recent
     
 
     def update_DB(self):
-        self.handle.send_query(f"""WITH updated AS (UPDATE timesheet_database SET clock_out = NOW() WHERE employee_id = {self.id} AND clock_out IS NULL RETURNING *)
-            INSERT INTO timesheet_database (employee_id) SELECT {self.id} WHERE NOT EXISTS (SELECT 1 FROM updated);""")
-        #self.handle.send_command(f"INSERT INTO timesheet_database employee_id) VALUES {self.idnumber};")
+        latest = self.handle.send_query(f"""
+            SELECT clock_in, clock_out
+            FROM timesheet_database
+            WHERE employee_id = {self.id}
+            ORDER BY clock_in DESC
+            LIMIT 1;
+        """)
+        if not latest:
+            self.handle.send_command(f"""
+                INSERT INTO timesheet_database (employee_id, clock_in)
+                VALUES ({self.id}, NOW());
+            """)
+            action = "Clock In"
+        elif latest[0][1] is None:
+            self.handle.send_command(f"""
+                UPDATE timesheet_database
+                SET clock_out = NOW()
+                WHERE employee_id = {self.id}
+                AND clock_out IS NULL;
+            """)
+            action = "Clock Out"
+        else:
+            self.handle.send_command(f"""
+                INSERT INTO timesheet_database (employee_id, clock_in)
+                VALUES ({self.id}, NOW());
+            """)
+            action = "Clock In"
+        data = self.handle.send_query(f"""
+            SELECT 
+                p.first_name,
+                p.last_name,
+                CASE 
+                    WHEN t.clock_out IS NULL THEN t.clock_in 
+                    ELSE t.clock_out 
+                END AS event_time,
+                CASE 
+                    WHEN t.clock_out IS NULL THEN 'Clock In' 
+                    ELSE 'Clock Out' 
+                END AS event_type
+            FROM people_database p
+            JOIN timesheet_database t ON p.employee_id = t.employee_id
+            WHERE p.employee_id = {self.id}
+            ORDER BY t.clock_in DESC
+            LIMIT 2;
+        """)
+        if not data:
+            self.return_data = f"No time records found for ID {self.id}"
+        else:
+            time = data[0][2]
+            if isinstance(time, str):
+                from datetime import datetime
+                time = datetime.fromisoformat(time)
+            time_str = time.strftime("%I:%M %p %d-%m")
+            direction = "==>" if action == "Clock In" else "<=="
+            io = "IN"if action == "Clock In" else "OUT"
+            self.return_data = f"{io} {time_str} {direction} {data[0][0]} {data[0][1]}"
+        print(self.return_data)
+        return self.return_data
 
-
-    def insert_test(self):
-        self.handler.send_command("""INSERT INTO people_database (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES
-(1111, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '1111.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
-(1112, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '1112.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice');""")
 
 
 class Default_Person:
