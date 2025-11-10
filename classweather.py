@@ -25,10 +25,13 @@ class weather_report():
         self.description = data['weather'][0]['description'].title()
         self.icon = data['weather'][0]['icon'] + ".png"
         self.feel = int((data['main']['feels_like']) * 1.8 - 459.67)
-        self.min = int((data['main']['temp_min']) * 1.8 - 459.67)
-        self.max = int((data['main']['temp_max']) * 1.8 - 459.67)
+        min = int((data['main']['temp_min']) * 1.8 - 459.67)
+        max = int((data['main']['temp_max']) * 1.8 - 459.67)
+        self.temp = f"{min} - {max}"
         self.humid = data['main']['humidity']
         self.clouds = data['clouds']['all']
+        dir = self.wind_direction(data['wind']['deg'])
+        self.wind = f"{int(data['wind']['speed'])} - {int(data['wind']['gust'])} {dir}"
         self.update_config()
 
 
@@ -49,6 +52,7 @@ class weather_report():
         except requests.exceptions.RequestException as e:
             print("ERROR: weather.get_weather >>> api request >>>", e)
             WEATHER_response = "Error Weather Data"
+        print(WEATHER_response)
         return WEATHER_response
     
 
@@ -58,3 +62,21 @@ class weather_report():
         conn.update_config('lon', self.longitude)
         conn.update_config('lat', self.latitude)
         conn.update_config('country', self.country)
+    
+
+    def wind_direction(self, wind_dir):
+        try:
+            wind_float = float(wind_dir)
+            if wind_float in range(23, 66): cardinal = 'NE'
+            elif wind_float in range(67, 112): cardinal = 'E'
+            elif wind_float in range(113, 156): cardinal = 'SE'
+            elif wind_float in range(157, 202): cardinal = 'S'
+            elif wind_float in range(203, 246): cardinal = 'SW'
+            elif wind_float in range(247, 292): cardinal = 'W'
+            elif wind_float in range(293, 336): cardinal = 'NW'
+            else: cardinal = 'N' # 0-22 and 337-360
+        except: 
+            cardinal = ""
+            print("ERROR: (wind_direction) assigning >>> wind_dir")
+        # print("CF --- wind_direction RUN")
+        return cardinal

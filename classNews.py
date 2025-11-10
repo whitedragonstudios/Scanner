@@ -22,7 +22,7 @@ class News_Report():
         parsed_news = []
         for item in news_list:
             source = item['source']['name']
-            artilce = item['description']
+            artilce = item['title']
             url = item['url']
             if source not in self.banned_list:
                 parsed_news.append({'src':source, "art":artilce,"url":url})

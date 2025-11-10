@@ -40,6 +40,7 @@ def index():
 def home():
     global recent_list
     employee = None
+    idscan = None
     if request.method == 'POST':
         idscan = request.form.get('idscan')
         if not idscan:
@@ -51,7 +52,6 @@ def home():
                 print(f"Error: home Person failed to find mathcing ID {e}")
                 employee = Default_Person(recent_list)
         recent_list = employee.recent
-        # update timesheet here
 
     # Pass idnumber to person object. Person object returns name, group, time, and image (if availible)
     return render_template("home.html", 

@@ -125,6 +125,7 @@ button:hover {
   text-align: center; 
 }
 
+
 .url-button{
     display: inline-block;
     padding: 10px 20px;
@@ -139,6 +140,7 @@ button:hover {
     text-align: center;
     transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
+
 
 .url-button:hover{
     background-color: #4a47ec;
@@ -158,6 +160,35 @@ button:hover {
     display: inline-block;
     text-align: left;
 }
+
+
+.weather-table {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.weather-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 4px 0;
+}
+
+.weather-row .label {
+    font-weight: bold;
+    text-align: right;
+    flex: 1;
+}
+
+.weather-row .value {
+    text-align: left;
+    flex: 1;
+    padding-left: 10px;
+}
+
+
 .quote {
   display: inline-block;
   text-align: left;
@@ -186,6 +217,8 @@ button:hover {
   font-style: italic;
   font-size: 0.9rem;
 }
+
+
 /* Danger Zone ================================================================================================================================================== Danger Zone*/
 .danger {
     background-color: #2a0000;
@@ -258,14 +291,14 @@ h1 {
 
 
 .left-div {
-    flex :1.5;
+    flex :2;
     margin-right: 10px;
 }
 .middle-div {
     margin: 0 10px;
 }
 .right-div {
-    flex: 2;
+    flex: 3;
     margin-left: 10px;
 }
 
@@ -279,60 +312,3 @@ h1 {
     }
 }
 
-
-/* ==========================
-   COLOR PICKER
-   ========================== */
-.color-picker-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    background: --content-color;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-    width: fit-content;
-    margin: auto;
-}
-
-.color-picker-wrapper h1 {
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
-}
-
-.color-picker-wrapper input[type="color"] {
-    width: 100px;
-    height: 100px;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    background: none;
-}
-
-.color-picker-wrapper .color-info {
-    text-align: center;
-}
-
-.color-picker-wrapper .preview-box {
-    width: 150px;
-    height: 75px;
-    border-radius: 0.5rem;
-    border: 2px solid #333;
-    margin-top: 0.5rem;
-}
-
-.color-picker-wrapper button {
-    background: #444;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.color-picker-wrapper button:hover {
-    background: #666;
-}

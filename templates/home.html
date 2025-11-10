@@ -34,13 +34,28 @@
                 <h3>{{wd.city}}, {% if wd.state or wd.country %}<br>{{ wd.state|default('') }}{% if wd.state and wd.country %} - {% endif %}{{ wd.country|default('') }}{% endif %}</h3>
                  <img src="{{ url_for('static', filename='weather_icon/' + (wd.icon or 'default.png')) }}" alt="Weather Icon" width="100" height="100">
                     <h3>{{wd.description}}</h3>
-                    <ul class="weather-box">
-                        <li>Feel -------- {{wd.feel}}</li>
-                        <li>High -------- {{wd.max}}</li>
-                        <li>Low --------- {{wd.min}}</li>
-                        <li>Humidity --- {{wd.humid}}</li>
-                        <li>Clouds ------ {{wd.clouds}}</li>
-                     </ul>
+                    <div class="weather-table">
+                    <div class="weather-row">
+                        <span class="label">Feel:</span>
+                        <span class="value">{{ wd.feel }}</span>
+                    </div>
+                    <div class="weather-row">
+                        <span class="label">Temp:</span>
+                        <span class="value"> {{ wd.temp }}</span>
+                    </div>
+                    <div class="weather-row">
+                        <span class="label">Humidity:</span>
+                        <span class="value"> {{ wd.humid }}</span>
+                    </div>
+                    <div class="weather-row">
+                        <span class="label">Clouds:</span>
+                        <span class="value"> {{ wd.clouds }}</span>
+                    </div>
+                    <div class="weather-row">
+                        <span class="label">Wind:</span>
+                        <span class="value"> {{ wd.wind }}</span>
+                    </div>
+                </div>
             </div>
             <br>
             <div>
@@ -72,11 +87,13 @@
 
             <div class="main-header">
                 <h1>{{cf.company}}</h1>
-                
-                <form action="{{ url_for('frontend.home') }}" method="POST">
-                    <input class="largeTextbox" type="text" name="idscan" id="idscan" placeholder="Scan or Enter ID" maxlength="32" required>
+                <form action="{{ url_for('frontend.home') }}" method="POST" id="autoForm">
+                    <input class="largeTextbox" type="text" name="idscan" id="idscan" placeholder="Scan or Enter ID" maxlength="8" required autofocus>
                     <button class="largeButton" type="submit">Clock In</button>
                 </form>
+                {% if result %}
+                    <div class="result">Submitted value: {{ result }}</div>
+                {% endif %}
             </div>
 
             <div class="content"> 
@@ -104,7 +121,7 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/news_rotation.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/home_script.js') }}"></script>
     <script>
     const newsArticles = {{ news_articles|tojson }};
     initNewsCycle(newsArticles);
