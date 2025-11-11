@@ -74,7 +74,6 @@ def settings():
     if request.method == "POST":
         admin = Handler(password=password)
         user_handle = Handler(user, password, db_name)
-        #user_handle.send_query("SELECT current_database(), current_schema();")
         # Danger Zone
         action = request.form.get("action")
         if action:
@@ -105,6 +104,12 @@ def settings():
             return redirect(url_for("frontend.settings"))
 
         # Configuration changes
+        if "companyname" in request.form:
+            new_company = request.form.get("companyname")
+            user_handle.update_config("company", new_company)
+            msg = f"Company name updated to {new_company}"
+            return redirect(url_for("frontend.settings"))
+        
         if "companyname" in request.form:
             new_company = request.form.get("companyname")
             user_handle.update_config("company", new_company)
@@ -177,15 +182,6 @@ def settings():
             except Exception as e:
                 flash(f"Failed to insert: {e}", "error")
             return redirect(url_for("frontend.settings"))
-
-        # update entry (id, key, value)
-        if all(k in request.form for k in ("updateDB-id", "updateDB-key", "updateDB-value")):
-            update_id = request.form.get("updateDB-id")
-            update_key = request.form.get("updateDB-key")
-            update_value = request.form.get("updateDB-value")
-            flash(f"Updated record {update_id}: {update_key} = {update_value}", "info")
-            return redirect(url_for("frontend.settings"))
-
     return render_template("settings.html", cf=config)
 
 @frontend.route('/reports')
