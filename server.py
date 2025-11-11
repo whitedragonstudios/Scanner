@@ -74,7 +74,7 @@ def settings():
     if request.method == "POST":
         admin = Handler(password=password)
         user_handle = Handler(user, password, db_name)
-        user_handle.send_query("SELECT current_database(), current_schema();")
+        #user_handle.send_query("SELECT current_database(), current_schema();")
         # Danger Zone
         action = request.form.get("action")
         if action:
@@ -163,7 +163,19 @@ def settings():
         # manual database entry
         if "manual" in request.form:
             manual_input = request.form.get("manual")
-            flash(f"Manual entry received: {manual_input}", "success")
+            input_list = [item.strip() for item in manual_input.split(",")]
+            print(input_list)
+            try:
+                if len(input_list) == 9:
+                    user_handle.send_command(f"""
+                        INSERT INTO people_database (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES (
+                        {int(input_list[0])}, '{input_list[1]}', '{input_list[2]}', '{input_list[3]}', '{input_list[4]}', '{input_list[5]}', '{input_list[6]}', '{input_list[7]}', '{input_list[8]}');""")
+                    name = user_handle.send_query(f"SELECT first_name, last_name FROM people_database WHERE employee_id = '{input_list[0]}'")
+                    flash(f"Manual entry received: {name[0][1],name[0][1]} added to people database", "success")
+                else:
+                    flash(f"Manual input not valid make sure all fields are entered, blank fields can use comma space comma: {manual_input}", "warning")
+            except Exception as e:
+                flash(f"Failed to insert: {e}", "error")
             return redirect(url_for("frontend.settings"))
 
         # update entry (id, key, value)
