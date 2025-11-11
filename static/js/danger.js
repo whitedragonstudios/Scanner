@@ -16,12 +16,16 @@ document.addEventListener('DOMContentLoaded', () => {
             confirmMsg: "Are you sure you want to restore default configuration settings?"
         },
         {
+            id: "clearEmails",
+            confirmMsg: "Delete all stored emails? You will need to add at least one email for reports to be sent to."
+        },
+        {
             id: "deleteBtn",
             confirmMsg: "This will permanently delete employee database and timesheets. Continue?"
         },
         {
             id: "reinstallBtn",
-            confirmMsg: "⚠️ WARNING: This will delete all data and reinstall the program. Are you absolutely sure?"
+            confirmMsg: "WARNING: This will delete all data and reinstall the program. Are you absolutely sure?"
         }
     ];
 

@@ -4,14 +4,14 @@ employee_id,first_name,last_name,email,phone,pic_path,employee_role,position,dep
 16913356,Kit,Fisto,kit.fisto@scanner.com,+1-555-859-4387,/images/16913356.jpg,Support Specialist,Technician,Security & Strategy
 23877456,Darth,Vader,darth.vader@scanner.com,+1-555-592-2257,/images/23877456.jpg,Project Lead,Analyst,Droid Services
 96338500,Rex,Clone,rex.clone@scanner.com,+1-555-918-5322,/images/96338500.jpg,Associate,Manager,Droid Services
-58438572,Figrin,D'an,figrin.dan@scanner.com,+1-555-134-8627,/images/58438572.jpg,Project Lead,Technician,Security & Strategy
+58438572,Figrin,Dan,figrin.dan@scanner.com,+1-555-134-8627,/images/58438572.jpg,Project Lead,Technician,Security & Strategy
 66851394,K2,SO,k2.so@scanner.com,+1-555-163-6151,/images/66851394.jpg,Support Specialist,Analyst,Droid Services
 86262169,Luke,Skywalker,luke.skywalker@scanner.com,+1-555-354-6410,/images/86262169.jpg,Support Specialist,Coordinator,Security & Strategy
 27265478,Tarkin,Wilhuff,tarkin.wilhuff@scanner.com,+1-555-648-7507,/images/27265478.jpg,Project Lead,Analyst,Security & Strategy
 12365101,Aurra,Sing,aurra.sing@scanner.com,+1-555-609-6356,/images/12365101.jpg,Associate,Manager,Droid Services
 23153615,Cara,Dune,cara.dune@scanner.com,+1-555-984-4985,/images/23153615.jpg,Support Specialist,Technician,Security & Strategy
 53912868,Phasma,Captain,phasma.captain@scanner.com,+1-555-647-6231,/images/53912868.jpg,Project Lead,Analyst,Rebel Relations
-82801583,Qi'ra,Crimson,qira.crimson@scanner.com,+1-555-129-2753,/images/82801583.jpg,Support Specialist,Technician,Security & Strategy
+82801583,Qira,Crimson,qira.crimson@scanner.com,+1-555-129-2753,/images/82801583.jpg,Support Specialist,Technician,Security & Strategy
 59335103,Rieekan,Carlist,rieekan.carlist@scanner.com,+1-555-611-5432,/images/59335103.jpg,Senior Officer,Analyst,Security & Strategy
 22219010,Enfys,Nest,enfys.nest@scanner.com,+1-555-573-8475,/images/22219010.jpg,Associate,Manager,Rebel Relations
 82624315,Leia,Organa,leia.organa@scanner.com,+1-555-404-8475,/images/82624315.jpg,Project Lead,Analyst,Galactic Operations

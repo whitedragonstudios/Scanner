@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, Blueprint
+from flask import Flask, render_template, request, redirect, Blueprint, flash, url_for
 from datetime import datetime as dt
 import json
 import os
@@ -8,6 +8,8 @@ from classQuotes import quote_generator
 from classWeather import weather_report
 from classHandler import Handler
 from classPerson import Person, Default_Person
+from classInstall import Postgre_Install
+import pandas as pd
 
 import databaseConfig
 db = databaseConfig. databaseSettings()
@@ -26,7 +28,7 @@ quoteOTDay = quote_generator().QotD
 
 # Intialize flask server
 app = Flask(__name__)
-
+app.secret_key = password
 frontend = Blueprint('frontend', __name__, template_folder='templates', static_folder='static')
 recent_list = []
 # Set default and index route
@@ -67,11 +69,112 @@ def home():
                            )
 
 
-@frontend.route('/settings')
+@frontend.route('/settings', methods=['GET', 'POST'])
 def settings():
-    return render_template("settings.html", 
-        cf = config)
+    if request.method == "POST":
+        admin = Handler(password=password)
+        user_handle = Handler(user, password, db_name)
+        user_handle.send_query("SELECT current_database(), current_schema();")
+        # Danger Zone
+        action = request.form.get("action")
+        if action:
+            uninstall = Postgre_Install("postgres", password, db_name, port, host)
+            if action == "restore":
+                msg = "Configuration restored to defaults"
+                # Get Handler.open_file working
+            elif action == "clear":
+                print("emails cleared")
+                user_handle.send_command("DELETE FROM email_list;")
+                user_handle.send_query("SELECT * FROM email_list;")
+                msg = "Email list cleared"
+            elif action == "delete":
+                print("db reset")
+                user_handle.send_command("DELETE FROM people_database;")
+                user_handle.send_query("SELECT * FROM people_database;")
+                user_handle.send_command("DELETE FROM timesheet_database;")
+                user_handle.send_query("SELECT * FROM timesheet_database;")
+                msg = "Employee and timesheet database deleted!"
+            elif action == "clean":
+                uninstall.drop_tables('people_database')
+                uninstall.drop_tables('timesheet_database')
+                uninstall.drop_tables('config_database')
+                uninstall.drop_database(db_name)
+                uninstall.drop_user(user)                                    
+                msg = "System reinstalled from clean state"
+            flash(msg, "warning")
+            return redirect(url_for("frontend.settings"))
 
+        # Configuration changes
+        if "companyname" in request.form:
+            new_company = request.form.get("companyname")
+            user_handle.update_config("company", new_company)
+            msg = f"Company name updated to {new_company}"
+            return redirect(url_for("frontend.settings"))
+
+        # API keys
+        if  "wkey" in request.form:
+            new_key = request.form.get("wkey")
+            user_handle.update_config("weather_key", new_key)
+            msg = "Weather key updated"
+        if "nkey" in request.form:
+            new_key = request.form.get("nkey")
+            user_handle.update_config("news_key", new_key)
+            msg = "News key updated"
+
+
+        # color updates dynamically
+        for key, value in request.form.items():
+            if hasattr(config, key):
+                setattr(config, key, value)
+                flash(f"{key} updated!", "success")
+                return redirect(url_for("frontend.settings"))
+
+        # file upload
+        if "fileUpload" in request.files:
+            file = request.files["fileUpload"]
+            if file and file.filename:
+                filename = file.filename
+                allowed_extensions = {'.csv', '.xlsx', '.json'}
+                ext = os.path.splitext(filename)[1].lower()
+                if ext not in allowed_extensions:
+                    flash("Unsupported file type. Please upload a CSV, XLSX, or JSON file.", "warning")
+                    return redirect(url_for("frontend.settings"))
+                try:
+                    if ext == ".csv":
+                        data = pd.read_csv(file)
+                    elif ext == ".xlsx":
+                        data = pd.read_excel(file)
+                    elif ext == ".json":
+                        jdata = json.load(file)
+                        data = pd.DataFrame(jdata)
+                    # Send DataFrame to database
+                    for index, row in data.iterrows():
+                        user_handle.send_command(f"""
+                        INSERT INTO people_database (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES (
+                        {int(row['employee_id'])}, '{row['first_name']}', '{row['last_name']}', '{row['email']}', '{row['phone']}', '{row['pic_path']}', '{row['employee_role']}', '{row['position']}', '{row['department']}');""")
+
+                    flash(f"File {filename} uploaded and data imported successfully.", "success")
+                except Exception as e:
+                    flash(f"Failed to import data: {e}", "error")
+
+                return redirect("/settings")
+
+
+        # manual database entry
+        if "manual" in request.form:
+            manual_input = request.form.get("manual")
+            flash(f"Manual entry received: {manual_input}", "success")
+            return redirect(url_for("frontend.settings"))
+
+        # update entry (id, key, value)
+        if all(k in request.form for k in ("updateDB-id", "updateDB-key", "updateDB-value")):
+            update_id = request.form.get("updateDB-id")
+            update_key = request.form.get("updateDB-key")
+            update_value = request.form.get("updateDB-value")
+            flash(f"Updated record {update_id}: {update_key} = {update_value}", "info")
+            return redirect(url_for("frontend.settings"))
+
+    return render_template("settings.html", cf=config)
 
 @frontend.route('/reports')
 def reports():

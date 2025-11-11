@@ -32,22 +32,24 @@
         <div class="sidebar"> 
             <h1 style="color:red;">Danger Zone</h1>
             <div class="danger">
-                <h3>Restore default configuration settings</h3>
-                <button id="restoreBtn" 
-                title="This will reset your configuration settings to factory defaults. ALL color schemes and API keys will be permanently lost">
-                Restore</button>
-                <h3> Reset email list</h3>
-                <button id="clearEmails" 
-                title="This will permanently delete all emails which reports are sent to">
-                Reset</button>
-                <h3>Delete employee database and timesheets</h3>
-                <button id="deleteBtn" 
-                title="This will permanently delete all employee data and timesheets. Epmloyee information will a have to be re-entered any all timsehets will be lost forever">
-                Delete</button>
-                <h3>Delete all databases and start a clean install of the entire program</h3>
-                <button id="reinstallBtn" 
-                title="This will remove ALL data and reinitialize the entire system. Only use if there is a catastrophic failure and other troubleshooting is exhausted.">
-                Reinstall</button>
+                <form action="/settings" method="post">
+                    <h3>Restore default configuration settings</h3>
+                    <button id="restoreBtn" name = "action" value = "restore"
+                    title="This will reset your configuration settings to factory defaults. ALL color schemes and API keys will be permanently lost">
+                    Restore</button>
+                    <h3> Reset email list</h3>
+                    <button id="clearEmails" name = "action" value = "clear"
+                    title="This will permanently delete all emails which reports are sent to">
+                    Reset</button>
+                    <h3>Delete employee database and timesheets</h3>
+                    <button id="deleteBtn" name = "action" value = "delete"
+                    title="This will permanently delete all employee data and timesheets. Epmloyee information will a have to be re-entered any all timsehets will be lost forever">
+                    Delete</button>
+                    <h3>Delete all databases and start a clean install of the entire program</h3>
+                    <button id="reinstallBtn"  name = "action" value = "clean"
+                    title="This will remove ALL data and reinitialize the entire system. Only use if there is a catastrophic failure and other troubleshooting is exhausted.">
+                    Reinstall</button>
+                </form>
             </div>
         </div>
         <!-- Main content -->
@@ -63,17 +65,17 @@
                 <!-- Left Div: forms -->
                 <div class="left-div">
                     <h2>Change City</h2>
-                    <form action="/menu" method="post">
-                        <input class="textBox" type="text" name="new_city" id="new_city" placeholder="{{ cf.webpage_title }}" maxlength="50" required>
+                    <form action="/settings" method="post">
+                        <input class="textBox" type="text" name="config" value = "cityname" id="cityname" placeholder="{{ cf.webpage_title }}" maxlength="50" required>
                         <button class="button" type="submit">Submit</button>
                     </form>
                     <h2>API Keys</h2>
                     <p>
                     In order to make the weather and news applets work you must get an API key from openweathermaps.com and newapi.org. Once you have these keys you can update the keys stored in the database.
                     </p>
-                    <form> 
-                        <input class="wkey" type="text" name="filepaths" id="filepaths" placeholder="openweathermaps.com API key" maxlength="32" required>
-                        <input class="wkey" type="text" name="filepaths" id="filepaths" placeholder="newsapi.com API key" maxlength="32" required>
+                    <form action="/settings" method="post"> 
+                        <input class="wkey" type="text" name="wkey" id="wkey" placeholder="openweathermaps.com API key" maxlength="32">
+                        <input class="wkey" type="text" name="nkey" id="nkey" placeholder="newsapi.com API key" maxlength="32">
                         <button class="updateDB" type="submit">Update APIKeys</button>
                     </form>
                     <br>
@@ -91,8 +93,8 @@
                         <button>Submit</button>
                     </form>
                     <h3>Change Company Name</h3>
-                    <form action="/menu" method="post">
-                        <input class="textBox" type="text" name="new_companyname" id="new_companyname" placeholder="{{ cf.company }}" maxlength="50" required>
+                    <form action="/settings" method="post">
+                        <input class="textBox" type="text" name="companyname" id="companyname" placeholder="{{ cf.company }}" maxlength="50" required>
                         <button class="button" type="submit">Submit</button>
                     </form>
                 </div>
@@ -100,48 +102,48 @@
                     <h1>Color<br>Schemes</h1>
                     <!-- Main -->
                     <h3>Main Background</h3>
-                    <form action="/menu" method="post">
+                    <form action="/settings" method="post">
                         <input class="color-text-box" type="color" name="mbgcolor" id="mbgcolor" value="{{ cf.main_background_color }}" required>
                         <button class="color_button" type="submit">Update Color</button>
                     </form>
-                    <form action="/menu" method="post">
+                    <form action="/settings" method="post">
                         <input class="color-text-box" type="color" name="mtxtcolor" id="mtxtcolor" value="{{ cf.main_text_color }}" required>
                         <button class="color_button" type="submit">Update Text</button>
                     </form>
                     <!-- Content -->
                     <h3>Content</h3>
-                    <form action="/menu" method="post">
+                    <form action="/settings" method="post">
                         <input class="color-text-box" type="color" name="cbgcolor" id="cbgcolor" value="{{ cf.content_color }}" required>
                         <button class="color_button" type="submit">Update Color</button>
                     </form>
-                    <form action="/menu" method="post">
+                    <form action="/settings" method="post">
                         <input class="color-text-box" type="color" name="ctxtcolor" id="ctxtcolor" value="{{ cf.content_text_color }}" required>
                         <button class="color_button" type="submit">Update Text</button>
                     </form>
                     <h3>Sidebar</h3>
-                    <form action="/menu" method="post">
+                    <form action="/settings" method="post">
                         <input class="color-text-box" type="color" name="sbgcolor" id="sbgcolor" value="{{ cf.sidebar_color }}" required>
                         <button class="color_button" type="submit">Update Color</button>
                     </form>
-                    <form action="/menu" method="post">
+                    <form action="/settings" method="post">
                         <input class="color-text-box" type="color" name="stxtcolor" id="stxtcolor" value="{{ cf.sidebar_text_color }}" required>
                         <button class="color_button" type="submit">Update Text</button>
                     </form>
                     <h3>Buttons</h3>
-                    <form action="/menu" method="post">
+                    <form action="/settings" method="post">
                         <input class="color-text-box" type="color" name="bbgcolor" id="bbgcolor" value="{{ cf.button_color }}" required>
                         <button class="color_button" type="submit">Update Color</button>
                     </form>
-                    <form action="/menu" method="post">
+                    <form action="/settings" method="post">
                         <input class="color-text-box" type="color" name="btxtcolor" id="btxtcolor" value="{{ cf.button_text_color }}" required>
                         <button class="color_button" type="submit">Update Text</button>
                     </form>
-                    <form action="/menu" method="post">
+                    <form action="/settings" method="post">
                         <input class="color-text-box" type="color" name="bhovercolor" id="bhovercolor" value="{{ cf.button_hover_color }}" required>
                         <button class="color_button" type="submit">Update Hover</button>
                     </form>
                     <h3>Border</h3>
-                    <form action="/menu" method="post">
+                    <form action="/settings" method="post">
                         <input class="color-text-box" type="color" name="bordercolor" id="bordercolor" value="{{ cf.border_color }}" required>
                         <button class="color_button" type="submit">Update Border</button>
                     </form>
@@ -153,7 +155,7 @@
                         <br>Please refer to documentation for the schema of these files.
                     </p>
                     <br>
-                    <form action="/upload" method="post" enctype="multipart/form-data">
+                    <form action="/settings" method="post" enctype="multipart/form-data">
                         <label for="fileUpload">Select a file:</label>
                         <input type="file" id="fileUpload" name="fileUpload" accept=".csv, .xlsx, .json" required>
                         <button class = "color_button" type="submit">Upload</button>
@@ -162,14 +164,14 @@
                     <h2>Manual Entry</h2>
                     <p> You can also enter each empplyees manually. Use commas to seperate each colmn, leave empty space for any blank entries. </p>
                     <p> The database expects: id, first name, last name, email, phone, picture's filename.jpg, employee role, position, department </p>
-                    <form action="/manual" method="post">
+                    <form action="/settings" method="post">
                         <input type="text" id="fileUpload" name="manual" required>
                         <button class = "color_button" type="Submit">Upload</button>
                     </form>
                     <h2>Update Entry</h2>
                     <p> You can make a change to a single entry in the database.</p>
                     <p> Enter the id number of the empolyee you want to edit ie: 0001 then the name of the key you want to change ie: employee role and the value you want to change it to ie: VP of Scoundrels </p>
-                    <form action="/manual" method="post">
+                    <form action="/settings" method="post">
                         <input type="text" id="updateDB-id" name="updateDB-id" required placeholder="id: 0001">
                         <input type="text" id="updateDB-key" name="updateDB-key" required placeholder="key: Employee Role">
                         <input type="text" id="updateDB-value" name="updateDB-value" required placeholder="value: VP of Scoundrels">
@@ -179,19 +181,15 @@
             </div>
         </div>
     </div>
-    <!--
-                    <div class="color-picker-wrapper">
-                        <h1>Color Picker</h1>
-                        <input type="color" id="colorPicker" value="#00aaff">
-                        <div class="color-info">
-                            <div>Hex: <span id="hexValue">#00aaff</span></div>
-                            <div>RGB: <span id="rgbValue">rgb(0, 170, 255)</span></div>
-                        </div>
-                        <div class="preview-box" id="previewBox" style="background-color: #00aaff;"></div>
-                        <button id="copyButton">Copy Hex</button>
-                    </div>
-    <script src="{{ url_for('static', filename='js/color_picker.js') }}"></script>
-    --->
-    <script src="{{ url_for('static', filename='js/danger.js') }}"></script>
+    <!--<script src="{{ url_for('static', filename='js/danger.js') }}"></script>-->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
 </body>
 </html>

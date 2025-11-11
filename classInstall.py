@@ -175,9 +175,10 @@ class Postgre_Install:
             user_handle = Handler(dbname=self.dbname, user=self.user, password=self.password)
 
             # Drop tables if they exist
-            user_handle.send_command("DROP TABLE IF EXISTS timesheet_database CASCADE;")
-            user_handle.send_command("DROP TABLE IF EXISTS people_database CASCADE;")
-            user_handle.send_command("DROP TABLE IF EXISTS config_database CASCADE;")
+            self.drop_tables("people_database")
+            self.drop_tables("timesheet_database")
+            self.drop_tables("config_database")
+            self.drop_tables("email_list")
 
             # Create config_database table
             user_handle.send_command("""
@@ -186,6 +187,18 @@ class Postgre_Install:
                     value VARCHAR(128)
                 );
             """)
+
+            user_handle.send_command("""
+                CREATE TABLE email_list(
+                    key SERIAL PRIMARY KEY,
+                    email VARCHAR(255)
+                );
+            """)
+
+            user_handle.send_command("""INSERT INTO email_list (email) VALUES 
+                    ('rowens.wds@gmail.com'), 
+                    ('test@scanner.com')
+                ;""")
 
             # Insert default config data
             user_handle.send_command("""
@@ -220,16 +233,18 @@ class Postgre_Install:
                 CREATE TABLE people_database (
                     id SERIAL PRIMARY KEY, 
                     employee_id INTEGER UNIQUE,
-                    first_name VARCHAR(50) UNIQUE,
-                    last_name VARCHAR(50) UNIQUE,
-                    email VARCHAR(50) UNIQUE, 
-                    phone VARCHAR(15) UNIQUE,
+                    first_name VARCHAR(50),
+                    last_name VARCHAR(50),
+                    email VARCHAR(50), 
+                    phone VARCHAR(15),
                     pic_path VARCHAR(128) UNIQUE,
                     employee_role VARCHAR(50),
                     position VARCHAR(50),
                     department VARCHAR(50)
                 );
             """)
+
+            self.insert_test_data()
 
             # Create timesheet_database table
             user_handle.send_command("""
@@ -255,6 +270,7 @@ class Postgre_Install:
             print("@@@ Database creation complete @@@")
             # Verify table creation
             user_handle.send_query("SELECT * FROM config_database;")
+            user_handle.send_query("SELECT * FROM email_list;")
             return True
 
         except Exception as e:
@@ -298,8 +314,8 @@ class Postgre_Install:
         user_handle.send_command("""INSERT INTO people_database (
     employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department
 ) VALUES
-    (1111, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '1111.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
-    (1112, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '1112.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice')
+    (11111111, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '1111.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
+    (22222222, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '1112.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice')
 ON CONFLICT (employee_id)
 DO UPDATE SET
     first_name = EXCLUDED.first_name,
@@ -368,3 +384,10 @@ DO UPDATE SET
             print(f"User {dropUser} deleted")
         except Exception as e:
             print(f"Failed to drop user '{dropUser}': {e}")
+    
+
+    def drop_tables(self, table_name):
+        try:
+            self.admin.send_command(f"DROP TABLE IF EXISTS {table_name} CASCADE;")
+        except Exception as e:
+            print(f"Failed to drop {table_name}")

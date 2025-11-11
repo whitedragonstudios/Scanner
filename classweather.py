@@ -52,7 +52,6 @@ class weather_report():
         except requests.exceptions.RequestException as e:
             print("ERROR: weather.get_weather >>> api request >>>", e)
             WEATHER_response = "Error Weather Data"
-        print(WEATHER_response)
         return WEATHER_response
     
 

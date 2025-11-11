@@ -20,8 +20,8 @@ if __name__ == "__main__":
     # Load a config file which allows users to easily change settings
     cf = classSettings.Setting(user, password, db_name, port, host)
     config_dict =cf.assign_settings()
-    print(cf.company)
-    print(config_dict)
+    #print(cf.company)
+    #print(config_dict)
 
 # Check if people_database has entries. If it is empty immidiately open settings html to add employees.
 

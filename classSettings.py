@@ -49,5 +49,6 @@ class Setting:
         self.weather_key=data["weather_key"]
         self.country = data["country"]
         self.news_key = data["news_key"]
+        #self.emails = data["emails"]
         return data
         
