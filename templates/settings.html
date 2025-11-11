@@ -34,19 +34,27 @@
             <div class="danger">
                 <form action="/settings" method="post">
                     <h3>Restore default configuration settings</h3>
-                    <button id="restoreBtn" name = "action" value = "restore"
+                    <button id="restore" name = "action" value = "restore"
                     title="This will reset your configuration settings to factory defaults. ALL color schemes and API keys will be permanently lost">
                     Restore</button>
+                    <br><br><hr><br>
                     <h3> Reset email list</h3>
-                    <button id="clearEmails" name = "action" value = "clear"
+                    <button id="clear" name = "action" value = "clear"
                     title="This will permanently delete all emails which reports are sent to">
                     Reset</button>
-                    <h3>Delete employee database and timesheets</h3>
-                    <button id="deleteBtn" name = "action" value = "delete"
+                    <br><br><hr><br>
+                    <h3>Delete employee database</h3>
+                    <button id="delete_people" name = "action" value = "delete_people"
                     title="This will permanently delete all employee data and timesheets. Epmloyee information will a have to be re-entered any all timsehets will be lost forever">
                     Delete</button>
-                    <h3>Delete all databases and start a clean install of the entire program</h3>
-                    <button id="reinstallBtn"  name = "action" value = "clean"
+                    <br><br><hr><br>
+                    <h3>Delete timesheets database</h3>
+                    <button id="delete_timesheets" name = "action" value = "delete_timesheets"
+                    title="This will permanently delete all employee data and timesheets. Epmloyee information will a have to be re-entered any all timsehets will be lost forever">
+                    Delete</button>
+                    <br><br><hr><br>
+                    <h3>Reinstall app; delete all databases and start a clean install</h3>
+                    <button id="clean"  name = "action" value = "clean"
                     title="This will remove ALL data and reinitialize the entire system. Only use if there is a catastrophic failure and other troubleshooting is exhausted.">
                     Reinstall</button>
                 </form>
@@ -64,9 +72,14 @@
             <div class="content">
                 <!-- Left Div: forms -->
                 <div class="left-div">
+                    <h2>Change Company Name</h2>
+                    <form action="/settings" method="post">
+                        <input class="textBox" type="text" name="companyname" id="companyname" placeholder="{{ cf.company }}" maxlength="50" required>
+                        <button class="button" type="submit">Submit</button>
+                    </form>
                     <h2>Change City</h2>
                     <form action="/settings" method="post">
-                        <input class="textBox" type="text" name="config" value = "cityname" id="cityname" placeholder="{{ cf.webpage_title }}" maxlength="50" required>
+                        <input class="textBox" type="text" name="config" id="cityname" placeholder="{{ cf.city }}" maxlength="50" required>
                         <button class="button" type="submit">Submit</button>
                     </form>
                     <h2>API Keys</h2>
@@ -91,11 +104,6 @@
                         <input type="radio" id="monthly" name="send-reports" value="monthly">
                         <label for="javascript">Monthly</label>
                         <button>Submit</button>
-                    </form>
-                    <h3>Change Company Name</h3>
-                    <form action="/settings" method="post">
-                        <input class="textBox" type="text" name="companyname" id="companyname" placeholder="{{ cf.company }}" maxlength="50" required>
-                        <button class="button" type="submit">Submit</button>
                     </form>
                 </div>
                 <div class="middle-div">
@@ -152,7 +160,7 @@
                 <div class="right-div">
                    <h1> Update Database</h1>
                    <p> In order to facilitate easy data entry you can UPLOAD CSV, XLSX, and JSON files directly to the employee database.
-                        <br>Please refer to documentation for the schema of these files.
+                    Please refer to documentation for the schema of these files.
                     </p>
                     <br>
                     <form action="/settings" method="post" enctype="multipart/form-data">
@@ -162,21 +170,34 @@
                     </form>
                     <br>
                     <h2>Manual Entry</h2>
-                    <p> You can also enter each empplyees manually. Use commas to seperate each colmn, leave empty space for any blank entries. </p>
-                    <p> The database expects: id, first name, last name, email, phone, picture's filename.jpg, employee role, position, department </p>
+                    <p> Manually add, update, or remove an entry from the database</p>
                     <form action="/settings" method="post">
-                        <input type="text" id="fileUpload" name="manual" required>
-                        <button class = "color_button" type="Submit">Upload</button>
+                        <input type="radio" id="add" name="manual-entry-action" value="add" required>
+                        <label for="add">ADD</label>
+                        <input type="radio" id="update" name="manual-entry-action" value="update">
+                        <label for="update">UPDATE</label>
+                        <input type="radio" id="remove" name="manual-entry-action" value="remove">
+                        <label for="remove">REMOVE</label>
+
+                        <p>All fields must be filled. Enter 'None' if no change, 'NA' if blank.</p>
+
+                        <input type="number" id="idnumber" name="idnumber" placeholder="id: 12345678" required titel = "Enter id number of the employee you want to edit. If removing id is the only field needed all others can be none.">
+                        <input type="text" id="filename" name="filename" placeholder="picture filename: 12345678.jpg"  required title="Enter the filename of the employee's picture you want to edit. Be sure to include the file extension. ie .jpg or .png">
+                        <br>
+                        <input type="text" id="fname" name="fname" placeholder="first name: Marcus" title="Enter the first name of the employee you want to edit" required>
+                        <input type="text" id="lname" name="lname" placeholder="last name: Aurelius" title="Enter the last name of the employee you want to edit" required>
+                        <br>
+                        <input type="email" id="email" name="email" placeholder="e-mail: maurelius@scanner.com" maxlength="254"title="Enter the e-mail of the employee you want to edit. If updating and you want it skipped enter 'none@none.com" required>
+                        <input type="text" id="pnumber" name="pnumber" placeholder="phone: 800-555-1234" required maxlength="13" title="Enter the phone number of the employee you want to edit">
+                        <br>
+                        <input type="text" id="role" name="role" placeholder="role: Philosopher" required title="Enter the role of the employee you want to edit">
+                        <input type="text" id="position" name="position" placeholder="position: Emperor" required title="Enter the position of the employee you want to edit">
+                        <br>
+                        <input type="text" id="department" name="department" placeholder="department: Roman Empire" required title="Enter the department of the employee you want to edit">
+                        <br>
+                        <button type="submit">Submit</button>
                     </form>
-                    <h2>Update Entry</h2>
-                    <p> You can make a change to a single entry in the database.</p>
-                    <p> Enter the id number of the empolyee you want to edit ie: 0001 then the name of the key you want to change ie: employee role and the value you want to change it to ie: VP of Scoundrels </p>
-                    <form action="/settings" method="post">
-                        <input type="text" id="updateDB-id" name="updateDB-id" required placeholder="id: 0001">
-                        <input type="text" id="updateDB-key" name="updateDB-key" required placeholder="key: Employee Role">
-                        <input type="text" id="updateDB-value" name="updateDB-value" required placeholder="value: VP of Scoundrels">
-                        <button class = "color_button" type="Submit">Upload</button>
-                    </form>
+
                 </div>
             </div>
         </div>

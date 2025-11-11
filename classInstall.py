@@ -191,7 +191,8 @@ class Postgre_Install:
             user_handle.send_command("""
                 CREATE TABLE email_list(
                     key SERIAL PRIMARY KEY,
-                    email VARCHAR(255)
+                    email VARCHAR(255),
+                    freqency VARCHAR(8)
                 );
             """)
 

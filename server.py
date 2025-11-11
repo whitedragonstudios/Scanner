@@ -87,13 +87,16 @@ def settings():
                 user_handle.send_command("DELETE FROM email_list;")
                 user_handle.send_query("SELECT * FROM email_list;")
                 msg = "Email list cleared"
-            elif action == "delete":
+            elif action == "delete_people":
                 print("db reset")
                 user_handle.send_command("DELETE FROM people_database;")
                 user_handle.send_query("SELECT * FROM people_database;")
+                msg = "Employee database deleted"
+            elif action == "delete_timesheets":
+                print("db reset")
                 user_handle.send_command("DELETE FROM timesheet_database;")
                 user_handle.send_query("SELECT * FROM timesheet_database;")
-                msg = "Employee and timesheet database deleted!"
+                msg = "Timesheet database deleted"
             elif action == "clean":
                 uninstall.drop_tables('people_database')
                 uninstall.drop_tables('timesheet_database')
@@ -157,33 +160,78 @@ def settings():
                 except Exception as e:
                     flash(f"Failed to import data: {e}", "error")
 
-                return redirect("/settings")
+                return redirect(url_for("frontend.settings"))
 
 
         # manual database entry
-        if "manual" in request.form:
-            manual_input = request.form.get("manual")
-            input_list = [item.strip() for item in manual_input.split(",")]
-            print(input_list)
+        if 'manual-entry-action' in request.form:
+            action = request.form.get('manual-entry-action')
             try:
-                if len(input_list) == 9:
-                    user_handle.send_command(f"""
-                        INSERT INTO people_database (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES (
-                        {int(input_list[0])}, '{input_list[1]}', '{input_list[2]}', '{input_list[3]}', '{input_list[4]}', '{input_list[5]}', '{input_list[6]}', '{input_list[7]}', '{input_list[8]}');""")
-                    name = user_handle.send_query(f"SELECT first_name, last_name FROM people_database WHERE employee_id = '{input_list[0]}'")
-                    flash(f"Manual entry received: {name[0][1],name[0][1]} added to people database", "success")
-                else:
-                    flash(f"Manual input not valid make sure all fields are entered, blank fields can use comma space comma: {manual_input}", "warning")
+                employee_id = int(request.form.get('idnumber'))
+                first_name = request.form.get('fname').strip().title()
+                last_name = request.form.get('lname').strip().title()
+                email = request.form.get('email').strip().lower()
+                phone = request.form.get('pnumber').strip()
+                pic_path = request.form.get('filename').strip()
+                employee_role = request.form.get('role').strip().title()
+                position = request.form.get('position').strip().title()
+                department = request.form.get('department').strip().title()
             except Exception as e:
-                flash(f"Failed to insert: {e}", "error")
-            return redirect(url_for("frontend.settings"))
+                flash(f"Error parsing form input: {e}", "error")
+                return redirect(url_for("frontend.settings"))
 
-        # update entry (id, key, value)
-        if all(k in request.form for k in ("updateDB-id", "updateDB-key", "updateDB-value")):
-            update_id = request.form.get("updateDB-id")
-            update_key = request.form.get("updateDB-key")
-            update_value = request.form.get("updateDB-value")
-            flash(f"Updated record {update_id}: {update_key} = {update_value}", "info")
+            if action == "add":
+                try:
+                    user_handle.send_command(f"""
+                        INSERT INTO people_database 
+                        (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department)
+                        VALUES
+                        ({employee_id}, '{first_name}', '{last_name}', '{email}', '{phone}', '{pic_path}', '{employee_role}', '{position}', '{department}')
+                        ON CONFLICT (employee_id) DO NOTHING;
+                    """)
+                    flash(f"Added {first_name} {last_name} to the database", "success")
+                except Exception as e:
+                    flash(f"Failed to add entry: {e}", "error")
+
+            elif action == "update":
+                try:
+                    fields = {
+                        "first_name": first_name,
+                        "last_name": last_name,
+                        "email": email,
+                        "phone": phone,
+                        "pic_path": pic_path,
+                        "employee_role": employee_role,
+                        "position": position,
+                        "department": department
+                    }
+                    update_fields = {k: v for k, v in fields.items() if v.lower() not in ["none, none@none.com"]}
+                    if update_fields:
+                        key_values = ""
+                        for k, v in update_fields.items():
+                            if key_values:
+                                key_values += ", "
+                            key_values += f"{k} = '{v}'"
+                        user_handle.send_command(f"UPDATE people_database SET {key_values} WHERE employee_id = {employee_id};")
+                        flash(f"Updated employee ID {fields['first_name']} {fields['last_name']} in the database", "success")
+                    else:
+                        flash("No valid fields to update", "warning")
+
+                except Exception as e:
+                    flash(f"Failed to update entry: {e}", "error")
+            elif action == "remove":
+                try:
+                    user_handle.send_command(f"""
+                        DELETE FROM people_database
+                        WHERE employee_id = {employee_id};
+                    """)
+                    flash(f"Removed employee ID {employee_id} from the database", "success")
+                except Exception as e:
+                    flash(f"Failed to remove entry: {e}", "error")
+
+            else:
+                flash("Invalid action selected", "warning")
+
             return redirect(url_for("frontend.settings"))
 
     return render_template("settings.html", cf=config)
