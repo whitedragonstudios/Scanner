@@ -13,7 +13,7 @@ class Handler:
 
     # Connect handles connections to database
     def connect(self):
-        # info flag is for debugging it shows which settings where used for connect.
+        # info flag is for debugging it shows which settings where used for connecting.
         if self.info:
             print(f"""Connecting...
                 ---Database: {self.dbname}
@@ -38,8 +38,10 @@ class Handler:
     # this method reports errors from the server and reports them to python.
     def report_error(self, e):
         print("\n\n!!! PostgreSQL Error !!!")
+        # Capture the error message if it exists.
         msg = e.pgerror.strip() if e.pgerror else str(e)
         print(f"Message: {msg}")
+        # Handles different types of messages
         if hasattr(e, 'diag') and e.diag:
             print(f"SQLSTATE: {e.pgcode}")
             if getattr(e.diag, 'message_detail', None):
@@ -53,55 +55,71 @@ class Handler:
     def send_command(self, cmd):
         conn = None
         cur = None
+        # Try making the connection
         try:
             conn = self.connect()
             cur = conn.cursor()
             print(f"<<< Executing command >>>")
             print(cmd)
+            # Exacutes the command
             cur.execute(cmd)
+            # Commmt explicit
             conn.commit()
             print(f">>> Executed command <<<")
+            # Print feedback
             for notice in conn.notices:
                 print("NOTICE:", notice)
         except psycopg2.Error as e:
+            # Close and roll back the connection attempt
             if conn and not conn.closed:
                 conn.rollback()
             self.report_error(e)
             raise e
+        # Close the connection after each command
         finally:
             if cur: cur.close()
             if conn: conn.close()
+        # Adding a parameter to keep the connection open may be better for scale but UX and large scale testing required
 
 
-    # Open file (not working permissions error) allows the use of sql scripts for sending complex commands to the server
+    # Open file (not working 11/12/25 permissions error) allows the use of sql scripts for sending complex commands to the server
     def open_file(self, filename):
+        # check the path to the file
         if not os.path.exists(filename):
             print(f"Cannot locate file: {filename}")
             return
         conn = None
         cur = None
+        # Try to establish connection
         try:
             conn = self.connect()
             cur = conn.cursor()
             print(f"<<< Processing SQL script >>>\n{filename}")
+            # Open the file and read into memory
             with open(filename, 'r') as f:
                 sql_script = f.read()
+            # Seperate multiple SQL commands based on ;
             statements = sql_script.split(";")
             clean_statements = []
+            # Cleans out SQL comments
             for stmt in statements:
                 stmt = stmt.strip()
                 if stmt and not stmt.startswith("--"):
                     clean_statements.append(stmt)
+            # Exacutes each command
             for stmt in clean_statements:
                 print(stmt)
                 cur.execute(stmt)
+            # Explicit Commmit
             conn.commit()
             print(f">>> Executed SQL file <<<")
         except psycopg2.Error as e:
+            # Close and roll back the connection attempt
             if conn and not conn.closed:
                 conn.rollback()
             self.report_error(e)
             raise e
+        # Close the connection after all commands have completed.
         finally:
             if cur: cur.close()
             if conn: conn.close()
@@ -112,30 +130,39 @@ class Handler:
         conn = None
         cur = None
         results = []
+        # Attemps connection
         try:
             conn = self.connect()
             cur = conn.cursor()
             print(f"<<< Executing Query >>>")
             print(query)
+            # Excecute query
             cur.execute(query)
+            # Fetch the results of the query returns a tuple
             results = cur.fetchall()
             print("--- Query Results ---")
+            # Print each row as a list of tuples
             for row in results:
                 print(row)
             print("--- End Results ---")
             print(f">>> Query Exacuted <<<")
+            # Capture feedback
             for notice in conn.notices:
                 print("NOTICE:", notice)
             return results
         except psycopg2.Error as e:
+            # Roll back and release if connection fails.
             self.report_error(e)
             raise e
+        # Close the connection after each command
         finally:
             if cur: cur.close()
             if conn: conn.close()
     
 
-    # Request config is a specific case for loading the config files. May be replaced by send_query as they are almost the same.
+    # Depreciate in next sprint and replace with send query
+    # request_config(self)
+    # Query looks like: Handler instance .send_query("SELECT key, value FROM config_database;")
     def request_config(self):
         conn = None
         cur = None
@@ -159,22 +186,27 @@ class Handler:
             if conn: conn.close()
     
 
-    # update config (untested) is a method to update specific config setting from the menu.html page.
+    # Modify in next sprint ADD database parameter.
     def update_config(self, key, value):
         conn = None
         cur = None
+        db = 'config_database' # temp patch
+        # Try connection
         try:
             conn = self.connect()
             cur = conn.cursor()
-            cur.execute("UPDATE config_database SET value = %s WHERE key = %s;", (value, key)) 
+            # Execute update command 
+            cur.execute("UPDATE %s SET value = %s WHERE key = %s;", (db, value, key))  # Modify to account for collisions
             conn.commit() 
             print(f"Configuration key '{key}' updated successfully.")
         except psycopg2.Error as e:
+            # If conenction fails rollback
             print(f"Database error during config update: {e}")
             if conn and not conn.closed:
                 conn.rollback()
             self.report_error(e)
             raise e
+        # Close connection
         finally: 
             if cur: cur.close()
             if conn: conn.close()
