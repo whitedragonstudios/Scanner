@@ -108,8 +108,8 @@
                     <br>
                     <h2> Email Notifications</h2>
                     <p> Enter the email addresses where reports can be sent to.</p>
-                    <form>
-                        <input type="email" name="emails" multiple name="emails" id="emails" placeholder="marcus.aurelius@scanner.com" maxlength="50" required title="You may enter multiple emails seperated by commass. Or enter each email and frequency seperately">
+                    <form action="/settings" method="post">
+                        <input type="email" name="emails" id="emails" placeholder="marcus.aurelius@scanner.com" maxlength="254" required title="Enter the email which you want reports to be sent to.">
                         <p>Select how frequently reports should be e-mailed</p>
                         <input type="radio" id="daily" name="send-reports" value="daily">
                         <label for="html">Daily</label>
@@ -117,7 +117,7 @@
                         <label for="css">Weekly</label>
                         <input type="radio" id="monthly" name="send-reports" value="monthly">
                         <label for="javascript">Monthly</label>
-                        <button>Submit</button>
+                        <button type="submit">Submit</button>
                     </form>
                 </div>
                 <div class="middle-div">

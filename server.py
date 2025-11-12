@@ -169,6 +169,19 @@ def settings():
             user_handle.send_query("SELECT * FROM config_database;")
             flash("Colors restored to defaults", "sucess")
 
+        # Emails
+        if "emails" in request.form:
+            report_email = request.form.get("emails").strip().lower().replace("'", "''")
+            freq = request.form.get("send-reports").strip().lower().replace("'", "''")
+            try:
+                user_handle.send_command(f"INSERT INTO email_list (email, frequency) VALUES ('{report_email}', '{freq}');")
+                user_handle.send_query(f"SELECT (email, frequency) FROM email_list WHERE email = '{report_email}';")
+                flash(f"Sucessfully added {report_email} at frequency {freq }into database", "success")
+            except Exception as e:
+                flash(f"Failed to insert {report_email} into database: {e}", "error")
+            return redirect(url_for("frontend.settings"))
+
+
         # color updates dynamically
         if request.form.get("form_type") == "colors":
                 for key, value in request.form.items():
@@ -292,7 +305,7 @@ def settings():
 
             return redirect(url_for("frontend.settings"))
         
-        # EMAIL Section
+        
     
     config = Setting(user, password, db_name, port, host)
     news = News_Report(config.country, config.news_key)

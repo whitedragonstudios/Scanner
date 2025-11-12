@@ -192,7 +192,7 @@ class Postgre_Install:
                 CREATE TABLE email_list(
                     key SERIAL PRIMARY KEY,
                     email VARCHAR(255),
-                    freqency VARCHAR(8)
+                    frequency VARCHAR(8)
                 );
             """)
 

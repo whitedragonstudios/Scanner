@@ -13,9 +13,8 @@ Fourth Sprint 11/3 - present
 
 Review:
 1) intergration was easy. Shoudl research classses in flask for further extensibility
-2) 
-
-3) 
+2) Handler works for this. made everything in settings func but may be better to make a seperate class.
+3) Handler can handle most interatations. It may be better organization to make some settings into their own class/functions
 4) completed weather class and implimented in home.html
 5) completed news class and implimented in home.html may need to adjust to refresh periodically.
 6) completed quote class and implimented in home.html
