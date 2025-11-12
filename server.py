@@ -83,8 +83,38 @@ def settings():
         if action:
             uninstall = Postgre_Install("postgres", password, db_name, port, host)
             if action == "restore":
-                msg = "Configuration restored to defaults"
                 # Get Handler.open_file working
+                user_handle.send_command("DELETE FROM config_database;")
+                user_handle.send_query("SELECT * FROM config_database;")
+                user_handle.send_command("""
+                INSERT INTO config_database (key, value) VALUES
+                    ('config_status', 'False'),
+                    ('config_date', '2025-01-01'),
+                    ('CSV_path', NULL),
+                    ('XLSX_path', NULL),
+                    ('JSON_path', NULL),
+                    ('webpage_title', 'Populus Numerus'),
+                    ('company','Scanner'),         
+                    ('main_background_color','#0a0a1f'),
+                    ('main_text_color','#f0f0f0'),
+                    ('content_color', '#1c1c33'),
+                    ('content_text_color', '#ffffff'),
+                    ('sidebar_color','#193763'),
+                    ('sidebar_text_color','#ffffff'),   
+                    ('button_color','#1a73ff'),
+                    ('button_text_color','#ffffff'),
+                    ('button_hover_color','#0050b3'),
+                    ('border_color','#3399ff'),
+                    ('city', 'New York City'),
+                    ('lon', '-74.0060152'),
+                    ('lat', '40.7127281'),
+                    ('weather_key', 'baeb0ce1961c460b651e6a3a91bfeac6'),
+                    ('country', 'us'),
+                    ('news_key', '04fbd2b9df7b49f6b6a626b4a4ae36be');
+            """)
+                user_handle.send_query("SELECT * FROM config_database;")
+                msg = "Configuration restored to defaults"
+
             elif action == "clear":
                 print("emails cleared")
                 user_handle.send_command("DELETE FROM email_list;")
@@ -137,10 +167,12 @@ def settings():
 
 
         # color updates dynamically
-        for key, value in request.form.items():
-            if hasattr(config, key):
-                setattr(config, key, value)
-                flash(f"{key} updated!", "success")
+        if request.form.get("form_type") == "colors":
+                for key, value in request.form.items():
+                    if hasattr(config, key):
+                        setattr(config, key, value)
+                        user_handle.update_config(key, value)
+                        flash(f"{key} updated!", "success")
                 return redirect(url_for("frontend.settings"))
 
         # file upload

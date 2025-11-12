@@ -69,6 +69,20 @@
                 <a href="/settings">Settings</a>
             </div>
             <h1>Configuration Settings</h1>
+
+            <div id="flash-messages">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash {{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+
             <div class="content">
                 <!-- Left Div: forms -->
                 <div class="left-div">
@@ -107,55 +121,45 @@
                     </form>
                 </div>
                 <div class="middle-div">
-                    <h1>Color<br>Schemes</h1>
-                    <!-- Main -->
-                    <h3>Main Background</h3>
-                    <form action="/settings" method="post">
-                        <input class="color-text-box" type="color" name="mbgcolor" id="mbgcolor" value="{{ cf.main_background_color }}" required>
-                        <button class="color_button" type="submit">Update Color</button>
-                    </form>
-                    <form action="/settings" method="post">
-                        <input class="color-text-box" type="color" name="mtxtcolor" id="mtxtcolor" value="{{ cf.main_text_color }}" required>
-                        <button class="color_button" type="submit">Update Text</button>
-                    </form>
-                    <!-- Content -->
-                    <h3>Content</h3>
-                    <form action="/settings" method="post">
-                        <input class="color-text-box" type="color" name="cbgcolor" id="cbgcolor" value="{{ cf.content_color }}" required>
-                        <button class="color_button" type="submit">Update Color</button>
-                    </form>
-                    <form action="/settings" method="post">
-                        <input class="color-text-box" type="color" name="ctxtcolor" id="ctxtcolor" value="{{ cf.content_text_color }}" required>
-                        <button class="color_button" type="submit">Update Text</button>
-                    </form>
-                    <h3>Sidebar</h3>
-                    <form action="/settings" method="post">
-                        <input class="color-text-box" type="color" name="sbgcolor" id="sbgcolor" value="{{ cf.sidebar_color }}" required>
-                        <button class="color_button" type="submit">Update Color</button>
-                    </form>
-                    <form action="/settings" method="post">
-                        <input class="color-text-box" type="color" name="stxtcolor" id="stxtcolor" value="{{ cf.sidebar_text_color }}" required>
-                        <button class="color_button" type="submit">Update Text</button>
-                    </form>
-                    <h3>Buttons</h3>
-                    <form action="/settings" method="post">
-                        <input class="color-text-box" type="color" name="bbgcolor" id="bbgcolor" value="{{ cf.button_color }}" required>
-                        <button class="color_button" type="submit">Update Color</button>
-                    </form>
-                    <form action="/settings" method="post">
-                        <input class="color-text-box" type="color" name="btxtcolor" id="btxtcolor" value="{{ cf.button_text_color }}" required>
-                        <button class="color_button" type="submit">Update Text</button>
-                    </form>
-                    <form action="/settings" method="post">
-                        <input class="color-text-box" type="color" name="bhovercolor" id="bhovercolor" value="{{ cf.button_hover_color }}" required>
-                        <button class="color_button" type="submit">Update Hover</button>
-                    </form>
-                    <h3>Border</h3>
-                    <form action="/settings" method="post">
-                        <input class="color-text-box" type="color" name="bordercolor" id="bordercolor" value="{{ cf.border_color }}" required>
-                        <button class="color_button" type="submit">Update Border</button>
-                    </form>
+                    <div class="color-section">
+                        <h1>Color Schemes</h1>
+                        <form action="/settings" method="post">
+                            <!-- Main Background -->
+                            <div class="color-row">
+                                <label for="main_background_color">Main Background</label>
+                                <input class="color-text-box" type="color" name="main_background_color" id="main_background_color" value="{{ cf.main_background_color }}" required>
+                                <input class="color-text-box" type="color" name="main_text_color" id="main_text_color" value="{{ cf.main_text_color }}" required>
+                            </div>
+                            <!-- Content -->
+                            <div class="color-row">
+                                <label for="content_color">Content</label>
+                                <input class="color-text-box" type="color" name="content_color" id="content_color" value="{{ cf.content_color }}" required>
+                                <input class="color-text-box" type="color" name="content_text_color" id="content_text_color" value="{{ cf.content_text_color }}" required>
+                            </div>
+                            <!-- Sidebar -->
+                            <div class="color-row">
+                                <label for="sidebar_color">Sidebar</label>
+                                <input class="color-text-box" type="color" name="sidebar_color" id="sidebar_color" value="{{ cf.sidebar_color }}" required>
+                                <input class="color-text-box" type="color" name="sidebar_text_color" id="sidebar_text_color" value="{{ cf.sidebar_text_color }}" required>
+                            </div>
+                            <!-- Buttons -->
+                            <div class="color-row">
+                                <label for="button_color">Buttons</label>
+                                <input class="color-text-box" type="color" name="button_color" id="button_color" value="{{ cf.button_color }}" required>
+                                <input class="color-text-box" type="color" name="button_text_color" id="button_text_color" value="{{ cf.button_text_color }}" required>
+                                <input class="color-text-box" type="color" name="button_hover_color" id="button_hover_color" value="{{ cf.button_hover_color }}" required>
+                            </div>
+                            <!-- Border -->
+                            <div class="color-row">
+                                <label for="border_color">Border</label>
+                                <input class="color-text-box" type="color" name="border_color" id="border_color" value="{{ cf.border_color }}" required>
+                            </div>
+                            <button class="color_button" type="submit">Apply Colors</button>
+                            <input type="hidden" name="form_type" value="colors">
+                        </form>
+                    </div>
                 </div>
+
 
                 <div class="right-div">
                    <h1> Update Database</h1>
@@ -202,15 +206,6 @@
             </div>
         </div>
     </div>
-    <!--<script src="{{ url_for('static', filename='js/danger.js') }}"></script>-->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="flashes">
-                {% for category, message in messages %}
-                    <li class="{{ category }}">{{ message }}</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
+    <script src="{{ url_for('static', filename='js/settings_script.js') }}"></script>
 </body>
 </html>

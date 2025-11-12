@@ -40,3 +40,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Map input IDs to CSS variables
+    const colorMap = {
+        main_background_color: "--bg-color",
+        main_text_color: "--text-color",
+        content_color: "--content-color",
+        content_text_color: "--content-text-color",
+        sidebar_color: "--sidebar-color",
+        sidebar_text_color: "--sidebar-text-color",
+        button_color: "--button-color",
+        button_text_color: "--button-text-color",
+        button_hover_color: "--button-hover-color",
+        border_color: "--border-color"
+    };
+
+    // For each color input, listen for changes
+    Object.keys(colorMap).forEach(inputId => {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+
+        input.addEventListener("input", (e) => {
+            const cssVar = colorMap[inputId];
+            const value = e.target.value;
+            document.documentElement.style.setProperty(cssVar, value);
+        });
+    });
+});
