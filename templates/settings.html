@@ -154,8 +154,11 @@
                                 <label for="border_color">Border</label>
                                 <input class="color-text-box" type="color" name="border_color" id="border_color" value="{{ cf.border_color }}" required>
                             </div>
-                            <button class="color_button" type="submit">Apply Colors</button>
+                            <button class="color_button" type="submit">Save Colors</button>
                             <input type="hidden" name="form_type" value="colors">
+                        </form>
+                        <form form action="/settings" method="post">
+                            <button class="color_button" type="submit" id="reset_colors" name="reset_colors">Reset Colors</button>
                         </form>
                     </div>
                 </div>

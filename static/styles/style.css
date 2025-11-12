@@ -356,7 +356,7 @@ h1 {
     color: #fff;
     font-weight: bold;
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    animation: fadeInOut 4s forwards;
+    animation: fadeInOut 10s forwards;
 }
 
 /* Different styles per category */

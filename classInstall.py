@@ -315,8 +315,8 @@ class Postgre_Install:
         user_handle.send_command("""INSERT INTO people_database (
     employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department
 ) VALUES
-    (11111111, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '1111.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
-    (22222222, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '1112.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice')
+    (11111111, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '11111111.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
+    (22222222, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '22222222.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice')
 ON CONFLICT (employee_id)
 DO UPDATE SET
     first_name = EXCLUDED.first_name,

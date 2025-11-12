@@ -11,20 +11,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const actions = [
-        {
-            id: "restoreBtn",
-            confirmMsg: "Are you sure you want to restore default configuration settings?"
+        {id: "restore",
+        confirmMsg: "Are you sure you want to restore default configuration settings?"
         },
-        {
-            id: "clearEmails",
+        {id: "clear",
             confirmMsg: "Delete all stored emails? You will need to add at least one email for reports to be sent to."
         },
-        {
-            id: "deleteBtn",
-            confirmMsg: "This will permanently delete employee database and timesheets. Continue?"
+        {id: "delete_people",
+            confirmMsg: "This will permanently delete employee database. Continue?"
+        },
+        {id: "delete_timesheet",
+            confirmMsg: "This will permanently delete timesheet database. Continue?"
         },
         {
-            id: "reinstallBtn",
+            id: "clean",
             confirmMsg: "WARNING: This will delete all data and reinstall the program. Are you absolutely sure?"
         }
     ];

@@ -48,19 +48,19 @@ def home():
     if request.method == 'POST':
         idscan = request.form.get('idscan')
         if not idscan:
-            employee = Default_Person(recent_list)
+            employee = Default_Person(recent_list, idscan)
         else:
             try:
                 employee = Person(idscan, recent_list)
             except Exception as e:
                 print(f"Error: home Person failed to find mathcing ID {e}")
-                employee = Default_Person(recent_list)
+                employee = Default_Person(recent_list, idscan)
         recent_list = employee.recent
 
     # Pass idnumber to person object. Person object returns name, group, time, and image (if availible)
     return render_template("home.html", 
                            recent_people = recent_list,
-                           scan = employee or Default_Person(recent_list),
+                           scan = employee or Default_Person(recent_list, idscan),
                            date=dt.now().strftime("%m-%d-%y"),
                             time=dt.now().strftime("%H:%M"),
                            cf = config,
@@ -83,35 +83,23 @@ def settings():
         if action:
             uninstall = Postgre_Install("postgres", password, db_name, port, host)
             if action == "restore":
-                # Get Handler.open_file working
-                user_handle.send_command("DELETE FROM config_database;")
-                user_handle.send_query("SELECT * FROM config_database;")
-                user_handle.send_command("""
-                INSERT INTO config_database (key, value) VALUES
-                    ('config_status', 'False'),
-                    ('config_date', '2025-01-01'),
-                    ('CSV_path', NULL),
-                    ('XLSX_path', NULL),
-                    ('JSON_path', NULL),
-                    ('webpage_title', 'Populus Numerus'),
-                    ('company','Scanner'),         
-                    ('main_background_color','#0a0a1f'),
-                    ('main_text_color','#f0f0f0'),
-                    ('content_color', '#1c1c33'),
-                    ('content_text_color', '#ffffff'),
-                    ('sidebar_color','#193763'),
-                    ('sidebar_text_color','#ffffff'),   
-                    ('button_color','#1a73ff'),
-                    ('button_text_color','#ffffff'),
-                    ('button_hover_color','#0050b3'),
-                    ('border_color','#3399ff'),
-                    ('city', 'New York City'),
-                    ('lon', '-74.0060152'),
-                    ('lat', '40.7127281'),
-                    ('weather_key', 'baeb0ce1961c460b651e6a3a91bfeac6'),
-                    ('country', 'us'),
-                    ('news_key', '04fbd2b9df7b49f6b6a626b4a4ae36be');
-            """)
+                config_list = {
+                    'config_status': 'True',
+                    'config_date': dt.now().strftime("%m-%d-%y"),
+                    'CSV_path': None,
+                    'XLSX_path': None,
+                    'JSON_path': None,
+                    'webpage_title': 'Populus Numerus',
+                    'company': 'Scanner',
+                    'city': 'New York City',
+                    'lon': '-74.0060152',
+                    'lat': '40.7127281',
+                    'weather_key': 'baeb0ce1961c460b651e6a3a91bfeac6',
+                    'country': 'us',
+                    'news_key': '04fbd2b9df7b49f6b6a626b4a4ae36be'
+                }
+                for key, value in config_list.items():
+                    user_handle.update_config(key,value)
                 user_handle.send_query("SELECT * FROM config_database;")
                 msg = "Configuration restored to defaults"
 
@@ -165,6 +153,21 @@ def settings():
             msg = "News key updated"
 
 
+        if "reset_colors" in request.form:
+            colors = {'main_background_color':'#0a0a1f',
+                    'main_text_color':'#f0f0f0',
+                    'content_color': '#1c1c33',
+                    'content_text_color': '#ffffff',
+                    'sidebar_color':'#193763',
+                    'sidebar_text_color':'#ffffff',
+                    'button_color':'#1a73ff',
+                    'button_text_color':'#ffffff',
+                    'button_hover_color':'#0050b3',
+                    'border_color':'#3399ff'}
+            for key,value in colors.items():
+                user_handle.update_config(key,value)
+            user_handle.send_query("SELECT * FROM config_database;")
+            flash("Colors restored to defaults", "sucess")
 
         # color updates dynamically
         if request.form.get("form_type") == "colors":
@@ -172,7 +175,7 @@ def settings():
                     if hasattr(config, key):
                         setattr(config, key, value)
                         user_handle.update_config(key, value)
-                        flash(f"{key} updated!", "success")
+                        flash(f"{key} updated", "success")
                 return redirect(url_for("frontend.settings"))
 
         # file upload
@@ -248,20 +251,33 @@ def settings():
                         "position": position,
                         "department": department
                     }
-                    update_fields = {k: v for k, v in fields.items() if v.lower() not in ["none, none@none.com"]}
+                    def is_skip(v):
+                        if v is None:
+                            return True
+                        s = str(v).strip().lower()
+                        return s in {"", " ", "none", "none@none.com"}
+
+                    update_fields = {k: v for k, v in fields.items() if not is_skip(v)}
+
                     if update_fields:
-                        key_values = ""
+                        kv_parts = []
                         for k, v in update_fields.items():
-                            if key_values:
-                                key_values += ", "
-                            key_values += f"{k} = '{v}'"
-                        user_handle.send_command(f"UPDATE people_database SET {key_values} WHERE employee_id = {employee_id};")
-                        flash(f"Updated employee ID {fields['first_name']} {fields['last_name']} in the database", "success")
+                            safe_v = str(v).replace("'", "''")
+                            kv_parts.append(f"{k} = '{safe_v}'")
+                        key_values = ", ".join(kv_parts)
+
+                        user_handle.send_command(
+                            f"UPDATE people_database SET {key_values} WHERE employee_id = {int(employee_id)};"
+                        )
+                        flash(f"Updated employee ID {employee_id} in the database {key_values}", "success")
                     else:
                         flash("No valid fields to update", "warning")
+                except Exception as e:
+                    flash(f"Update failed: {e}", "error")
 
                 except Exception as e:
                     flash(f"Failed to update entry: {e}", "error")
+
             elif action == "remove":
                 try:
                     user_handle.send_command(f"""
@@ -271,11 +287,12 @@ def settings():
                     flash(f"Removed employee ID {employee_id} from the database", "success")
                 except Exception as e:
                     flash(f"Failed to remove entry: {e}", "error")
-
             else:
                 flash("Invalid action selected", "warning")
 
             return redirect(url_for("frontend.settings"))
+        
+        # EMAIL Section
     
     config = Setting(user, password, db_name, port, host)
     news = News_Report(config.country, config.news_key)

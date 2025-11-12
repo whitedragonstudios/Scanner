@@ -5,7 +5,7 @@
         "last_name": "Darklighter",
         "email": "biggs.darklighter@scanner.com",
         "phone": "+1-555-509-8596",
-        "pic_path": "/images/76053925.jpg",
+        "pic_path": "76053925.jpg",
         "employee_role": "Associate",
         "position": "Coordinator",
         "department": "Security & Strategy"
@@ -16,7 +16,7 @@
         "last_name": "Admiral",
         "email": "ackbar.admiral@scanner.com",
         "phone": "+1-555-723-4297",
-        "pic_path": "/images/11551099.jpg",
+        "pic_path": "11551099.jpg",
         "employee_role": "Associate",
         "position": "Analyst",
         "department": "Rebel Relations"
@@ -27,7 +27,7 @@
         "last_name": "Fisto",
         "email": "kit.fisto@scanner.com",
         "phone": "+1-555-859-4387",
-        "pic_path": "/images/16913356.jpg",
+        "pic_path": "16913356.jpg",
         "employee_role": "Support Specialist",
         "position": "Technician",
         "department": "Security & Strategy"
@@ -38,7 +38,7 @@
         "last_name": "Vader",
         "email": "darth.vader@scanner.com",
         "phone": "+1-555-592-2257",
-        "pic_path": "/images/23877456.jpg",
+        "pic_path": "23877456.jpg",
         "employee_role": "Project Lead",
         "position": "Analyst",
         "department": "Droid Services"
@@ -49,7 +49,7 @@
         "last_name": "Clone",
         "email": "rex.clone@scanner.com",
         "phone": "+1-555-918-5322",
-        "pic_path": "/images/96338500.jpg",
+        "pic_path": "96338500.jpg",
         "employee_role": "Associate",
         "position": "Manager",
         "department": "Droid Services"
@@ -60,7 +60,7 @@
         "last_name": "D an",
         "email": "figrin.dan@scanner.com",
         "phone": "+1-555-134-8627",
-        "pic_path": "/images/58438572.jpg",
+        "pic_path": "58438572.jpg",
         "employee_role": "Project Lead",
         "position": "Technician",
         "department": "Security & Strategy"
@@ -71,7 +71,7 @@
         "last_name": "SO",
         "email": "k2.so@scanner.com",
         "phone": "+1-555-163-6151",
-        "pic_path": "/images/66851394.jpg",
+        "pic_path": "66851394.jpg",
         "employee_role": "Support Specialist",
         "position": "Analyst",
         "department": "Droid Services"
@@ -82,7 +82,7 @@
         "last_name": "Skywalker",
         "email": "luke.skywalker@scanner.com",
         "phone": "+1-555-354-6410",
-        "pic_path": "/images/86262169.jpg",
+        "pic_path": "86262169.jpg",
         "employee_role": "Support Specialist",
         "position": "Coordinator",
         "department": "Security & Strategy"
@@ -93,7 +93,7 @@
         "last_name": "Wilhuff",
         "email": "tarkin.wilhuff@scanner.com",
         "phone": "+1-555-648-7507",
-        "pic_path": "/images/27265478.jpg",
+        "pic_path": "27265478.jpg",
         "employee_role": "Project Lead",
         "position": "Analyst",
         "department": "Security & Strategy"
@@ -104,7 +104,7 @@
         "last_name": "Sing",
         "email": "aurra.sing@scanner.com",
         "phone": "+1-555-609-6356",
-        "pic_path": "/images/12365101.jpg",
+        "pic_path": "12365101.jpg",
         "employee_role": "Associate",
         "position": "Manager",
         "department": "Droid Services"
@@ -115,7 +115,7 @@
         "last_name": "Dune",
         "email": "cara.dune@scanner.com",
         "phone": "+1-555-984-4985",
-        "pic_path": "/images/23153615.jpg",
+        "pic_path": "23153615.jpg",
         "employee_role": "Support Specialist",
         "position": "Technician",
         "department": "Security & Strategy"
@@ -126,7 +126,7 @@
         "last_name": "Captain",
         "email": "phasma.captain@scanner.com",
         "phone": "+1-555-647-6231",
-        "pic_path": "/images/53912868.jpg",
+        "pic_path": "53912868.jpg",
         "employee_role": "Project Lead",
         "position": "Analyst",
         "department": "Rebel Relations"
@@ -137,7 +137,7 @@
         "last_name": "Crimson",
         "email": "qira.crimson@scanner.com",
         "phone": "+1-555-129-2753",
-        "pic_path": "/images/82801583.jpg",
+        "pic_path": "82801583.jpg",
         "employee_role": "Support Specialist",
         "position": "Technician",
         "department": "Security & Strategy"
@@ -148,7 +148,7 @@
         "last_name": "Carlist",
         "email": "rieekan.carlist@scanner.com",
         "phone": "+1-555-611-5432",
-        "pic_path": "/images/59335103.jpg",
+        "pic_path": "59335103.jpg",
         "employee_role": "Senior Officer",
         "position": "Analyst",
         "department": "Security & Strategy"
@@ -159,7 +159,7 @@
         "last_name": "Nest",
         "email": "enfys.nest@scanner.com",
         "phone": "+1-555-573-8475",
-        "pic_path": "/images/22219010.jpg",
+        "pic_path": "22219010.jpg",
         "employee_role": "Associate",
         "position": "Manager",
         "department": "Rebel Relations"
@@ -170,7 +170,7 @@
         "last_name": "Organa",
         "email": "leia.organa@scanner.com",
         "phone": "+1-555-404-8475",
-        "pic_path": "/images/82624315.jpg",
+        "pic_path": "82624315.jpg",
         "employee_role": "Project Lead",
         "position": "Analyst",
         "department": "Galactic Operations"
@@ -181,7 +181,7 @@
         "last_name": "Skywalker",
         "email": "shmi.skywalker@scanner.com",
         "phone": "+1-555-841-9777",
-        "pic_path": "/images/47417325.jpg",
+        "pic_path": "47417325.jpg",
         "employee_role": "Project Lead",
         "position": "Technician",
         "department": "Rebel Relations"
@@ -192,7 +192,7 @@
         "last_name": "Solo",
         "email": "han.solo@scanner.com",
         "phone": "+1-555-796-5542",
-        "pic_path": "/images/63066923.jpg",
+        "pic_path": "63066923.jpg",
         "employee_role": "Associate",
         "position": "Technician",
         "department": "Droid Services"
@@ -203,7 +203,7 @@
         "last_name": "Offee",
         "email": "barriss.offee@scanner.com",
         "phone": "+1-555-101-3671",
-        "pic_path": "/images/67896747.jpg",
+        "pic_path": "67896747.jpg",
         "employee_role": "Associate",
         "position": "Technician",
         "department": "Droid Services"
@@ -214,7 +214,7 @@
         "last_name": "Trandoshan",
         "email": "bossk.trandoshan@scanner.com",
         "phone": "+1-555-659-2340",
-        "pic_path": "/images/23205174.jpg",
+        "pic_path": "23205174.jpg",
         "employee_role": "Associate",
         "position": "Technician",
         "department": "Rebel Relations"
@@ -225,7 +225,7 @@
         "last_name": "Kendal",
         "email": "ozzel.kendal@scanner.com",
         "phone": "+1-555-924-5111",
-        "pic_path": "/images/40596705.jpg",
+        "pic_path": "40596705.jpg",
         "employee_role": "Senior Officer",
         "position": "Manager",
         "department": "Galactic Operations"
@@ -236,7 +236,7 @@
         "last_name": "Junklord",
         "email": "watto.junklord@scanner.com",
         "phone": "+1-555-246-4426",
-        "pic_path": "/images/54683398.jpg",
+        "pic_path": "54683398.jpg",
         "employee_role": "Project Lead",
         "position": "Technician",
         "department": "Rebel Relations"
@@ -247,7 +247,7 @@
         "last_name": "Dameron",
         "email": "poe.dameron@scanner.com",
         "phone": "+1-555-970-7858",
-        "pic_path": "/images/28559784.jpg",
+        "pic_path": "28559784.jpg",
         "employee_role": "Associate",
         "position": "Analyst",
         "department": "Rebel Relations"
@@ -258,7 +258,7 @@
         "last_name": "Malbus",
         "email": "baze.malbus@scanner.com",
         "phone": "+1-555-881-2548",
-        "pic_path": "/images/36737512.jpg",
+        "pic_path": "36737512.jpg",
         "employee_role": "Senior Officer",
         "position": "Manager",
         "department": "Security & Strategy"
@@ -269,7 +269,7 @@
         "last_name": "Ackbar",
         "email": "admiral.ackbar@scanner.com",
         "phone": "+1-555-493-7594",
-        "pic_path": "/images/40327575.jpg",
+        "pic_path": "40327575.jpg",
         "employee_role": "Associate",
         "position": "Technician",
         "department": "Rebel Relations"
@@ -280,7 +280,7 @@
         "last_name": "Maximilian",
         "email": "veers.maximilian@scanner.com",
         "phone": "+1-555-462-6129",
-        "pic_path": "/images/32180005.jpg",
+        "pic_path": "32180005.jpg",
         "employee_role": "Associate",
         "position": "Technician",
         "department": "Droid Services"
@@ -291,7 +291,7 @@
         "last_name": "Rebo",
         "email": "max.rebo@scanner.com",
         "phone": "+1-555-765-4252",
-        "pic_path": "/images/86368191.jpg",
+        "pic_path": "86368191.jpg",
         "employee_role": "Support Specialist",
         "position": "Coordinator",
         "department": "Droid Services"
@@ -302,7 +302,7 @@
         "last_name": "Tiaan",
         "email": "jerjerrod.tiaan@scanner.com",
         "phone": "+1-555-726-8666",
-        "pic_path": "/images/66097761.jpg",
+        "pic_path": "66097761.jpg",
         "employee_role": "Support Specialist",
         "position": "Manager",
         "department": "Galactic Operations"
@@ -313,7 +313,7 @@
         "last_name": "Ren",
         "email": "kylo.ren@scanner.com",
         "phone": "+1-555-715-7524",
-        "pic_path": "/images/83824399.jpg",
+        "pic_path": "83824399.jpg",
         "employee_role": "Support Specialist",
         "position": "Analyst",
         "department": "Galactic Operations"
@@ -324,7 +324,7 @@
         "last_name": "Tano",
         "email": "ahsoka.tano@scanner.com",
         "phone": "+1-555-877-7536",
-        "pic_path": "/images/80258949.jpg",
+        "pic_path": "80258949.jpg",
         "employee_role": "Support Specialist",
         "position": "Analyst",
         "department": "Security & Strategy"
@@ -335,7 +335,7 @@
         "last_name": "Fortuna",
         "email": "bib.fortuna@scanner.com",
         "phone": "+1-555-709-8482",
-        "pic_path": "/images/74670650.jpg",
+        "pic_path": "74670650.jpg",
         "employee_role": "Project Lead",
         "position": "Analyst",
         "department": "Droid Services"
@@ -346,7 +346,7 @@
         "last_name": "Clone",
         "email": "fives.clone@scanner.com",
         "phone": "+1-555-313-8824",
-        "pic_path": "/images/77611549.jpg",
+        "pic_path": "77611549.jpg",
         "employee_role": "Associate",
         "position": "Technician",
         "department": "Galactic Operations"
@@ -357,7 +357,7 @@
         "last_name": "Kanata",
         "email": "maz.kanata@scanner.com",
         "phone": "+1-555-458-8364",
-        "pic_path": "/images/97136304.jpg",
+        "pic_path": "97136304.jpg",
         "employee_role": "Associate",
         "position": "Coordinator",
         "department": "Security & Strategy"
@@ -368,7 +368,7 @@
         "last_name": "Windu",
         "email": "mace.windu@scanner.com",
         "phone": "+1-555-689-7175",
-        "pic_path": "/images/51215523.jpg",
+        "pic_path": "51215523.jpg",
         "employee_role": "Project Lead",
         "position": "Technician",
         "department": "Droid Services"
@@ -379,7 +379,7 @@
         "last_name": "Wookiee",
         "email": "chewbacca.wookiee@scanner.com",
         "phone": "+1-555-480-5804",
-        "pic_path": "/images/56465093.jpg",
+        "pic_path": "56465093.jpg",
         "employee_role": "Project Lead",
         "position": "Manager",
         "department": "Rebel Relations"
@@ -390,7 +390,7 @@
         "last_name": "Plutt",
         "email": "unkar.plutt@scanner.com",
         "phone": "+1-555-937-5097",
-        "pic_path": "/images/57295327.jpg",
+        "pic_path": "57295327.jpg",
         "employee_role": "Associate",
         "position": "Coordinator",
         "department": "Galactic Operations"
@@ -401,7 +401,7 @@
         "last_name": "Jetster",
         "email": "dexter.jetster@scanner.com",
         "phone": "+1-555-946-2305",
-        "pic_path": "/images/37230127.jpg",
+        "pic_path": "37230127.jpg",
         "employee_role": "Support Specialist",
         "position": "Coordinator",
         "department": "Security & Strategy"
@@ -412,7 +412,7 @@
         "last_name": "Lars",
         "email": "cliegg.lars@scanner.com",
         "phone": "+1-555-836-6422",
-        "pic_path": "/images/64889551.jpg",
+        "pic_path": "64889551.jpg",
         "employee_role": "Associate",
         "position": "Technician",
         "department": "Security & Strategy"
@@ -423,7 +423,7 @@
         "last_name": "Andor",
         "email": "cassian.andor@scanner.com",
         "phone": "+1-555-618-3838",
-        "pic_path": "/images/37983314.jpg",
+        "pic_path": "37983314.jpg",
         "employee_role": "Support Specialist",
         "position": "Manager",
         "department": "Rebel Relations"
@@ -434,7 +434,7 @@
         "last_name": "Jan",
         "email": "dodonna.jan@scanner.com",
         "phone": "+1-555-573-7271",
-        "pic_path": "/images/56401407.jpg",
+        "pic_path": "56401407.jpg",
         "employee_role": "Support Specialist",
         "position": "Analyst",
         "department": "Rebel Relations"
@@ -445,7 +445,7 @@
         "last_name": "Blunt",
         "email": "dj.blunt@scanner.com",
         "phone": "+1-555-440-4704",
-        "pic_path": "/images/21391142.jpg",
+        "pic_path": "21391142.jpg",
         "employee_role": "Associate",
         "position": "Manager",
         "department": "Rebel Relations"
@@ -456,7 +456,7 @@
         "last_name": "Jinn",
         "email": "qui-gon.jinn@scanner.com",
         "phone": "+1-555-569-7720",
-        "pic_path": "/images/55737291.jpg",
+        "pic_path": "55737291.jpg",
         "employee_role": "Senior Officer",
         "position": "Coordinator",
         "department": "Rebel Relations"
@@ -467,7 +467,7 @@
         "last_name": "Secura",
         "email": "aayla.secura@scanner.com",
         "phone": "+1-555-686-7374",
-        "pic_path": "/images/35728086.jpg",
+        "pic_path": "35728086.jpg",
         "employee_role": "Project Lead",
         "position": "Manager",
         "department": "Rebel Relations"
@@ -478,7 +478,7 @@
         "last_name": "Asajj",
         "email": "ventress.asajj@scanner.com",
         "phone": "+1-555-576-6347",
-        "pic_path": "/images/92715041.jpg",
+        "pic_path": "92715041.jpg",
         "employee_role": "Project Lead",
         "position": "Coordinator",
         "department": "Droid Services"
@@ -489,7 +489,7 @@
         "last_name": "Ohnaka",
         "email": "hondo.ohnaka@scanner.com",
         "phone": "+1-555-460-9081",
-        "pic_path": "/images/92363416.jpg",
+        "pic_path": "92363416.jpg",
         "employee_role": "Project Lead",
         "position": "Coordinator",
         "department": "Security & Strategy"
@@ -500,7 +500,7 @@
         "last_name": "Djarin",
         "email": "din.djarin@scanner.com",
         "phone": "+1-555-872-2045",
-        "pic_path": "/images/42269120.jpg",
+        "pic_path": "42269120.jpg",
         "employee_role": "Project Lead",
         "position": "Technician",
         "department": "Security & Strategy"
@@ -511,7 +511,7 @@
         "last_name": "Rodian",
         "email": "greedo.rodian@scanner.com",
         "phone": "+1-555-109-4785",
-        "pic_path": "/images/65001426.jpg",
+        "pic_path": "65001426.jpg",
         "employee_role": "Senior Officer",
         "position": "Technician",
         "department": "Security & Strategy"
@@ -522,7 +522,7 @@
         "last_name": "Tobias",
         "email": "beckett.tobias@scanner.com",
         "phone": "+1-555-201-4707",
-        "pic_path": "/images/81685045.jpg",
+        "pic_path": "81685045.jpg",
         "employee_role": "Associate",
         "position": "Analyst",
         "department": "Security & Strategy"
@@ -533,7 +533,7 @@
         "last_name": "Gerrera",
         "email": "saw.gerrera@scanner.com",
         "phone": "+1-555-601-9086",
-        "pic_path": "/images/57693970.jpg",
+        "pic_path": "57693970.jpg",
         "employee_role": "Project Lead",
         "position": "Coordinator",
         "department": "Galactic Operations"
@@ -544,7 +544,7 @@
         "last_name": "Fett",
         "email": "boba.fett@scanner.com",
         "phone": "+1-555-118-7381",
-        "pic_path": "/images/70641528.jpg",
+        "pic_path": "70641528.jpg",
         "employee_role": "Senior Officer",
         "position": "Coordinator",
         "department": "Galactic Operations"
@@ -555,7 +555,7 @@
         "last_name": "Armitage",
         "email": "hux.armitage@scanner.com",
         "phone": "+1-555-655-2048",
-        "pic_path": "/images/77568598.jpg",
+        "pic_path": "77568598.jpg",
         "employee_role": "Support Specialist",
         "position": "Analyst",
         "department": "Galactic Operations"
@@ -566,7 +566,7 @@
         "last_name": "Bane",
         "email": "cad.bane@scanner.com",
         "phone": "+1-555-485-1569",
-        "pic_path": "/images/90118025.jpg",
+        "pic_path": "90118025.jpg",
         "employee_role": "Project Lead",
         "position": "Coordinator",
         "department": "Droid Services"
@@ -577,7 +577,7 @@
         "last_name": "Snootles",
         "email": "sy.snootles@scanner.com",
         "phone": "+1-555-238-6545",
-        "pic_path": "/images/96776710.jpg",
+        "pic_path": "96776710.jpg",
         "employee_role": "Project Lead",
         "position": "Technician",
         "department": "Security & Strategy"
@@ -588,7 +588,7 @@
         "last_name": "Wren",
         "email": "sabine.wren@scanner.com",
         "phone": "+1-555-195-7649",
-        "pic_path": "/images/19896102.jpg",
+        "pic_path": "19896102.jpg",
         "employee_role": "Senior Officer",
         "position": "Coordinator",
         "department": "Galactic Operations"
@@ -599,7 +599,7 @@
         "last_name": "Calrissian",
         "email": "lando.calrissian@scanner.com",
         "phone": "+1-555-329-7904",
-        "pic_path": "/images/81588124.jpg",
+        "pic_path": "81588124.jpg",
         "employee_role": "Project Lead",
         "position": "Manager",
         "department": "Galactic Operations"
@@ -610,7 +610,7 @@
         "last_name": "Firmus",
         "email": "piett.firmus@scanner.com",
         "phone": "+1-555-605-9291",
-        "pic_path": "/images/89400093.jpg",
+        "pic_path": "89400093.jpg",
         "employee_role": "Senior Officer",
         "position": "Manager",
         "department": "Galactic Operations"
@@ -621,7 +621,7 @@
         "last_name": "Organa",
         "email": "bail.organa@scanner.com",
         "phone": "+1-555-903-1792",
-        "pic_path": "/images/99134812.jpg",
+        "pic_path": "99134812.jpg",
         "employee_role": "Associate",
         "position": "Coordinator",
         "department": "Galactic Operations"
@@ -632,7 +632,7 @@
         "last_name": "Tico",
         "email": "rose.tico@scanner.com",
         "phone": "+1-555-797-1908",
-        "pic_path": "/images/34056567.jpg",
+        "pic_path": "34056567.jpg",
         "employee_role": "Associate",
         "position": "Analyst",
         "department": "Rebel Relations"
@@ -643,7 +643,7 @@
         "last_name": "Ti",
         "email": "shaak.ti@scanner.com",
         "phone": "+1-555-586-1310",
-        "pic_path": "/images/43712755.jpg",
+        "pic_path": "43712755.jpg",
         "employee_role": "Associate",
         "position": "Analyst",
         "department": "Droid Services"
@@ -654,7 +654,7 @@
         "last_name": "McCool",
         "email": "droopy.mccool@scanner.com",
         "phone": "+1-555-353-2028",
-        "pic_path": "/images/75858902.jpg",
+        "pic_path": "75858902.jpg",
         "employee_role": "Associate",
         "position": "Coordinator",
         "department": "Galactic Operations"
@@ -665,7 +665,7 @@
         "last_name": "Bridger",
         "email": "ezra.bridger@scanner.com",
         "phone": "+1-555-791-6258",
-        "pic_path": "/images/18617297.jpg",
+        "pic_path": "18617297.jpg",
         "employee_role": "Associate",
         "position": "Manager",
         "department": "Galactic Operations"
@@ -676,7 +676,7 @@
         "last_name": "Clone",
         "email": "cody.clone@scanner.com",
         "phone": "+1-555-268-3361",
-        "pic_path": "/images/94986959.jpg",
+        "pic_path": "94986959.jpg",
         "employee_role": "Project Lead",
         "position": "Analyst",
         "department": "Galactic Operations"
@@ -687,7 +687,7 @@
         "last_name": "Skywalker",
         "email": "anakin.skywalker@scanner.com",
         "phone": "+1-555-673-8354",
-        "pic_path": "/images/68543144.jpg",
+        "pic_path": "68543144.jpg",
         "employee_role": "Associate",
         "position": "Analyst",
         "department": "Droid Services"
@@ -698,7 +698,7 @@
         "last_name": "Kryze",
         "email": "bo-katan.kryze@scanner.com",
         "phone": "+1-555-281-4436",
-        "pic_path": "/images/13053923.jpg",
+        "pic_path": "13053923.jpg",
         "employee_role": "Senior Officer",
         "position": "Technician",
         "department": "Security & Strategy"
@@ -709,7 +709,7 @@
         "last_name": "\u00cemwe",
         "email": "chirrut.\u00eemwe@scanner.com",
         "phone": "+1-555-839-6088",
-        "pic_path": "/images/59694871.jpg",
+        "pic_path": "59694871.jpg",
         "employee_role": "Project Lead",
         "position": "Technician",
         "department": "Security & Strategy"
@@ -720,7 +720,7 @@
         "last_name": "Syndulla",
         "email": "hera.syndulla@scanner.com",
         "phone": "+1-555-480-4904",
-        "pic_path": "/images/24724933.jpg",
+        "pic_path": "24724933.jpg",
         "employee_role": "Support Specialist",
         "position": "Coordinator",
         "department": "Security & Strategy"
@@ -731,7 +731,7 @@
         "last_name": "Mitthraw",
         "email": "thrawn.mitthraw@scanner.com",
         "phone": "+1-555-386-3628",
-        "pic_path": "/images/57987062.jpg",
+        "pic_path": "57987062.jpg",
         "employee_role": "Senior Officer",
         "position": "Analyst",
         "department": "Droid Services"
@@ -742,7 +742,7 @@
         "last_name": "Tico",
         "email": "finn.tico@scanner.com",
         "phone": "+1-555-627-1700",
-        "pic_path": "/images/58222720.jpg",
+        "pic_path": "58222720.jpg",
         "employee_role": "Associate",
         "position": "Coordinator",
         "department": "Security & Strategy"
@@ -753,7 +753,7 @@
         "last_name": "Kenobi",
         "email": "obi-wan.kenobi@scanner.com",
         "phone": "+1-555-102-1539",
-        "pic_path": "/images/50787242.jpg",
+        "pic_path": "50787242.jpg",
         "employee_role": "Senior Officer",
         "position": "Analyst",
         "department": "Galactic Operations"
@@ -764,7 +764,7 @@
         "last_name": "Ithano",
         "email": "sidon.ithano@scanner.com",
         "phone": "+1-555-703-1458",
-        "pic_path": "/images/63251534.jpg",
+        "pic_path": "63251534.jpg",
         "employee_role": "Support Specialist",
         "position": "Analyst",
         "department": "Security & Strategy"
@@ -775,7 +775,7 @@
         "last_name": "Sleazebaggano",
         "email": "elan.sleazebaggano@scanner.com",
         "phone": "+1-555-874-8458",
-        "pic_path": "/images/81122398.jpg",
+        "pic_path": "81122398.jpg",
         "employee_role": "Senior Officer",
         "position": "Manager",
         "department": "Security & Strategy"
@@ -786,7 +786,7 @@
         "last_name": "Amidala",
         "email": "padm\u00e9.amidala@scanner.com",
         "phone": "+1-555-207-5077",
-        "pic_path": "/images/56676067.jpg",
+        "pic_path": "56676067.jpg",
         "employee_role": "Associate",
         "position": "Manager",
         "department": "Security & Strategy"
@@ -797,7 +797,7 @@
         "last_name": "Mothma",
         "email": "mon.mothma@scanner.com",
         "phone": "+1-555-245-1306",
-        "pic_path": "/images/18257529.jpg",
+        "pic_path": "18257529.jpg",
         "employee_role": "Project Lead",
         "position": "Manager",
         "department": "Droid Services"
@@ -808,7 +808,7 @@
         "last_name": "Palpatine",
         "email": "rey.palpatine@scanner.com",
         "phone": "+1-555-318-4006",
-        "pic_path": "/images/95899622.jpg",
+        "pic_path": "95899622.jpg",
         "employee_role": "Senior Officer",
         "position": "Coordinator",
         "department": "Galactic Operations"
@@ -819,7 +819,7 @@
         "last_name": "Erso",
         "email": "jyn.erso@scanner.com",
         "phone": "+1-555-329-7474",
-        "pic_path": "/images/83606015.jpg",
+        "pic_path": "83606015.jpg",
         "employee_role": "Support Specialist",
         "position": "Coordinator",
         "department": "Galactic Operations"
@@ -830,7 +830,7 @@
         "last_name": "Wesell",
         "email": "zam.wesell@scanner.com",
         "phone": "+1-555-481-5893",
-        "pic_path": "/images/76116542.jpg",
+        "pic_path": "76116542.jpg",
         "employee_role": "Associate",
         "position": "Technician",
         "department": "Galactic Operations"
@@ -841,7 +841,7 @@
         "last_name": "Beckett",
         "email": "val.beckett@scanner.com",
         "phone": "+1-555-439-2568",
-        "pic_path": "/images/29198138.jpg",
+        "pic_path": "29198138.jpg",
         "employee_role": "Associate",
         "position": "Technician",
         "department": "Rebel Relations"
@@ -852,7 +852,7 @@
         "last_name": "Amilyn",
         "email": "holdo.amilyn@scanner.com",
         "phone": "+1-555-598-1050",
-        "pic_path": "/images/51731925.jpg",
+        "pic_path": "51731925.jpg",
         "employee_role": "Associate",
         "position": "Coordinator",
         "department": "Galactic Operations"
@@ -863,7 +863,7 @@
         "last_name": "Podracer",
         "email": "sebulba.podracer@scanner.com",
         "phone": "+1-555-167-7567",
-        "pic_path": "/images/54263237.jpg",
+        "pic_path": "54263237.jpg",
         "employee_role": "Associate",
         "position": "Technician",
         "department": "Droid Services"
@@ -874,7 +874,7 @@
         "last_name": "San",
         "email": "lor.san@scanner.com",
         "phone": "+1-555-294-2818",
-        "pic_path": "/images/77869293.jpg",
+        "pic_path": "77869293.jpg",
         "employee_role": "Associate",
         "position": "Manager",
         "department": "Galactic Operations"
@@ -885,7 +885,7 @@
         "last_name": "Sidious",
         "email": "palpatine.sidious@scanner.com",
         "phone": "+1-555-111-3154",
-        "pic_path": "/images/50495184.jpg",
+        "pic_path": "50495184.jpg",
         "employee_role": "Senior Officer",
         "position": "Analyst",
         "department": "Security & Strategy"
@@ -896,7 +896,7 @@
         "last_name": "Lorth",
         "email": "needa.lorth@scanner.com",
         "phone": "+1-555-404-2303",
-        "pic_path": "/images/47834449.jpg",
+        "pic_path": "47834449.jpg",
         "employee_role": "Senior Officer",
         "position": "Coordinator",
         "department": "Security & Strategy"
@@ -907,7 +907,7 @@
         "last_name": "Clone",
         "email": "echo.clone@scanner.com",
         "phone": "+1-555-456-8582",
-        "pic_path": "/images/25587577.jpg",
+        "pic_path": "25587577.jpg",
         "employee_role": "Support Specialist",
         "position": "Technician",
         "department": "Security & Strategy"
@@ -918,7 +918,7 @@
         "last_name": "Antilles",
         "email": "wedge.antilles@scanner.com",
         "phone": "+1-555-293-5760",
-        "pic_path": "/images/64365795.jpg",
+        "pic_path": "64365795.jpg",
         "employee_role": "Support Specialist",
         "position": "Analyst",
         "department": "Security & Strategy"
