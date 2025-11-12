@@ -120,13 +120,13 @@ class Person():
 
 
 class Default_Person:
-    def __init__(self, recent_list):
-        self.idnumber = "0000"
+    def __init__(self, recent_list, scan):
+        self.idnumber = scan or 00000000
         self.fname = "Error"
         self.lname = "Invalid ID"
         self.email = " "
         self.phone = " "
-        self.pic = "default.jpg"
+        self.pic = "error.jpg"
         self.role = " "
         self.position = " "
         self.department = " "

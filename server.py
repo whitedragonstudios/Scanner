@@ -31,6 +31,8 @@ app = Flask(__name__)
 app.secret_key = password
 frontend = Blueprint('frontend', __name__, template_folder='templates', static_folder='static')
 recent_list = []
+
+
 # Set default and index route
 @frontend.route ('/')
 def index():
@@ -46,19 +48,19 @@ def home():
     if request.method == 'POST':
         idscan = request.form.get('idscan')
         if not idscan:
-            employee = Default_Person(recent_list)
+            employee = Default_Person(recent_list, idscan)
         else:
             try:
                 employee = Person(idscan, recent_list)
             except Exception as e:
                 print(f"Error: home Person failed to find mathcing ID {e}")
-                employee = Default_Person(recent_list)
+                employee = Default_Person(recent_list, idscan)
         recent_list = employee.recent
 
     # Pass idnumber to person object. Person object returns name, group, time, and image (if availible)
     return render_template("home.html", 
                            recent_people = recent_list,
-                           scan = employee or Default_Person(recent_list),
+                           scan = employee or Default_Person(recent_list, idscan),
                            date=dt.now().strftime("%m-%d-%y"),
                             time=dt.now().strftime("%H:%M"),
                            cf = config,
@@ -72,27 +74,50 @@ def home():
 @frontend.route('/settings', methods=['GET', 'POST'])
 def settings():
     if request.method == "POST":
+        global config, weather_data, news
         admin = Handler(password=password)
         user_handle = Handler(user, password, db_name)
+        #user_handle.send_query("SELECT current_database(), current_schema();")
         # Danger Zone
         action = request.form.get("action")
         if action:
             uninstall = Postgre_Install("postgres", password, db_name, port, host)
             if action == "restore":
+                config_list = {
+                    'config_status': 'True',
+                    'config_date': dt.now().strftime("%m-%d-%y"),
+                    'CSV_path': None,
+                    'XLSX_path': None,
+                    'JSON_path': None,
+                    'webpage_title': 'Populus Numerus',
+                    'company': 'Scanner',
+                    'city': 'New York City',
+                    'lon': '-74.0060152',
+                    'lat': '40.7127281',
+                    'weather_key': 'baeb0ce1961c460b651e6a3a91bfeac6',
+                    'country': 'us',
+                    'news_key': '04fbd2b9df7b49f6b6a626b4a4ae36be'
+                }
+                for key, value in config_list.items():
+                    user_handle.update_config(key,value)
+                user_handle.send_query("SELECT * FROM config_database;")
                 msg = "Configuration restored to defaults"
-                # Get Handler.open_file working
+
             elif action == "clear":
                 print("emails cleared")
                 user_handle.send_command("DELETE FROM email_list;")
                 user_handle.send_query("SELECT * FROM email_list;")
                 msg = "Email list cleared"
-            elif action == "delete":
+            elif action == "delete_people":
                 print("db reset")
                 user_handle.send_command("DELETE FROM people_database;")
                 user_handle.send_query("SELECT * FROM people_database;")
+                msg = "Employee database deleted"
+            elif action == "delete_timesheets":
+                print("db reset")
                 user_handle.send_command("DELETE FROM timesheet_database;")
                 user_handle.send_query("SELECT * FROM timesheet_database;")
-                msg = "Employee and timesheet database deleted!"
+                msg = "Timesheet database deleted"
             elif action == "clean":
                 uninstall.drop_tables('people_database')
                 uninstall.drop_tables('timesheet_database')
@@ -110,28 +135,47 @@ def settings():
             msg = f"Company name updated to {new_company}"
             return redirect(url_for("frontend.settings"))
         
-        if "companyname" in request.form:
-            new_company = request.form.get("companyname")
-            user_handle.update_config("company", new_company)
-            msg = f"Company name updated to {new_company}"
+        if "cityname" in request.form:
+            new_city = request.form.get("cityname")
+            user_handle.update_config("city", new_city)
+            msg = f"Company name updated to {new_city}"
             return redirect(url_for("frontend.settings"))
+            
 
         # API keys
-        if  "wkey" in request.form:
+        if  "wkey" in request.form and request.form.get("wkey"):
             new_key = request.form.get("wkey")
             user_handle.update_config("weather_key", new_key)
             msg = "Weather key updated"
-        if "nkey" in request.form:
+        if "nkey" in request.form and request.form.get("nkey"):
             new_key = request.form.get("nkey")
             user_handle.update_config("news_key", new_key)
             msg = "News key updated"
 
 
+        if "reset_colors" in request.form:
+            colors = {'main_background_color':'#0a0a1f',
+                    'main_text_color':'#f0f0f0',
+                    'content_color': '#1c1c33',
+                    'content_text_color': '#ffffff',
+                    'sidebar_color':'#193763',
+                    'sidebar_text_color':'#ffffff',
+                    'button_color':'#1a73ff',
+                    'button_text_color':'#ffffff',
+                    'button_hover_color':'#0050b3',
+                    'border_color':'#3399ff'}
+            for key,value in colors.items():
+                user_handle.update_config(key,value)
+            user_handle.send_query("SELECT * FROM config_database;")
+            flash("Colors restored to defaults", "sucess")
+
         # color updates dynamically
-        for key, value in request.form.items():
-            if hasattr(config, key):
-                setattr(config, key, value)
-                flash(f"{key} updated!", "success")
+        if request.form.get("form_type") == "colors":
+                for key, value in request.form.items():
+                    if hasattr(config, key):
+                        setattr(config, key, value)
+                        user_handle.update_config(key, value)
+                        flash(f"{key} updated", "success")
                 return redirect(url_for("frontend.settings"))
 
         # file upload
@@ -162,26 +206,98 @@ def settings():
                 except Exception as e:
                     flash(f"Failed to import data: {e}", "error")
 
-                return redirect("/settings")
+                return redirect(url_for("frontend.settings"))
 
 
         # manual database entry
-        if "manual" in request.form:
-            manual_input = request.form.get("manual")
-            input_list = [item.strip() for item in manual_input.split(",")]
-            print(input_list)
+        if 'manual-entry-action' in request.form:
+            action = request.form.get('manual-entry-action')
             try:
-                if len(input_list) == 9:
-                    user_handle.send_command(f"""
-                        INSERT INTO people_database (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES (
-                        {int(input_list[0])}, '{input_list[1]}', '{input_list[2]}', '{input_list[3]}', '{input_list[4]}', '{input_list[5]}', '{input_list[6]}', '{input_list[7]}', '{input_list[8]}');""")
-                    name = user_handle.send_query(f"SELECT first_name, last_name FROM people_database WHERE employee_id = '{input_list[0]}'")
-                    flash(f"Manual entry received: {name[0][1],name[0][1]} added to people database", "success")
-                else:
-                    flash(f"Manual input not valid make sure all fields are entered, blank fields can use comma space comma: {manual_input}", "warning")
+                employee_id = int(request.form.get('idnumber'))
+                first_name = request.form.get('fname').strip().title()
+                last_name = request.form.get('lname').strip().title()
+                email = request.form.get('email').strip().lower()
+                phone = request.form.get('pnumber').strip()
+                pic_path = request.form.get('filename').strip()
+                employee_role = request.form.get('role').strip().title()
+                position = request.form.get('position').strip().title()
+                department = request.form.get('department').strip().title()
             except Exception as e:
-                flash(f"Failed to insert: {e}", "error")
+                flash(f"Error parsing form input: {e}", "error")
+                return redirect(url_for("frontend.settings"))
+
+            if action == "add":
+                try:
+                    user_handle.send_command(f"""
+                        INSERT INTO people_database 
+                        (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department)
+                        VALUES
+                        ({employee_id}, '{first_name}', '{last_name}', '{email}', '{phone}', '{pic_path}', '{employee_role}', '{position}', '{department}')
+                        ON CONFLICT (employee_id) DO NOTHING;
+                    """)
+                    flash(f"Added {first_name} {last_name} to the database", "success")
+                except Exception as e:
+                    flash(f"Failed to add entry: {e}", "error")
+
+            elif action == "update":
+                try:
+                    fields = {
+                        "first_name": first_name,
+                        "last_name": last_name,
+                        "email": email,
+                        "phone": phone,
+                        "pic_path": pic_path,
+                        "employee_role": employee_role,
+                        "position": position,
+                        "department": department
+                    }
+                    def is_skip(v):
+                        if v is None:
+                            return True
+                        s = str(v).strip().lower()
+                        return s in {"", " ", "none", "none@none.com"}
+
+                    update_fields = {k: v for k, v in fields.items() if not is_skip(v)}
+
+                    if update_fields:
+                        kv_parts = []
+                        for k, v in update_fields.items():
+                            safe_v = str(v).replace("'", "''")
+                            kv_parts.append(f"{k} = '{safe_v}'")
+                        key_values = ", ".join(kv_parts)
+
+                        user_handle.send_command(
+                            f"UPDATE people_database SET {key_values} WHERE employee_id = {int(employee_id)};"
+                        )
+                        flash(f"Updated employee ID {employee_id} in the database {key_values}", "success")
+                    else:
+                        flash("No valid fields to update", "warning")
+                except Exception as e:
+                    flash(f"Update failed: {e}", "error")
+
+                except Exception as e:
+                    flash(f"Failed to update entry: {e}", "error")
+
+            elif action == "remove":
+                try:
+                    user_handle.send_command(f"""
+                        DELETE FROM people_database
+                        WHERE employee_id = {employee_id};
+                    """)
+                    flash(f"Removed employee ID {employee_id} from the database", "success")
+                except Exception as e:
+                    flash(f"Failed to remove entry: {e}", "error")
+            else:
+                flash("Invalid action selected", "warning")
+
             return redirect(url_for("frontend.settings"))
+        
+        # EMAIL Section
+    
+    config = Setting(user, password, db_name, port, host)
+    news = News_Report(config.country, config.news_key)
+    weather_data = weather_report(config.city, config.weather_key)
+    
     return render_template("settings.html", cf=config)
 
 @frontend.route('/reports')
