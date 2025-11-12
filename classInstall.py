@@ -3,19 +3,22 @@ import psycopg2
 from time import sleep
 from classHandler import Handler
 
-
+# Postgre_Install handles the installation process and checks for required packages and databases
+# Next sprint changes: make install only take password hard code other parameters. Add uninstall function for clean install to remove postgresql
 class Postgre_Install:
     def __init__(self, user, password, dbname, port, host):
+        # Default attributes for connecting to databases
         self.user = user
         self.password = password
         self.dbname = dbname
         self.port = port
         self.host = host
+        # Detect OS
         self.system = platform.system().lower()
         # Create instance of Handler with admin privilages
         self.admin = Handler(password=self.password)
 
-    # List of all psql paths
+    # List of all likely psql paths
     def path_list(self):
         return [
             r"C:\Program Files\PostgreSQL\18\bin",
@@ -171,38 +174,22 @@ class Postgre_Install:
             # Create database owned by the new user
             self.admin.send_command(f"CREATE DATABASE {self.dbname} OWNER {self.user};")
 
-            # Connect as the end user to initialize database and run all table commands
-            user_handle = Handler(dbname=self.dbname, user=self.user, password=self.password)
-
             # Drop tables if they exist
             self.drop_tables("people_database")
             self.drop_tables("timesheet_database")
             self.drop_tables("config_database")
             self.drop_tables("email_list")
 
-            # Create config_database table
-            user_handle.send_command("""
+            # Create config_database table which stores key value pairs for configuration settings.
+            self.admin.send_command("""
                 CREATE TABLE config_database (
                     key VARCHAR(50) PRIMARY KEY,
                     value VARCHAR(128)
                 );
             """)
 
-            user_handle.send_command("""
-                CREATE TABLE email_list(
-                    key SERIAL PRIMARY KEY,
-                    email VARCHAR(255),
-                    frequency VARCHAR(8)
-                );
-            """)
-
-            user_handle.send_command("""INSERT INTO email_list (email) VALUES 
-                    ('rowens.wds@gmail.com'), 
-                    ('test@scanner.com')
-                ;""")
-
             # Insert default config data
-            user_handle.send_command("""
+            self.admin.send_command("""
                 INSERT INTO config_database (key, value) VALUES
                     ('config_status', 'False'),
                     ('config_date', '2025-01-01'),
@@ -226,11 +213,17 @@ class Postgre_Install:
                     ('lat', '40.7127281'),
                     ('weather_key', 'baeb0ce1961c460b651e6a3a91bfeac6'),
                     ('country', 'us'),
-                    ('news_key', '04fbd2b9df7b49f6b6a626b4a4ae36be');
-            """)
+                    ('news_key', '04fbd2b9df7b49f6b6a626b4a4ae36be');""")
+
+             # Create email_list which stores the emails and send freq for reports
+            self.admin.send_command("""
+                CREATE TABLE email_list(
+                    key SERIAL PRIMARY KEY,
+                    email VARCHAR(255),
+                    frequency VARCHAR(8));""")
 
             # Create people_database table
-            user_handle.send_command("""
+            self.admin.send_command("""
                 CREATE TABLE people_database (
                     id SERIAL PRIMARY KEY, 
                     employee_id INTEGER UNIQUE,
@@ -241,37 +234,36 @@ class Postgre_Install:
                     pic_path VARCHAR(128) UNIQUE,
                     employee_role VARCHAR(50),
                     position VARCHAR(50),
-                    department VARCHAR(50)
-                );
-            """)
-
-            self.insert_test_data()
+                    department VARCHAR(50));""")
 
             # Create timesheet_database table
-            user_handle.send_command("""
+            self.admin.send_command("""
                 CREATE TABLE timesheet_database (
                     id SERIAL PRIMARY KEY,
                     employee_id INTEGER NOT NULL REFERENCES people_database(employee_id) ON DELETE CASCADE,
                     clock_in TIMESTAMPTZ DEFAULT NOW(),
                     clock_out TIMESTAMPTZ,
-                    work_date DATE DEFAULT CURRENT_DATE
-                );
-            """)
+                    work_date DATE DEFAULT CURRENT_DATE);""")
 
             # Grant privileges to user
-            user_handle.send_command(f"GRANT ALL PRIVILEGES ON DATABASE {self.dbname} TO {self.user};")
-            user_handle.send_command(f"GRANT ALL PRIVILEGES ON SCHEMA public TO {self.user};")
-            user_handle.send_command(f"GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {self.user};")
-            user_handle.send_command(f"ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO {self.user};")
+            self.admin.send_command(f"GRANT ALL PRIVILEGES ON DATABASE {self.dbname} TO {self.user};")
+            self.admin.send_command(f"GRANT ALL PRIVILEGES ON SCHEMA public TO {self.user};")
+            self.admin.send_command(f"GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {self.user};")
+            self.admin.send_command(f"ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO {self.user};")
 
             # Update config_database to mark initialization complete
-            user_handle.send_command("UPDATE config_database SET value = CURRENT_DATE WHERE key = 'config_date';")
-            user_handle.send_command("UPDATE config_database SET value = 'True' WHERE key = 'config_status';")
+            self.admin.send_command("UPDATE config_database SET value = CURRENT_DATE WHERE key = 'config_date';")
+            self.admin.send_command("UPDATE config_database SET value = 'True' WHERE key = 'config_status';")
+            
+            # Add test data to people and email databases for debugging.
+            self.insert_test_data()
 
             print("@@@ Database creation complete @@@")
             # Verify table creation
-            user_handle.send_query("SELECT * FROM config_database;")
-            user_handle.send_query("SELECT * FROM email_list;")
+            self.admin.send_query("SELECT * FROM config_database;")
+            self.admin.send_query("SELECT * FROM people_database;")
+            self.admin.send_query("SELECT * FROM timesheet_database;")
+            self.admin.send_query("SELECT * FROM email_list;")
             return True
 
         except Exception as e:
@@ -281,19 +273,20 @@ class Postgre_Install:
 
     def check_database(self):
         print(f"Checking if database '{self.dbname}' is fully initialized.")
-        # Create a handler using the end user credentials
-        user_handle = Handler(dbname=self.dbname, user=self.user, password=self.password, port=self.port, host=self.host)
+        
+        # Try to connect to check the db exists
         try:
             # Check DB/User connection first
-            user_handle.connect()
+            self.admin.connect()
             # Check for required tables
             tables = ['config_database', 'timesheet_database', 'people_database']
             # A single query that fails if any table is missing
             for table in tables:
                 query = f"SELECT 1 FROM {table} LIMIT 0;"
-                user_handle.send_query(query) 
+                self.admin.send_query(query) 
             print(f"Database '{self.dbname}' is fully initialized with the required tables.")
             return True
+        # Check for specific error codes.
         except psycopg2.OperationalError as e:
             # Code '3D000' (DB missing), '28P01' (Password failed), '42P01' (Table missing)
             if e.pgcode in ('3D000', '28P01'): 
@@ -304,29 +297,37 @@ class Postgre_Install:
                 return False
             print(f"Database check failed\n{e}")
             return False
+        # Catch other errors
         except Exception as e:
             print(f"Unexpected error during database check: {e}")
             return False
 
-
+    # Testing method for development
     def insert_test_data(self):
-
-        user_handle = Handler(dbname=self.dbname, user=self.user, password=self.password)
-        user_handle.send_command("""INSERT INTO people_database (
-    employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department
-) VALUES
-    (11111111, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '11111111.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
-    (22222222, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '22222222.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice')
-ON CONFLICT (employee_id)
-DO UPDATE SET
-    first_name = EXCLUDED.first_name,
-    last_name = EXCLUDED.last_name,
-    email = EXCLUDED.email,
-    phone = EXCLUDED.phone,
-    pic_path = EXCLUDED.pic_path,
-    employee_role = EXCLUDED.employee_role,
-    position = EXCLUDED.position,
-    department = EXCLUDED.department;""")
+        # Insert test data for people database
+        self.admin.send_command("""INSERT INTO people_database (
+            employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES
+            (11111111, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '11111111.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
+            (22222222, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '22222222.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice')
+                ON CONFLICT (employee_id)
+                DO UPDATE SET
+                    first_name = EXCLUDED.first_name,
+                    last_name = EXCLUDED.last_name,
+                    email = EXCLUDED.email,
+                    phone = EXCLUDED.phone,
+                    pic_path = EXCLUDED.pic_path,
+                    employee_role = EXCLUDED.employee_role,
+                    position = EXCLUDED.position,
+                    department = EXCLUDED.department;""")
+        # Insert some test data for email_list
+        self.admin.send_command("""INSERT INTO email_list (email, frequency) VALUES 
+                    ('marcus.aurelius@scanner.com', "daily), 
+                    ('test@scanner.com', 'weekly')
+                    ('scanner@scanner.com', 'monthly')
+                ON CONFLICT (email, frequency)
+                DO UPDATE SET
+                    email = EXCLUDED.email,
+                    frequency = EXCLUDED.frequency;""")
 
 
     # This method controls the flow of the entire class.
@@ -358,7 +359,7 @@ DO UPDATE SET
         else:
             print("Database already exists. Setup skipped.")
 
-        # --- Final Status Check ---
+        # Final Status Check
         if failure_detected:
             print("\n!!! Program Initialization Failed !!!")
             sleep(5)
@@ -386,9 +387,10 @@ DO UPDATE SET
         except Exception as e:
             print(f"Failed to drop user '{dropUser}': {e}")
     
-
+    # quick function to delete tables.
     def drop_tables(self, table_name):
         try:
             self.admin.send_command(f"DROP TABLE IF EXISTS {table_name} CASCADE;")
+            print(f"Table {table_name} deleted")
         except Exception as e:
             print(f"Failed to drop {table_name}")
