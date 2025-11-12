@@ -31,6 +31,8 @@ app = Flask(__name__)
 app.secret_key = password
 frontend = Blueprint('frontend', __name__, template_folder='templates', static_folder='static')
 recent_list = []
+
+
 # Set default and index route
 @frontend.route ('/')
 def index():
@@ -72,6 +74,7 @@ def home():
 @frontend.route('/settings', methods=['GET', 'POST'])
 def settings():
     if request.method == "POST":
+        global config, weather_data, news
         admin = Handler(password=password)
         user_handle = Handler(user, password, db_name)
         #user_handle.send_query("SELECT current_database(), current_schema();")
@@ -113,16 +116,24 @@ def settings():
             user_handle.update_config("company", new_company)
             msg = f"Company name updated to {new_company}"
             return redirect(url_for("frontend.settings"))
+        
+        if "cityname" in request.form:
+            new_city = request.form.get("cityname")
+            user_handle.update_config("city", new_city)
+            msg = f"Company name updated to {new_city}"
+            return redirect(url_for("frontend.settings"))
+            
 
         # API keys
-        if  "wkey" in request.form:
+        if  "wkey" in request.form and request.form.get("wkey"):
             new_key = request.form.get("wkey")
             user_handle.update_config("weather_key", new_key)
             msg = "Weather key updated"
-        if "nkey" in request.form:
+        if "nkey" in request.form and request.form.get("nkey"):
             new_key = request.form.get("nkey")
             user_handle.update_config("news_key", new_key)
             msg = "News key updated"
+
 
 
         # color updates dynamically
@@ -233,7 +244,11 @@ def settings():
                 flash("Invalid action selected", "warning")
 
             return redirect(url_for("frontend.settings"))
-
+    
+    config = Setting(user, password, db_name, port, host)
+    news = News_Report(config.country, config.news_key)
+    weather_data = weather_report(config.city, config.weather_key)
+    
     return render_template("settings.html", cf=config)
 
 @frontend.route('/reports')

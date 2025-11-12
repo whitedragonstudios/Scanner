@@ -79,7 +79,7 @@
                     </form>
                     <h2>Change City</h2>
                     <form action="/settings" method="post">
-                        <input class="textBox" type="text" name="config" id="cityname" placeholder="{{ cf.city }}" maxlength="50" required>
+                        <input class="textBox" type="text" name="cityname" id="cityname" placeholder="{{ cf.city }}" maxlength="50" required>
                         <button class="button" type="submit">Submit</button>
                     </form>
                     <h2>API Keys</h2>
@@ -88,7 +88,7 @@
                     </p>
                     <form action="/settings" method="post"> 
                         <input class="wkey" type="text" name="wkey" id="wkey" placeholder="openweathermaps.com API key" maxlength="32">
-                        <input class="wkey" type="text" name="nkey" id="nkey" placeholder="newsapi.com API key" maxlength="32">
+                        <input class="nkey" type="text" name="nkey" id="nkey" placeholder="newsapi.com API key" maxlength="32">
                         <button class="updateDB" type="submit">Update APIKeys</button>
                     </form>
                     <br>

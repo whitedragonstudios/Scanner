@@ -15,7 +15,7 @@ class weather_report():
     def __init__(self, city_name, weather_key):
         self.city_name = city_name
         self.weather_key = weather_key
-        gps = self.get_gps()
+        gps = self.get_gps(self.city_name)
         self.longitude = gps[0]
         self.latitude = gps[1]
         self.city = gps[2]
@@ -31,19 +31,29 @@ class weather_report():
         self.humid = data['main']['humidity']
         self.clouds = data['clouds']['all']
         dir = self.wind_direction(data['wind']['deg'])
-        self.wind = f"{int(data['wind']['speed'])} - {int(data['wind']['gust'])} {dir}"
+        self.wind = f"{dir} {int(data['wind']['speed'])}mp/h "
         self.update_config()
 
 
-    def get_gps(self):
+    def get_gps(self,city):
         try: 
-            GPS_response = requests.get(f"http://api.openweathermap.org/geo/1.0/direct?q={self.city_name}&appid={self.weather_key}").json()
-            country = GPS_response[0]['country']
+            GPS_response = requests.get(f"http://api.openweathermap.org/geo/1.0/direct?q={city}&appid={self.weather_key}").json()
+            #print(GPS_response)
+            if not GPS_response:
+                print(f"WARNING: No results found for city '{city}'. Using default (New York City).")
+                return [-74.0060152, 40.7127281, "New York", "NY", "US"]
+
+            country = GPS_response[0].get('country', 'US')
+            state = GPS_response[0].get('state', '')
+            name = GPS_response[0].get('name', city)
+            lon = GPS_response[0].get('lon', -74.0060152)
+            lat = GPS_response[0].get('lat', 40.7127281)
+            return [lon, lat, name, state, country]
+        
         except requests.exceptions.RequestException as e:
             print("ERROR: weather.get_gps >>> api request >>>", e)
-            GPS_response = 40.7127281,-74.0060152 # Defaults to New York City
-            country = 'us'
-        return [GPS_response[0]["lon"], GPS_response[0]["lat"], GPS_response[0]['name'], GPS_response[0]['state'], country]
+            GPS_response = [-74.0060152, 40.7127281, "New York", "NY", "US"]
+            return GPS_response
     
 
     def get_weather(self):
@@ -52,6 +62,7 @@ class weather_report():
         except requests.exceptions.RequestException as e:
             print("ERROR: weather.get_weather >>> api request >>>", e)
             WEATHER_response = "Error Weather Data"
+        #print(WEATHER_response)
         return WEATHER_response
     
 
