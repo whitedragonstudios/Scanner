@@ -1,85 +1,85 @@
 employee_id,first_name,last_name,email,phone,pic_path,employee_role,position,department
-76053925,Biggs,Darklighter,biggs.darklighter@scanner.com,+1-555-509-8596,/images/76053925.jpg,Associate,Coordinator,Security & Strategy
-11551099,Ackbar,Admiral,ackbar.admiral@scanner.com,+1-555-723-4297,/images/11551099.jpg,Associate,Analyst,Rebel Relations
-16913356,Kit,Fisto,kit.fisto@scanner.com,+1-555-859-4387,/images/16913356.jpg,Support Specialist,Technician,Security & Strategy
-23877456,Darth,Vader,darth.vader@scanner.com,+1-555-592-2257,/images/23877456.jpg,Project Lead,Analyst,Droid Services
-96338500,Rex,Clone,rex.clone@scanner.com,+1-555-918-5322,/images/96338500.jpg,Associate,Manager,Droid Services
-58438572,Figrin,Dan,figrin.dan@scanner.com,+1-555-134-8627,/images/58438572.jpg,Project Lead,Technician,Security & Strategy
-66851394,K2,SO,k2.so@scanner.com,+1-555-163-6151,/images/66851394.jpg,Support Specialist,Analyst,Droid Services
-86262169,Luke,Skywalker,luke.skywalker@scanner.com,+1-555-354-6410,/images/86262169.jpg,Support Specialist,Coordinator,Security & Strategy
-27265478,Tarkin,Wilhuff,tarkin.wilhuff@scanner.com,+1-555-648-7507,/images/27265478.jpg,Project Lead,Analyst,Security & Strategy
-12365101,Aurra,Sing,aurra.sing@scanner.com,+1-555-609-6356,/images/12365101.jpg,Associate,Manager,Droid Services
-23153615,Cara,Dune,cara.dune@scanner.com,+1-555-984-4985,/images/23153615.jpg,Support Specialist,Technician,Security & Strategy
-53912868,Phasma,Captain,phasma.captain@scanner.com,+1-555-647-6231,/images/53912868.jpg,Project Lead,Analyst,Rebel Relations
-82801583,Qira,Crimson,qira.crimson@scanner.com,+1-555-129-2753,/images/82801583.jpg,Support Specialist,Technician,Security & Strategy
-59335103,Rieekan,Carlist,rieekan.carlist@scanner.com,+1-555-611-5432,/images/59335103.jpg,Senior Officer,Analyst,Security & Strategy
-22219010,Enfys,Nest,enfys.nest@scanner.com,+1-555-573-8475,/images/22219010.jpg,Associate,Manager,Rebel Relations
-82624315,Leia,Organa,leia.organa@scanner.com,+1-555-404-8475,/images/82624315.jpg,Project Lead,Analyst,Galactic Operations
-47417325,Shmi,Skywalker,shmi.skywalker@scanner.com,+1-555-841-9777,/images/47417325.jpg,Project Lead,Technician,Rebel Relations
-63066923,Han,Solo,han.solo@scanner.com,+1-555-796-5542,/images/63066923.jpg,Associate,Technician,Droid Services
-67896747,Barriss,Offee,barriss.offee@scanner.com,+1-555-101-3671,/images/67896747.jpg,Associate,Technician,Droid Services
-23205174,Bossk,Trandoshan,bossk.trandoshan@scanner.com,+1-555-659-2340,/images/23205174.jpg,Associate,Technician,Rebel Relations
-40596705,Ozzel,Kendal,ozzel.kendal@scanner.com,+1-555-924-5111,/images/40596705.jpg,Senior Officer,Manager,Galactic Operations
-54683398,Watto,Junklord,watto.junklord@scanner.com,+1-555-246-4426,/images/54683398.jpg,Project Lead,Technician,Rebel Relations
-28559784,Poe,Dameron,poe.dameron@scanner.com,+1-555-970-7858,/images/28559784.jpg,Associate,Analyst,Rebel Relations
-36737512,Baze,Malbus,baze.malbus@scanner.com,+1-555-881-2548,/images/36737512.jpg,Senior Officer,Manager,Security & Strategy
-40327575,Admiral,Ackbar,admiral.ackbar@scanner.com,+1-555-493-7594,/images/40327575.jpg,Associate,Technician,Rebel Relations
-32180005,Veers,Maximilian,veers.maximilian@scanner.com,+1-555-462-6129,/images/32180005.jpg,Associate,Technician,Droid Services
-86368191,Max,Rebo,max.rebo@scanner.com,+1-555-765-4252,/images/86368191.jpg,Support Specialist,Coordinator,Droid Services
-66097761,Jerjerrod,Tiaan,jerjerrod.tiaan@scanner.com,+1-555-726-8666,/images/66097761.jpg,Support Specialist,Manager,Galactic Operations
-83824399,Kylo,Ren,kylo.ren@scanner.com,+1-555-715-7524,/images/83824399.jpg,Support Specialist,Analyst,Galactic Operations
-80258949,Ahsoka,Tano,ahsoka.tano@scanner.com,+1-555-877-7536,/images/80258949.jpg,Support Specialist,Analyst,Security & Strategy
-74670650,Bib,Fortuna,bib.fortuna@scanner.com,+1-555-709-8482,/images/74670650.jpg,Project Lead,Analyst,Droid Services
-77611549,Fives,Clone,fives.clone@scanner.com,+1-555-313-8824,/images/77611549.jpg,Associate,Technician,Galactic Operations
-97136304,Maz,Kanata,maz.kanata@scanner.com,+1-555-458-8364,/images/97136304.jpg,Associate,Coordinator,Security & Strategy
-51215523,Mace,Windu,mace.windu@scanner.com,+1-555-689-7175,/images/51215523.jpg,Project Lead,Technician,Droid Services
-56465093,Chewbacca,Wookiee,chewbacca.wookiee@scanner.com,+1-555-480-5804,/images/56465093.jpg,Project Lead,Manager,Rebel Relations
-57295327,Unkar,Plutt,unkar.plutt@scanner.com,+1-555-937-5097,/images/57295327.jpg,Associate,Coordinator,Galactic Operations
-37230127,Dexter,Jetster,dexter.jetster@scanner.com,+1-555-946-2305,/images/37230127.jpg,Support Specialist,Coordinator,Security & Strategy
-64889551,Cliegg,Lars,cliegg.lars@scanner.com,+1-555-836-6422,/images/64889551.jpg,Associate,Technician,Security & Strategy
-37983314,Cassian,Andor,cassian.andor@scanner.com,+1-555-618-3838,/images/37983314.jpg,Support Specialist,Manager,Rebel Relations
-56401407,Dodonna,Jan,dodonna.jan@scanner.com,+1-555-573-7271,/images/56401407.jpg,Support Specialist,Analyst,Rebel Relations
-21391142,DJ,Blunt,dj.blunt@scanner.com,+1-555-440-4704,/images/21391142.jpg,Associate,Manager,Rebel Relations
-55737291,Qui-Gon,Jinn,qui-gon.jinn@scanner.com,+1-555-569-7720,/images/55737291.jpg,Senior Officer,Coordinator,Rebel Relations
-35728086,Aayla,Secura,aayla.secura@scanner.com,+1-555-686-7374,/images/35728086.jpg,Project Lead,Manager,Rebel Relations
-92715041,Ventress,Asajj,ventress.asajj@scanner.com,+1-555-576-6347,/images/92715041.jpg,Project Lead,Coordinator,Droid Services
-92363416,Hondo,Ohnaka,hondo.ohnaka@scanner.com,+1-555-460-9081,/images/92363416.jpg,Project Lead,Coordinator,Security & Strategy
-42269120,Din,Djarin,din.djarin@scanner.com,+1-555-872-2045,/images/42269120.jpg,Project Lead,Technician,Security & Strategy
-65001426,Greedo,Rodian,greedo.rodian@scanner.com,+1-555-109-4785,/images/65001426.jpg,Senior Officer,Technician,Security & Strategy
-81685045,Beckett,Tobias,beckett.tobias@scanner.com,+1-555-201-4707,/images/81685045.jpg,Associate,Analyst,Security & Strategy
-57693970,Saw,Gerrera,saw.gerrera@scanner.com,+1-555-601-9086,/images/57693970.jpg,Project Lead,Coordinator,Galactic Operations
-70641528,Boba,Fett,boba.fett@scanner.com,+1-555-118-7381,/images/70641528.jpg,Senior Officer,Coordinator,Galactic Operations
-77568598,Hux,Armitage,hux.armitage@scanner.com,+1-555-655-2048,/images/77568598.jpg,Support Specialist,Analyst,Galactic Operations
-90118025,Cad,Bane,cad.bane@scanner.com,+1-555-485-1569,/images/90118025.jpg,Project Lead,Coordinator,Droid Services
-96776710,Sy,Snootles,sy.snootles@scanner.com,+1-555-238-6545,/images/96776710.jpg,Project Lead,Technician,Security & Strategy
-19896102,Sabine,Wren,sabine.wren@scanner.com,+1-555-195-7649,/images/19896102.jpg,Senior Officer,Coordinator,Galactic Operations
-81588124,Lando,Calrissian,lando.calrissian@scanner.com,+1-555-329-7904,/images/81588124.jpg,Project Lead,Manager,Galactic Operations
-89400093,Piett,Firmus,piett.firmus@scanner.com,+1-555-605-9291,/images/89400093.jpg,Senior Officer,Manager,Galactic Operations
-99134812,Bail,Organa,bail.organa@scanner.com,+1-555-903-1792,/images/99134812.jpg,Associate,Coordinator,Galactic Operations
-34056567,Rose,Tico,rose.tico@scanner.com,+1-555-797-1908,/images/34056567.jpg,Associate,Analyst,Rebel Relations
-43712755,Shaak,Ti,shaak.ti@scanner.com,+1-555-586-1310,/images/43712755.jpg,Associate,Analyst,Droid Services
-75858902,Droopy,McCool,droopy.mccool@scanner.com,+1-555-353-2028,/images/75858902.jpg,Associate,Coordinator,Galactic Operations
-18617297,Ezra,Bridger,ezra.bridger@scanner.com,+1-555-791-6258,/images/18617297.jpg,Associate,Manager,Galactic Operations
-94986959,Cody,Clone,cody.clone@scanner.com,+1-555-268-3361,/images/94986959.jpg,Project Lead,Analyst,Galactic Operations
-68543144,Anakin,Skywalker,anakin.skywalker@scanner.com,+1-555-673-8354,/images/68543144.jpg,Associate,Analyst,Droid Services
-13053923,Bo-Katan,Kryze,bo-katan.kryze@scanner.com,+1-555-281-4436,/images/13053923.jpg,Senior Officer,Technician,Security & Strategy
-59694871,Chirrut,Îmwe,chirrut.îmwe@scanner.com,+1-555-839-6088,/images/59694871.jpg,Project Lead,Technician,Security & Strategy
-24724933,Hera,Syndulla,hera.syndulla@scanner.com,+1-555-480-4904,/images/24724933.jpg,Support Specialist,Coordinator,Security & Strategy
-57987062,Thrawn,Mitthraw,thrawn.mitthraw@scanner.com,+1-555-386-3628,/images/57987062.jpg,Senior Officer,Analyst,Droid Services
-58222720,Finn,Tico,finn.tico@scanner.com,+1-555-627-1700,/images/58222720.jpg,Associate,Coordinator,Security & Strategy
-50787242,Obi-Wan,Kenobi,obi-wan.kenobi@scanner.com,+1-555-102-1539,/images/50787242.jpg,Senior Officer,Analyst,Galactic Operations
-63251534,Sidon,Ithano,sidon.ithano@scanner.com,+1-555-703-1458,/images/63251534.jpg,Support Specialist,Analyst,Security & Strategy
-81122398,Elan,Sleazebaggano,elan.sleazebaggano@scanner.com,+1-555-874-8458,/images/81122398.jpg,Senior Officer,Manager,Security & Strategy
-56676067,Padmé,Amidala,padmé.amidala@scanner.com,+1-555-207-5077,/images/56676067.jpg,Associate,Manager,Security & Strategy
-18257529,Mon,Mothma,mon.mothma@scanner.com,+1-555-245-1306,/images/18257529.jpg,Project Lead,Manager,Droid Services
-95899622,Rey,Palpatine,rey.palpatine@scanner.com,+1-555-318-4006,/images/95899622.jpg,Senior Officer,Coordinator,Galactic Operations
-83606015,Jyn,Erso,jyn.erso@scanner.com,+1-555-329-7474,/images/83606015.jpg,Support Specialist,Coordinator,Galactic Operations
-76116542,Zam,Wesell,zam.wesell@scanner.com,+1-555-481-5893,/images/76116542.jpg,Associate,Technician,Galactic Operations
-29198138,Val,Beckett,val.beckett@scanner.com,+1-555-439-2568,/images/29198138.jpg,Associate,Technician,Rebel Relations
-51731925,Holdo,Amilyn,holdo.amilyn@scanner.com,+1-555-598-1050,/images/51731925.jpg,Associate,Coordinator,Galactic Operations
-54263237,Sebulba,Podracer,sebulba.podracer@scanner.com,+1-555-167-7567,/images/54263237.jpg,Associate,Technician,Droid Services
-77869293,Lor,San,lor.san@scanner.com,+1-555-294-2818,/images/77869293.jpg,Associate,Manager,Galactic Operations
-50495184,Palpatine,Sidious,palpatine.sidious@scanner.com,+1-555-111-3154,/images/50495184.jpg,Senior Officer,Analyst,Security & Strategy
-47834449,Needa,Lorth,needa.lorth@scanner.com,+1-555-404-2303,/images/47834449.jpg,Senior Officer,Coordinator,Security & Strategy
-25587577,Echo,Clone,echo.clone@scanner.com,+1-555-456-8582,/images/25587577.jpg,Support Specialist,Technician,Security & Strategy
-64365795,Wedge,Antilles,wedge.antilles@scanner.com,+1-555-293-5760,/images/64365795.jpg,Support Specialist,Analyst,Security & Strategy
+76053925,Biggs,Darklighter,biggs.darklighter@scanner.com,+1-555-509-8596,76053925.jpg,Associate,Coordinator,Security & Strategy
+11551099,Ackbar,Admiral,ackbar.admiral@scanner.com,+1-555-723-4297,11551099.jpg,Associate,Analyst,Rebel Relations
+16913356,Kit,Fisto,kit.fisto@scanner.com,+1-555-859-4387,16913356.jpg,Support Specialist,Technician,Security & Strategy
+23877456,Darth,Vader,darth.vader@scanner.com,+1-555-592-2257,23877456.jpg,Project Lead,Analyst,Droid Services
+96338500,Rex,Clone,rex.clone@scanner.com,+1-555-918-5322,96338500.jpg,Associate,Manager,Droid Services
+58438572,Figrin,Dan,figrin.dan@scanner.com,+1-555-134-8627,58438572.jpg,Project Lead,Technician,Security & Strategy
+66851394,K2,SO,k2.so@scanner.com,+1-555-163-6151,66851394.jpg,Support Specialist,Analyst,Droid Services
+86262169,Luke,Skywalker,luke.skywalker@scanner.com,+1-555-354-6410,86262169.jpg,Support Specialist,Coordinator,Security & Strategy
+27265478,Tarkin,Wilhuff,tarkin.wilhuff@scanner.com,+1-555-648-7507,27265478.jpg,Project Lead,Analyst,Security & Strategy
+12365101,Aurra,Sing,aurra.sing@scanner.com,+1-555-609-6356,12365101.jpg,Associate,Manager,Droid Services
+23153615,Cara,Dune,cara.dune@scanner.com,+1-555-984-4985,23153615.jpg,Support Specialist,Technician,Security & Strategy
+53912868,Phasma,Captain,phasma.captain@scanner.com,+1-555-647-6231,53912868.jpg,Project Lead,Analyst,Rebel Relations
+82801583,Qira,Crimson,qira.crimson@scanner.com,+1-555-129-2753,82801583.jpg,Support Specialist,Technician,Security & Strategy
+59335103,Rieekan,Carlist,rieekan.carlist@scanner.com,+1-555-611-5432,59335103.jpg,Senior Officer,Analyst,Security & Strategy
+22219010,Enfys,Nest,enfys.nest@scanner.com,+1-555-573-8475,22219010.jpg,Associate,Manager,Rebel Relations
+82624315,Leia,Organa,leia.organa@scanner.com,+1-555-404-8475,82624315.jpg,Project Lead,Analyst,Galactic Operations
+47417325,Shmi,Skywalker,shmi.skywalker@scanner.com,+1-555-841-9777,47417325.jpg,Project Lead,Technician,Rebel Relations
+63066923,Han,Solo,han.solo@scanner.com,+1-555-796-5542,63066923.jpg,Associate,Technician,Droid Services
+67896747,Barriss,Offee,barriss.offee@scanner.com,+1-555-101-3671,67896747.jpg,Associate,Technician,Droid Services
+23205174,Bossk,Trandoshan,bossk.trandoshan@scanner.com,+1-555-659-2340,23205174.jpg,Associate,Technician,Rebel Relations
+40596705,Ozzel,Kendal,ozzel.kendal@scanner.com,+1-555-924-5111,40596705.jpg,Senior Officer,Manager,Galactic Operations
+54683398,Watto,Junklord,watto.junklord@scanner.com,+1-555-246-4426,54683398.jpg,Project Lead,Technician,Rebel Relations
+28559784,Poe,Dameron,poe.dameron@scanner.com,+1-555-970-7858,28559784.jpg,Associate,Analyst,Rebel Relations
+36737512,Baze,Malbus,baze.malbus@scanner.com,+1-555-881-2548,36737512.jpg,Senior Officer,Manager,Security & Strategy
+40327575,Admiral,Ackbar,admiral.ackbar@scanner.com,+1-555-493-7594,40327575.jpg,Associate,Technician,Rebel Relations
+32180005,Veers,Maximilian,veers.maximilian@scanner.com,+1-555-462-6129,32180005.jpg,Associate,Technician,Droid Services
+86368191,Max,Rebo,max.rebo@scanner.com,+1-555-765-4252,86368191.jpg,Support Specialist,Coordinator,Droid Services
+66097761,Jerjerrod,Tiaan,jerjerrod.tiaan@scanner.com,+1-555-726-8666,66097761.jpg,Support Specialist,Manager,Galactic Operations
+83824399,Kylo,Ren,kylo.ren@scanner.com,+1-555-715-7524,83824399.jpg,Support Specialist,Analyst,Galactic Operations
+80258949,Ahsoka,Tano,ahsoka.tano@scanner.com,+1-555-877-7536,80258949.jpg,Support Specialist,Analyst,Security & Strategy
+74670650,Bib,Fortuna,bib.fortuna@scanner.com,+1-555-709-8482,74670650.jpg,Project Lead,Analyst,Droid Services
+77611549,Fives,Clone,fives.clone@scanner.com,+1-555-313-8824,77611549.jpg,Associate,Technician,Galactic Operations
+97136304,Maz,Kanata,maz.kanata@scanner.com,+1-555-458-8364,97136304.jpg,Associate,Coordinator,Security & Strategy
+51215523,Mace,Windu,mace.windu@scanner.com,+1-555-689-7175,51215523.jpg,Project Lead,Technician,Droid Services
+56465093,Chewbacca,Wookiee,chewbacca.wookiee@scanner.com,+1-555-480-5804,56465093.jpg,Project Lead,Manager,Rebel Relations
+57295327,Unkar,Plutt,unkar.plutt@scanner.com,+1-555-937-5097,57295327.jpg,Associate,Coordinator,Galactic Operations
+37230127,Dexter,Jetster,dexter.jetster@scanner.com,+1-555-946-2305,37230127.jpg,Support Specialist,Coordinator,Security & Strategy
+64889551,Cliegg,Lars,cliegg.lars@scanner.com,+1-555-836-6422,64889551.jpg,Associate,Technician,Security & Strategy
+37983314,Cassian,Andor,cassian.andor@scanner.com,+1-555-618-3838,37983314.jpg,Support Specialist,Manager,Rebel Relations
+56401407,Dodonna,Jan,dodonna.jan@scanner.com,+1-555-573-7271,56401407.jpg,Support Specialist,Analyst,Rebel Relations
+21391142,DJ,Blunt,dj.blunt@scanner.com,+1-555-440-4704,21391142.jpg,Associate,Manager,Rebel Relations
+55737291,Qui-Gon,Jinn,qui-gon.jinn@scanner.com,+1-555-569-7720,55737291.jpg,Senior Officer,Coordinator,Rebel Relations
+35728086,Aayla,Secura,aayla.secura@scanner.com,+1-555-686-7374,35728086.jpg,Project Lead,Manager,Rebel Relations
+92715041,Ventress,Asajj,ventress.asajj@scanner.com,+1-555-576-6347,92715041.jpg,Project Lead,Coordinator,Droid Services
+92363416,Hondo,Ohnaka,hondo.ohnaka@scanner.com,+1-555-460-9081,92363416.jpg,Project Lead,Coordinator,Security & Strategy
+42269120,Din,Djarin,din.djarin@scanner.com,+1-555-872-2045,42269120.jpg,Project Lead,Technician,Security & Strategy
+65001426,Greedo,Rodian,greedo.rodian@scanner.com,+1-555-109-4785,65001426.jpg,Senior Officer,Technician,Security & Strategy
+81685045,Beckett,Tobias,beckett.tobias@scanner.com,+1-555-201-4707,81685045.jpg,Associate,Analyst,Security & Strategy
+57693970,Saw,Gerrera,saw.gerrera@scanner.com,+1-555-601-9086,57693970.jpg,Project Lead,Coordinator,Galactic Operations
+70641528,Boba,Fett,boba.fett@scanner.com,+1-555-118-7381,70641528.jpg,Senior Officer,Coordinator,Galactic Operations
+77568598,Hux,Armitage,hux.armitage@scanner.com,+1-555-655-2048,77568598.jpg,Support Specialist,Analyst,Galactic Operations
+90118025,Cad,Bane,cad.bane@scanner.com,+1-555-485-1569,90118025.jpg,Project Lead,Coordinator,Droid Services
+96776710,Sy,Snootles,sy.snootles@scanner.com,+1-555-238-6545,96776710.jpg,Project Lead,Technician,Security & Strategy
+19896102,Sabine,Wren,sabine.wren@scanner.com,+1-555-195-7649,19896102.jpg,Senior Officer,Coordinator,Galactic Operations
+81588124,Lando,Calrissian,lando.calrissian@scanner.com,+1-555-329-7904,81588124.jpg,Project Lead,Manager,Galactic Operations
+89400093,Piett,Firmus,piett.firmus@scanner.com,+1-555-605-9291,89400093.jpg,Senior Officer,Manager,Galactic Operations
+99134812,Bail,Organa,bail.organa@scanner.com,+1-555-903-1792,99134812.jpg,Associate,Coordinator,Galactic Operations
+34056567,Rose,Tico,rose.tico@scanner.com,+1-555-797-1908,34056567.jpg,Associate,Analyst,Rebel Relations
+43712755,Shaak,Ti,shaak.ti@scanner.com,+1-555-586-1310,43712755.jpg,Associate,Analyst,Droid Services
+75858902,Droopy,McCool,droopy.mccool@scanner.com,+1-555-353-2028,75858902.jpg,Associate,Coordinator,Galactic Operations
+18617297,Ezra,Bridger,ezra.bridger@scanner.com,+1-555-791-6258,18617297.jpg,Associate,Manager,Galactic Operations
+94986959,Cody,Clone,cody.clone@scanner.com,+1-555-268-3361,94986959.jpg,Project Lead,Analyst,Galactic Operations
+68543144,Anakin,Skywalker,anakin.skywalker@scanner.com,+1-555-673-8354,68543144.jpg,Associate,Analyst,Droid Services
+13053923,Bo-Katan,Kryze,bo-katan.kryze@scanner.com,+1-555-281-4436,13053923.jpg,Senior Officer,Technician,Security & Strategy
+59694871,Chirrut,Îmwe,chirrut.îmwe@scanner.com,+1-555-839-6088,59694871.jpg,Project Lead,Technician,Security & Strategy
+24724933,Hera,Syndulla,hera.syndulla@scanner.com,+1-555-480-4904,24724933.jpg,Support Specialist,Coordinator,Security & Strategy
+57987062,Thrawn,Mitthraw,thrawn.mitthraw@scanner.com,+1-555-386-3628,57987062.jpg,Senior Officer,Analyst,Droid Services
+58222720,Finn,Tico,finn.tico@scanner.com,+1-555-627-1700,58222720.jpg,Associate,Coordinator,Security & Strategy
+50787242,Obi-Wan,Kenobi,obi-wan.kenobi@scanner.com,+1-555-102-1539,50787242.jpg,Senior Officer,Analyst,Galactic Operations
+63251534,Sidon,Ithano,sidon.ithano@scanner.com,+1-555-703-1458,63251534.jpg,Support Specialist,Analyst,Security & Strategy
+81122398,Elan,Sleazebaggano,elan.sleazebaggano@scanner.com,+1-555-874-8458,81122398.jpg,Senior Officer,Manager,Security & Strategy
+56676067,Padmé,Amidala,padmé.amidala@scanner.com,+1-555-207-5077,56676067.jpg,Associate,Manager,Security & Strategy
+18257529,Mon,Mothma,mon.mothma@scanner.com,+1-555-245-1306,18257529.jpg,Project Lead,Manager,Droid Services
+95899622,Rey,Palpatine,rey.palpatine@scanner.com,+1-555-318-4006,95899622.jpg,Senior Officer,Coordinator,Galactic Operations
+83606015,Jyn,Erso,jyn.erso@scanner.com,+1-555-329-7474,83606015.jpg,Support Specialist,Coordinator,Galactic Operations
+76116542,Zam,Wesell,zam.wesell@scanner.com,+1-555-481-5893,76116542.jpg,Associate,Technician,Galactic Operations
+29198138,Val,Beckett,val.beckett@scanner.com,+1-555-439-2568,29198138.jpg,Associate,Technician,Rebel Relations
+51731925,Holdo,Amilyn,holdo.amilyn@scanner.com,+1-555-598-1050,51731925.jpg,Associate,Coordinator,Galactic Operations
+54263237,Sebulba,Podracer,sebulba.podracer@scanner.com,+1-555-167-7567,54263237.jpg,Associate,Technician,Droid Services
+77869293,Lor,San,lor.san@scanner.com,+1-555-294-2818,77869293.jpg,Associate,Manager,Galactic Operations
+50495184,Palpatine,Sidious,palpatine.sidious@scanner.com,+1-555-111-3154,50495184.jpg,Senior Officer,Analyst,Security & Strategy
+47834449,Needa,Lorth,needa.lorth@scanner.com,+1-555-404-2303,47834449.jpg,Senior Officer,Coordinator,Security & Strategy
+25587577,Echo,Clone,echo.clone@scanner.com,+1-555-456-8582,25587577.jpg,Support Specialist,Technician,Security & Strategy
+64365795,Wedge,Antilles,wedge.antilles@scanner.com,+1-555-293-5760,64365795.jpg,Support Specialist,Analyst,Security & Strategy
