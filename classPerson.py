@@ -26,7 +26,7 @@ class Person():
             # if data is returned the rest of the methods are called.
             self.assign(data)
             self.update_DB()
-            self.recent_list(20)
+            self.recent_list(25)
         else:
             # if the id is not valid default_person provides valid feedback to flask
             data = Default_Person(self.recent, self.id)

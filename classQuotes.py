@@ -1,14 +1,20 @@
 from datetime import datetime
 
+# quote generator stores and produces different quotes based on the unique date
 class quote_generator:
     def __init__(self, autorun=True):
+        # Set the date when the object is created updated in update if the day changes while the progam is running.
         self.date = datetime.today().strftime("%d %m %Y")
         self.autorun = autorun or True
+        # Autorun is automically true runs update
         if autorun:
             self.update()
+        # if update fails returns data which can be used.
         else: self.QotD = ["If it is not right, do not do it; if it is not true, do not say it.", "Marcus Aurelius"]
 
 
+    # Stores a list of lists [[quote, author]] 366 different quotes
+    # Note not all the quotes have been vetted at this time 11/12/25
     def quote_list(self):
         return [
     # Stoics
@@ -384,18 +390,7 @@ class quote_generator:
     ]
 
     
-
-    def make(self, date_str=None):
-        if date_str is None:
-            date_str = self.date
-        d, m, y = [int(x) for x in date_str.split()]
-        base = (y * 10000) + (m * 100) + d
-        n = (d * 31 + m * 12 + y * 17 + (d * m * y))  
-        result = (n + base) % 366 + 1
-        quote = self.quote_list()[result]
-        return quote
-    
-
+    # update checks the date against a stored date to produce a new quote if the day changes.
     def update(self, date_str=None):
         if date_str is None:
             self.date = datetime.today().strftime("%d %m %Y")
@@ -403,3 +398,24 @@ class quote_generator:
             self.date = date_str
         self.QotD = self.make(self.date)
         return self.QotD
+
+
+    # make uses a data algorithm to generate an index number for a random quote.
+    def make(self, date_str=None):
+        # check data is valid
+        if date_str is None:
+            date_str = self.date
+        # Break date into integers
+        d, m, y = [int(x) for x in date_str.split()]
+        # make date more unique by mulitplying it.
+        base = (y * 10000) + (m * 100) + d
+        # randomize result with primes
+        n = (d * 31 + m * 12 + y * 17 + (d * m * y))
+        # modulo by days of the year 
+        result = (n + base) % 366 + 1
+        # call the index using random number
+        quote = self.quote_list()[result]
+        return quote
+    
+
+
