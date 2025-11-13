@@ -1,5 +1,6 @@
 import psycopg2, os
 
+# 
 class Handler:
     def __init__(self, user="postgres", password="", dbname="postgres", port=5000, host="localhost", info=False):
         # Default attributes for Handler are for postgre default account
@@ -196,7 +197,7 @@ class Handler:
             conn = self.connect()
             cur = conn.cursor()
             # Execute update command 
-            cur.execute("UPDATE %s SET value = %s WHERE key = %s;", (db, value, key))  # Modify to account for collisions
+            cur.execute(f"UPDATE {db} SET value = '{value}' WHERE key = '{key}';")  # Modify to account for collisions
             conn.commit() 
             print(f"Configuration key '{key}' updated successfully.")
         except psycopg2.Error as e:
