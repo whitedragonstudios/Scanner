@@ -4,15 +4,14 @@ from time import sleep
 from classHandler import Handler
 
 # Postgre_Install handles the installation process and checks for required packages and databases
-# Next sprint changes: make install only take password hard code other parameters. Add uninstall function for clean install to remove postgresql
 class Postgre_Install:
-    def __init__(self, user, password, dbname, port, host):
-        # Default attributes for connecting to databases
-        self.user = user
-        self.password = password
-        self.dbname = dbname
-        self.port = port
-        self.host = host
+    def __init__(self, user='postgres', password='', dbname='scanner', port=5000, host='localhost'):
+        # Default attributes for database connection
+        self.user = user or 'postgres'
+        self.password = password or ''
+        self.dbname = dbname or 'scanner'
+        self.port = port or 5000
+        self.host = host or 'localhost'
         # Detect OS
         self.system = platform.system().lower()
         # Create instance of Handler with admin privilages
@@ -173,6 +172,9 @@ class Postgre_Install:
 
             # Create database owned by the new user
             self.admin.send_command(f"CREATE DATABASE {self.dbname} OWNER {self.user};")
+            # Reconnect to the new database
+            self.admin = Handler(user=self.user, password=self.password, dbname=self.dbname)
+
 
             # Drop tables if they exist
             self.drop_tables("people_database")
@@ -219,7 +221,7 @@ class Postgre_Install:
             self.admin.send_command("""
                 CREATE TABLE email_list(
                     key SERIAL PRIMARY KEY,
-                    email VARCHAR(255),
+                    email VARCHAR(255) UNIQUE,
                     frequency VARCHAR(8));""")
 
             # Create people_database table
@@ -305,29 +307,33 @@ class Postgre_Install:
     # Testing method for development
     def insert_test_data(self):
         # Insert test data for people database
-        self.admin.send_command("""INSERT INTO people_database (
-            employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES
-            (11111111, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '11111111.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
-            (22222222, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '22222222.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice')
-                ON CONFLICT (employee_id)
-                DO UPDATE SET
-                    first_name = EXCLUDED.first_name,
-                    last_name = EXCLUDED.last_name,
-                    email = EXCLUDED.email,
-                    phone = EXCLUDED.phone,
-                    pic_path = EXCLUDED.pic_path,
-                    employee_role = EXCLUDED.employee_role,
-                    position = EXCLUDED.position,
-                    department = EXCLUDED.department;""")
-        # Insert some test data for email_list
-        self.admin.send_command("""INSERT INTO email_list (email, frequency) VALUES 
-                    ('marcus.aurelius@scanner.com', "daily), 
-                    ('test@scanner.com', 'weekly')
-                    ('scanner@scanner.com', 'monthly')
-                ON CONFLICT (email, frequency)
-                DO UPDATE SET
-                    email = EXCLUDED.email,
-                    frequency = EXCLUDED.frequency;""")
+        try:
+            self.admin.send_command("""INSERT INTO people_database (
+                employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES
+                (11111111, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '11111111.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
+                (22222222, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '22222222.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice')
+                    ON CONFLICT (employee_id)
+                    DO UPDATE SET
+                        first_name = EXCLUDED.first_name,
+                        last_name = EXCLUDED.last_name,
+                        email = EXCLUDED.email,
+                        phone = EXCLUDED.phone,
+                        pic_path = EXCLUDED.pic_path,
+                        employee_role = EXCLUDED.employee_role,
+                        position = EXCLUDED.position,
+                        department = EXCLUDED.department;""")
+        except Exception as e:
+            print("Error adding sample data to people database:",e)
+        
+        try:
+            # Insert some test data for email_list
+            self.admin.send_command("""INSERT INTO email_list (email, frequency) VALUES 
+                ('marcus.aurelius@scanner.com', 'daily'),
+                ('test@scanner.com', 'weekly'),
+                ('scanner@scanner.com', 'monthly')
+            ON CONFLICT (email) DO UPDATE SET frequency = EXCLUDED.frequency;""")
+        except Exception as e:
+            print("Error adding sample data to email list:",e)
 
 
     # This method controls the flow of the entire class.
@@ -394,3 +400,66 @@ class Postgre_Install:
             print(f"Table {table_name} deleted")
         except Exception as e:
             print(f"Failed to drop {table_name}")
+    
+
+    # function for uninstalling postgresql for clean installs.
+    def uninstall_psql(self):
+        # Delete user database and tables before uninstalling 
+        print("Clearing databases\n\n\n")
+        self.drop_tables('config_database')
+        self.drop_tables('people_database')
+        self.drop_tables('timesheet_database')
+        self.drop_tables('email_list')
+        self.drop_database('scanner')
+        self.drop_user('marcus')
+        print("Starting uninstall of PostgreSQL\n\n\n")
+        print(f"Detected OS: {self.system.title()}")
+        try:
+            # detect windows use chocolatey 
+            if self.system == "windows":
+                print("Uninstalling PostgreSQL using Chocolatey.")
+                if shutil.which("choco") is None:
+                    print("Chocolatey not found. Cannot uninstall automatically on Windows.")
+                    return False
+                cmd = "choco uninstall postgresql --yes"
+
+            elif self.system == "darwin":
+                print("Uninstalling PostgreSQL using Homebrew...")
+                if shutil.which("brew") is None:
+                    print("Homebrew not found. Cannot uninstall automatically on Mac.")
+                    return False
+                cmd = "brew uninstall postgresql"
+            # detect linux
+            elif self.system == "linux":
+                # detect Linux package manager
+                if shutil.which("apt"):
+                    print("Uninstalling PostgreSQL using apt.")
+                    cmd = "sudo apt remove --purge -y postgresql* && sudo apt autoremove -y"
+                elif shutil.which("dnf"):
+                    print("Uninstalling PostgreSQL using dnf.")
+                    cmd = "sudo dnf remove -y postgresql*"
+                elif shutil.which("yum"):
+                    print("Uninstalling PostgreSQL using yum.")
+                    cmd = "sudo yum remove -y postgresql*"
+                elif shutil.which("pacman"):
+                    print("Uninstalling PostgreSQL using pacman.")
+                    cmd = "sudo pacman -Rns --noconfirm postgresql"
+                else:
+                    print("Could not detect Linux package manager. Please uninstall PostgreSQL manually.")
+                    return False
+            else:
+                print("Unsupported OS. Cannot uninstall PostgreSQL automatically.")
+                return False
+
+            # Execute the uninstall command
+            result = subprocess.run(cmd, shell=True, check=True, text=True, capture_output=True)
+            print(result.stdout.strip())
+            print("^^^ PostgreSQL successfully uninstalled ^^^")
+            return True
+
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to uninstall PostgreSQL.\nError: {e.stderr.strip()}")
+            return False
+        except Exception as e:
+            print(f"Unexpected error during uninstallation: {e}")
+            return False

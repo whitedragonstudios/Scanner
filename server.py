@@ -61,8 +61,6 @@ def home():
     return render_template("home.html", 
                            recent_people = recent_list,
                            scan = employee or Default_Person(recent_list, idscan),
-                           date=dt.now().strftime("%m-%d-%y"),
-                            time=dt.now().strftime("%H:%M"),
                            cf = config,
                            quote = quoteOTDay[0],
                            author = quoteOTDay[1],
