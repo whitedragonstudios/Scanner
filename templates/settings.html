@@ -88,22 +88,25 @@
                 <div class="left-div">
                     <h2>Change Company Name</h2>
                     <form action="/settings" method="post">
-                        <input class="textBox" type="text" name="companyname" id="companyname" placeholder="{{ cf.company }}" maxlength="50" required>
-                        <button class="button" type="submit">Submit</button>
+                        <input class="textBox" type="text" name="company" id="company" placeholder="{{ cf.company }}" maxlength="50" required>
+                        <button class="color_button" type="submit">Submit</button>
                     </form>
                     <h2>Change City</h2>
                     <form action="/settings" method="post">
-                        <input class="textBox" type="text" name="cityname" id="cityname" placeholder="{{ cf.city }}" maxlength="50" required>
-                        <button class="button" type="submit">Submit</button>
+                        <input class="textBox" type="text" name="city" id="city" placeholder="{{ cf.city }}" maxlength="50" required>
+                        <button class="color_button" type="submit">Submit</button>
                     </form>
                     <h2>API Keys</h2>
                     <p>
                     In order to make the weather and news applets work you must get an API key from openweathermaps.com and newapi.org. Once you have these keys you can update the keys stored in the database.
                     </p>
                     <form action="/settings" method="post"> 
-                        <input class="wkey" type="text" name="wkey" id="wkey" placeholder="openweathermaps.com API key" maxlength="32">
-                        <input class="nkey" type="text" name="nkey" id="nkey" placeholder="newsapi.com API key" maxlength="32">
-                        <button class="updateDB" type="submit">Update APIKeys</button>
+                        <input class="wkey" type="text" name="weather_key" id="weather_key" placeholder="openweathermaps.com API key" maxlength="32">
+                        <button class="color_button" type="submit">Weather Key</button>
+                    </form>
+                    <form action="/settings" method="post">
+                        <input class="nkey" type="text" name="news_key" id="news_key" placeholder="newsapi.com API key" maxlength="32">
+                        <button class="color_button" type="submit">News Key</button>
                     </form>
                     <br>
                     <h2> Email Notifications</h2>
@@ -117,7 +120,7 @@
                         <label for="css">Weekly</label>
                         <input type="radio" id="monthly" name="send-reports" value="monthly">
                         <label for="javascript">Monthly</label>
-                        <button type="submit">Submit</button>
+                        <button class="color_button" type="submit">Submit</button>
                     </form>
                 </div>
                 <div class="middle-div">

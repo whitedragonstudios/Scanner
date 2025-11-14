@@ -1,17 +1,15 @@
 from flask import Flask, render_template, request, redirect, Blueprint, flash, url_for
-from datetime import datetime as dt
-import json
-import os
-from classSettings import Setting
+import classSettings, os, json
 from classNews import News_Report
 from classQuotes import quote_generator
 from classWeather import weather_report
 from classHandler import Handler
 from classPerson import Person, Default_Person
 from classInstall import Postgre_Install
+from datetime import datetime as dt
+import databaseConfig
 import pandas as pd
 
-import databaseConfig
 db = databaseConfig. databaseSettings()
 user = db["user"]
 password = db["password"]
@@ -20,7 +18,7 @@ port = db["port"]
 host = db["host"]
 
 
-config = Setting(user, password, db_name, port, host)
+config = classSettings.Setting(user, password, db_name, port, host)
 weather_data = weather_report(config.city, config.weather_key)
 news = News_Report(config.country, config.news_key)
 quoteOTDay = quote_generator().QotD
@@ -69,16 +67,15 @@ def home():
                            )
 
 
+
+
 @frontend.route('/settings', methods=['GET', 'POST'])
 def settings():
     if request.method == "POST":
         global config, weather_data, news
-        admin = Handler(password=password)
         user_handle = Handler(user, password, db_name)
-        #user_handle.send_query("SELECT current_database(), current_schema();")
         # Danger Zone
-        action = request.form.get("action")
-        if action:
+        def danger(action):
             uninstall = Postgre_Install("postgres", password, db_name, port, host)
             if action == "restore":
                 config_list = {
@@ -117,40 +114,39 @@ def settings():
                 user_handle.send_query("SELECT * FROM timesheet_database;")
                 msg = "Timesheet database deleted"
             elif action == "clean":
-                uninstall.drop_tables('people_database')
-                uninstall.drop_tables('timesheet_database')
-                uninstall.drop_tables('config_database')
-                uninstall.drop_database(db_name)
-                uninstall.drop_user(user)                                    
+                uninstall.uninstall_psql()                                   
                 msg = "System reinstalled from clean state"
-            flash(msg, "warning")
-            return redirect(url_for("frontend.settings"))
-
-        # Configuration changes
-        if "companyname" in request.form:
-            new_company = request.form.get("companyname")
-            user_handle.update_config("company", new_company)
-            msg = f"Company name updated to {new_company}"
+            return msg
+    
+        action = request.form.get("action")
+        if action:
+            msg = danger(action)
+            flash(msg, "success")
             return redirect(url_for("frontend.settings"))
         
-        if "cityname" in request.form:
-            new_city = request.form.get("cityname")
-            user_handle.update_config("city", new_city)
-            msg = f"Company name updated to {new_city}"
-            return redirect(url_for("frontend.settings"))
+        # Change a config database value from the keys list
+        def single_button(key, handle):
+            if key in request.form:
+                new_value = request.form.get(key)
+                handle.update_config(key, new_value)
+                return f"{key} updated to {new_value}"
             
+        keys = ["company", "city", "weather_key", "news_key"]
+        for key in keys:
+            msg = single_button(key, user_handle)
+            flash(msg, "success")
+            return redirect(url_for("frontend.settings"))
 
-        # API keys
-        if  "wkey" in request.form and request.form.get("wkey"):
-            new_key = request.form.get("wkey")
-            user_handle.update_config("weather_key", new_key)
-            msg = "Weather key updated"
-        if "nkey" in request.form and request.form.get("nkey"):
-            new_key = request.form.get("nkey")
-            user_handle.update_config("news_key", new_key)
-            msg = "News key updated"
-
-
+        # color updates dynamically
+        if request.form.get("form_type") == "colors":
+            for key, value in request.form.items():
+                if hasattr(config, key):
+                    setattr(config, key, value)
+                    user_handle.update_config(key, value)
+                    flash(f"{key} updated to {value}", "success")
+            return redirect(url_for("frontend.settings"))
+        
+        # reset colors to deault settings
         if "reset_colors" in request.form:
             colors = {'main_background_color':'#0a0a1f',
                     'main_text_color':'#f0f0f0',
@@ -164,8 +160,9 @@ def settings():
                     'border_color':'#3399ff'}
             for key,value in colors.items():
                 user_handle.update_config(key,value)
+                flash(f"{key} reset to {value}", "info")
             user_handle.send_query("SELECT * FROM config_database;")
-            flash("Colors restored to defaults", "sucess")
+            return redirect(url_for("frontend.settings"))
 
         # Emails
         if "emails" in request.form:
@@ -174,50 +171,53 @@ def settings():
             try:
                 user_handle.send_command(f"INSERT INTO email_list (email, frequency) VALUES ('{report_email}', '{freq}');")
                 user_handle.send_query(f"SELECT (email, frequency) FROM email_list WHERE email = '{report_email}';")
-                flash(f"Sucessfully added {report_email} at frequency {freq }into database", "success")
+                flash(f"Added {report_email} at frequency {freq } to database", "success")
             except Exception as e:
                 flash(f"Failed to insert {report_email} into database: {e}", "error")
             return redirect(url_for("frontend.settings"))
 
 
-        # color updates dynamically
-        if request.form.get("form_type") == "colors":
-                for key, value in request.form.items():
-                    if hasattr(config, key):
-                        setattr(config, key, value)
-                        user_handle.update_config(key, value)
-                        flash(f"{key} updated", "success")
-                return redirect(url_for("frontend.settings"))
+        def upload(file):
+            error = None
+            message_list = []
+            if file and file.filename:
+                    filename = file.filename
+                    allowed_extensions = {'.csv', '.xlsx', '.json'}
+                    ext = os.path.splitext(filename)[1].lower()
+                    if ext not in allowed_extensions:
+                        error = "Unsupported file type. Please upload a CSV, XLSX, or JSON file."
+                    else:
+                        try:
+                            if ext == ".csv":
+                                data = pd.read_csv(file)
+                            elif ext == ".xlsx":
+                                data = pd.read_excel(file)
+                            elif ext == ".json":
+                                jdata = json.load(file)
+                                data = pd.DataFrame(jdata)
+                            # Send DataFrame to database
+                            for index, row in data.iterrows():
+                                user_handle.send_command(f"""
+                                INSERT INTO people_database (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES (
+                                {int(row['employee_id'])}, '{row['first_name']}', '{row['last_name']}', '{row['email']}', '{row['phone']}', '{row['pic_path']}', '{row['employee_role']}', '{row['position']}', '{row['department']}');""")
+                                message_list.append(row)
+                            message_list.append(f"File {filename} uploaded")
+                        except Exception as e:
+                            error = f"Failed to import data: {e}"
+                    if error is not None:
+                        return error
+                    return message_list
 
         # file upload
         if "fileUpload" in request.files:
-            file = request.files["fileUpload"]
-            if file and file.filename:
-                filename = file.filename
-                allowed_extensions = {'.csv', '.xlsx', '.json'}
-                ext = os.path.splitext(filename)[1].lower()
-                if ext not in allowed_extensions:
-                    flash("Unsupported file type. Please upload a CSV, XLSX, or JSON file.", "warning")
-                    return redirect(url_for("frontend.settings"))
-                try:
-                    if ext == ".csv":
-                        data = pd.read_csv(file)
-                    elif ext == ".xlsx":
-                        data = pd.read_excel(file)
-                    elif ext == ".json":
-                        jdata = json.load(file)
-                        data = pd.DataFrame(jdata)
-                    # Send DataFrame to database
-                    for index, row in data.iterrows():
-                        user_handle.send_command(f"""
-                        INSERT INTO people_database (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES (
-                        {int(row['employee_id'])}, '{row['first_name']}', '{row['last_name']}', '{row['email']}', '{row['phone']}', '{row['pic_path']}', '{row['employee_role']}', '{row['position']}', '{row['department']}');""")
-
-                    flash(f"File {filename} uploaded and data imported successfully.", "success")
-                except Exception as e:
-                    flash(f"Failed to import data: {e}", "error")
-
-                return redirect(url_for("frontend.settings"))
+            file_handle = request.files["fileUpload"]
+            msgs = upload(file_handle)
+            try:
+                for msg in msgs:
+                    flash(msg, "info")
+            except:
+                flash(msgs, "error")
+            return redirect(url_for("frontend.settings"))
 
 
         # manual database entry
@@ -305,7 +305,7 @@ def settings():
         
         
     
-    config = Setting(user, password, db_name, port, host)
+    config = classSettings.Setting(user, password, db_name, port, host)
     news = News_Report(config.country, config.news_key)
     weather_data = weather_report(config.city, config.weather_key)
     

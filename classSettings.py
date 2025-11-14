@@ -1,6 +1,13 @@
-import psycopg2
 from classHandler import Handler
+import databaseConfig
 
+
+db = databaseConfig. databaseSettings()
+user = db["user"]
+password = db["password"]
+db_name = db["db_name"]
+port = db["port"]
+host = db["host"]
 
 class Setting:
     def __init__(self, user, password, dbname, port, host):
@@ -21,9 +28,9 @@ class Setting:
     # Setting can be accessed in two ways through a dictionary returned or through individual class attributes. Must test which is more efficient
     def assign_settings(self):
         # Uses handler to retrieve config settings from database.
-        user_handle=Handler(dbname=self.dbname, user=self.user, password=self.password)
+        self.user_handle=Handler(dbname=self.dbname, user=self.user, password=self.password)
         # data is also the raw dictionary which is returned from this method.
-        data = user_handle.request_config()
+        data = self.user_handle.request_config()
         self.config_status = data["config_status"]
         self.config_date = data["config_date"]
         self.CSV_path = data["CSV_path"]
@@ -51,4 +58,3 @@ class Setting:
         self.news_key = data["news_key"]
         #self.emails = data["emails"]
         return data
-        

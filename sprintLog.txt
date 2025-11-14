@@ -2,7 +2,7 @@ Future Backlog
 >> put options back into setup to allow clean install without erasing existing databases.
 >> put security features to only allow admin to use danger zone and password protect entire settings page.
 
-Fourth Sprint 11/3 - present
+Fourth Sprint 11/3 - 11/12/25
 1) intergrate server.py and settings.py into one script.
 2) Make functions to update config settings from menu.HTML
 3) Create class for unified html to postgresql interchange.
