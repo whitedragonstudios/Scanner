@@ -1,14 +1,23 @@
 import psycopg2, os
 
+
 # 
 class Handler:
-    def __init__(self, user="postgres", password="", dbname="postgres", port=5000, host="localhost", info=False):
-        # Default attributes for Handler are for postgre default account
-        self.user = user or "postgres"
-        self.password = password or ""
-        self.dbname = dbname or "postgres"
-        self.port = port or 5000 
-        self.host = host or "localhost"
+    def __init__(self, profile="user", dbname="postgres", info=False):
+        # attributes for Handler admin is the default PostgreSQL admin user
+        if profile == "admin":
+            self.dbname = "postgres" or dbname
+        # attributes for Handler superuser use the scanner database
+        elif profile == "superuser":
+            self.user = "postgres"
+            self.dbname = "scanner" or dbname
+        # attributes for Handler user is the default application user
+        else:
+            self.user = "marcus"
+            self.dbname = "scanner" or dbname
+        self.password = "stoic"
+        self.port = 5000
+            self.host = "localhost"
         self.info = info
 
 
@@ -36,7 +45,7 @@ class Handler:
             raise
 
     
-    # this method reports errors from the server and reports them to python.
+    # this method reports errors from the server and sends them to python.
     def report_error(self, e):
         print("\n\n!!! PostgreSQL Error !!!")
         # Capture the error message if it exists.

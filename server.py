@@ -148,17 +148,7 @@ def settings():
         
         # reset colors to deault settings
         if "reset_colors" in request.form:
-            colors = {'main_background_color':'#0a0a1f',
-                    'main_text_color':'#f0f0f0',
-                    'content_color': '#1c1c33',
-                    'content_text_color': '#ffffff',
-                    'sidebar_color':'#193763',
-                    'sidebar_text_color':'#ffffff',
-                    'button_color':'#1a73ff',
-                    'button_text_color':'#ffffff',
-                    'button_hover_color':'#0050b3',
-                    'border_color':'#3399ff'}
-            for key,value in colors.items():
+            for key,value in config.default_colors.items():
                 user_handle.update_config(key,value)
                 flash(f"{key} reset to {value}", "info")
             user_handle.send_query("SELECT * FROM config_database;")

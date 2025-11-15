@@ -58,3 +58,18 @@ class Setting:
         self.news_key = data["news_key"]
         #self.emails = data["emails"]
         return data
+    
+    # This method stotres default color settings.
+    def default_colors(self):
+        return { 
+            "main_background_color" : "#0a0a1f",
+            "main_text_color" : "#ffffff",
+            "content_color" : "#020203",
+            "content_text_color" : "#ffffff",
+            "sidebar_color" : "#193763",
+            "sidebar_text_color" : "#ffffff",
+            "button_color" : "#1a73ff",
+            "button_text_color" : "#ffffff",
+            "button_hover_color" : "#0050b3",  
+            "border_color" : "#3399ff"
+            }
