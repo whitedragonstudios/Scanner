@@ -2,6 +2,15 @@ Future Backlog
 >> put options back into setup to allow clean install without erasing existing databases.
 >> put security features to only allow admin to use danger zone and password protect entire settings page.
 
+
+Fifth Spring 11/14 - present
+1) Refactor Handler.update_config to handle all update procdesures. 
+2) Make Handler work with fewer parameters.
+3) break out routes to their own files and use server as a app factory
+4) Break out services for different routes
+5) intergrate server.py to main.py
+6) Update flow diagrams
+
 Fourth Sprint 11/3 - 11/12/25
 1) intergrate server.py and settings.py into one script.
 2) Make functions to update config settings from menu.HTML
