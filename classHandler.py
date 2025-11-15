@@ -1,9 +1,9 @@
 import psycopg2, os
-
+from psycopg2 import sql
 
 # 
 class Handler:
-    def __init__(self, profile="user", dbname="postgres", info=False):
+    def __init__(self, profile="marcus", dbname="postgres", info=False):
         # attributes for Handler admin is the default PostgreSQL admin user
         if profile == "admin":
             self.dbname = "postgres" or dbname
@@ -15,9 +15,10 @@ class Handler:
         else:
             self.user = "marcus"
             self.dbname = "scanner" or dbname
+        # These attributes are constant for all profiles
         self.password = "stoic"
         self.port = 5000
-            self.host = "localhost"
+        self.host = "localhost"
         self.info = info
 
 
@@ -170,53 +171,53 @@ class Handler:
             if conn: conn.close()
     
 
-    # Depreciate in next sprint and replace with send query
     # request_config(self)
     # Query looks like: Handler instance .send_query("SELECT key, value FROM config_database;")
-    def request_config(self):
-        conn = None
-        cur = None
-        config = {}
-        try: 
-            conn = self.connect()
-            cur = conn.cursor()
-            print("<<< Loading configuration >>>")
-            # query is hard coded
-            cur.execute("SELECT key, value FROM config_database;") 
-            for row in cur.fetchall():
-                config[row[0]] = row[1]
-            print(">>> Configuration loaded <<<")
-            #print(config)
-            return config
-        except psycopg2.Error as e:
-            self.report_error(e)
-            raise e
-        finally:
-            if cur: cur.close()
-            if conn: conn.close()
     
 
+    from psycopg2 import sql
+
     # Modify in next sprint ADD database parameter.
-    def update_config(self, key, value):
-        conn = None
-        cur = None
-        db = 'config_database' # temp patch
-        # Try connection
-        try:
+def update_database(self, database, key, value, keep_open=False):
+    # Prepare connection + cursor holders
+    conn = None
+    cur = None
+    try:
+        # If keeping open, reuse or create a shared connection
+        if keep_open:
+            if not hasattr(self, "_shared_conn") or self._shared_conn is None or self._shared_conn.closed:
+                self._shared_conn = self.connect()
+            conn = self._shared_conn
+        else:
             conn = self.connect()
-            cur = conn.cursor()
-            # Execute update command 
-            cur.execute(f"UPDATE {db} SET value = '{value}' WHERE key = '{key}';")  # Modify to account for collisions
-            conn.commit() 
-            print(f"Configuration key '{key}' updated successfully.")
-        except psycopg2.Error as e:
-            # If conenction fails rollback
-            print(f"Database error during config update: {e}")
-            if conn and not conn.closed:
-                conn.rollback()
-            self.report_error(e)
-            raise e
-        # Close connection
-        finally: 
-            if cur: cur.close()
-            if conn: conn.close()
+        cur = conn.cursor()
+        # SAFE PARAMETERIZED QUERY — prevents SQL injection
+        cur.execute(
+            f"""
+            INSERT INTO {database} (key, value)
+            VALUES (%s, %s)
+            ON CONFLICT (key)
+            DO UPDATE SET value = EXCLUDED.value;
+            """,
+            (key, value)
+        )
+        conn.commit()
+        print(f"Configuration key '{key}' updated successfully.")
+    except psycopg2.Error as e:
+        print(f"Database error during config update: {e}")
+        if conn and not conn.closed:
+            conn.rollback()
+        self.report_error(e)
+        raise e
+    finally:
+        # Always close cursor
+        if cur:
+            cur.close()
+        # If NOT keeping the connection open, close it normally
+        if not keep_open and conn and not conn.closed:
+            conn.close()
+
+    def disconnect(self):
+        if hasattr(self, "_shared_conn") and self._shared_conn and not self._shared_conn.closed:
+            self._shared_conn.close()
+            self._shared_conn = None

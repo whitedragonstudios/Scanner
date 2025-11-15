@@ -1,21 +1,16 @@
 import os, platform, subprocess, sys, shutil
-import psycopg2
+from datetime import datetime as dt
+from psycopg2 import OperationalError, sql
 from time import sleep
 from classHandler import Handler
 
 # Postgre_Install handles the installation process and checks for required packages and databases
 class Postgre_Install:
-    def __init__(self, user='postgres', password='', dbname='scanner', port=5000, host='localhost'):
-        # Default attributes for database connection
-        self.user = user or 'postgres'
-        self.password = password or ''
-        self.dbname = dbname or 'scanner'
-        self.port = port or 5000
-        self.host = host or 'localhost'
+    def __init__(self):
         # Detect OS
         self.system = platform.system().lower()
         # Create instance of Handler with admin privilages
-        self.admin = Handler(password=self.password)
+        self.admin = Handler("admin")
 
     # List of all likely psql paths
     def path_list(self):
@@ -100,7 +95,7 @@ class Postgre_Install:
                     # Set path for linux/mac
                     with open(os.path.expanduser("~/.bashrc"), "a") as f:
                         f.write(f'\nexport PATH="$PATH:{path}"\n')
-                print(f"Added '{path}' to PATH for this session.")
+                print(f"Added '{path}' to PATH.")
                 return True
         # If Path cannot be loacted function returns false
         if shutil.which("psql") is None:
@@ -173,7 +168,7 @@ class Postgre_Install:
             # Create database owned by the new user
             self.admin.send_command(f"CREATE DATABASE {self.dbname} OWNER {self.user};")
             # Reconnect to the new database
-            self.admin = Handler(user=self.user, password=self.password, dbname=self.dbname)
+            self.admin = Handler(profile="superuser")
 
 
             # Drop tables if they exist
@@ -190,32 +185,35 @@ class Postgre_Install:
                 );
             """)
 
+            start_config = {
+                            "config_status": "False",
+                            "config_date": "2025-01-01",
+                            "webpage_title": "Populus Numerus",
+                            "company": "Scanner",
+                            "main_background_color": "#0a0a1f",
+                            "main_text_color": "#f0f0f0",
+                            "content_color": "#1c1c33",
+                            "content_text_color": "#ffffff",
+                            "sidebar_color": "#193763",
+                            "sidebar_text_color": "#ffffff",
+                            "button_color": "#1a73ff",
+                            "button_text_color": "#ffffff",
+                            "button_hover_color": "#0050b3",
+                            "border_color": "#3399ff",
+                            "city": "New York City",
+                            "lon": "-74.0060152",
+                            "lat": "40.7127281",
+                            "weather_key": "baeb0ce1961c460b651e6a3a91bfeac6",
+                            "country": "us",
+                            "news_key": "04fbd2b9df7b49f6b6a626b4a4ae36be"
+                            }
             # Insert default config data
-            self.admin.send_command("""
-                INSERT INTO config_database (key, value) VALUES
-                    ('config_status', 'False'),
-                    ('config_date', '2025-01-01'),
-                    ('CSV_path', NULL),
-                    ('XLSX_path', NULL),
-                    ('JSON_path', NULL),
-                    ('webpage_title', 'Populus Numerus'),
-                    ('company','Scanner'),         
-                    ('main_background_color','#0a0a1f'),
-                    ('main_text_color','#f0f0f0'),
-                    ('content_color', '#1c1c33'),
-                    ('content_text_color', '#ffffff'),
-                    ('sidebar_color','#193763'),
-                    ('sidebar_text_color','#ffffff'),   
-                    ('button_color','#1a73ff'),
-                    ('button_text_color','#ffffff'),
-                    ('button_hover_color','#0050b3'),
-                    ('border_color','#3399ff'),
-                    ('city', 'New York City'),
-                    ('lon', '-74.0060152'),
-                    ('lat', '40.7127281'),
-                    ('weather_key', 'baeb0ce1961c460b651e6a3a91bfeac6'),
-                    ('country', 'us'),
-                    ('news_key', '04fbd2b9df7b49f6b6a626b4a4ae36be');""")
+            for key, value in start_config.items():
+                try:
+                    self.admin.update_database("config_database", key, value, keep_open=True)
+                except Exception as e:
+                    print(f"Error inserting default config '{key}': {e}")
+            self.admin.disconnect()
 
              # Create email_list which stores the emails and send freq for reports
             self.admin.send_command("""
@@ -248,14 +246,14 @@ class Postgre_Install:
                     work_date DATE DEFAULT CURRENT_DATE);""")
 
             # Grant privileges to user
-            self.admin.send_command(f"GRANT ALL PRIVILEGES ON DATABASE {self.dbname} TO {self.user};")
-            self.admin.send_command(f"GRANT ALL PRIVILEGES ON SCHEMA public TO {self.user};")
-            self.admin.send_command(f"GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {self.user};")
-            self.admin.send_command(f"ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO {self.user};")
+            self.admin.send_command(f"GRANT ALL PRIVILEGES ON DATABASE 'scanner' TO 'marcus;")
+            self.admin.send_command(f"GRANT ALL PRIVILEGES ON SCHEMA public TO 'marcus';")
+            self.admin.send_command(f"GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO 'marcus';")
+            self.admin.send_command(f"ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO 'marcus';")
 
             # Update config_database to mark initialization complete
-            self.admin.send_command("UPDATE config_database SET value = CURRENT_DATE WHERE key = 'config_date';")
-            self.admin.send_command("UPDATE config_database SET value = 'True' WHERE key = 'config_status';")
+            self.admin.update_database("config_database", dt.now().strftime("%m-%d-%y"), "config_date")
+            self.admin.update_database("config_database", "True", "config_status")
             
             # Add test data to people and email databases for debugging.
             self.insert_test_data()
@@ -274,7 +272,7 @@ class Postgre_Install:
 
 
     def check_database(self):
-        print(f"Checking if database '{self.dbname}' is fully initialized.")
+        print(f"Checking if scanner is fully initialized.")
         
         # Try to connect to check the db exists
         try:
@@ -284,15 +282,14 @@ class Postgre_Install:
             tables = ['config_database', 'timesheet_database', 'people_database']
             # A single query that fails if any table is missing
             for table in tables:
-                query = f"SELECT 1 FROM {table} LIMIT 0;"
-                self.admin.send_query(query) 
-            print(f"Database '{self.dbname}' is fully initialized with the required tables.")
+                self.admin.send_query(f"SELECT 1 FROM {table} LIMIT 0;") 
+            print(f"Database scanner is fully initialized with the required tables.")
             return True
         # Check for specific error codes.
-        except psycopg2.OperationalError as e:
+        except OperationalError as e:
             # Code '3D000' (DB missing), '28P01' (Password failed), '42P01' (Table missing)
             if e.pgcode in ('3D000', '28P01'): 
-                print(f"!!! Failure: credentials not created !!!\nDatabase: {self.dbname}\nor\nUser: {self.user}")
+                print(f"!!! Failure: credentials not created !!!\nDatabase: scanner\nor\nUser: marcus")
                 return False
             if e.pgcode == '42P01':
                 print("Database exists, but one or more essential tables are missing.")
@@ -307,33 +304,44 @@ class Postgre_Install:
     # Testing method for development
     def insert_test_data(self):
         # Insert test data for people database
-        try:
-            self.admin.send_command("""INSERT INTO people_database (
-                employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES
-                (11111111, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '11111111.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
-                (22222222, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '22222222.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice')
-                    ON CONFLICT (employee_id)
-                    DO UPDATE SET
-                        first_name = EXCLUDED.first_name,
-                        last_name = EXCLUDED.last_name,
-                        email = EXCLUDED.email,
-                        phone = EXCLUDED.phone,
-                        pic_path = EXCLUDED.pic_path,
-                        employee_role = EXCLUDED.employee_role,
-                        position = EXCLUDED.position,
-                        department = EXCLUDED.department;""")
-        except Exception as e:
-            print("Error adding sample data to people database:",e)
+        sample_people = [{
+        "employee_id": 11111111,
+        "first_name": "Han",
+        "last_name": "Solo",
+        "email": "hsolo@scanner.com",
+        "phone": "100-555-1976",
+        "pic_path": "11111111.jpg",
+        "employee_role": "Scoundrel",
+        "position": "Pilot",
+        "department": "Only in it for the money"},
+        {"employee_id": 22222222,
+        "first_name": "Luke",
+        "last_name": "Skywalker",
+        "email": "lskywalker@scanner.com",
+        "phone": "100-555-1978",
+        "pic_path": "22222222.jpg",
+        "employee_role": "Jedi Master",
+        "position": "Like his father",
+        "department": "Peace and Justice"}]
+
         
-        try:
-            # Insert some test data for email_list
-            self.admin.send_command("""INSERT INTO email_list (email, frequency) VALUES 
-                ('marcus.aurelius@scanner.com', 'daily'),
-                ('test@scanner.com', 'weekly'),
-                ('scanner@scanner.com', 'monthly')
-            ON CONFLICT (email) DO UPDATE SET frequency = EXCLUDED.frequency;""")
-        except Exception as e:
-            print("Error adding sample data to email list:",e)
+        for item in sample_people:
+            for k,v in item.items():
+                try:
+                    self.admin.update_database("people_database", k, v, keep_open=True)
+                except Exception as e: 
+                    print("Error adding sample data to people database:",e)
+                self.admin.disconnect()
+    
+        sample_emails = {"marcus.aurelius@scanner.com": "daily",
+                        "test@scanner.com": "weekly",
+                        "scanner@scanner.com": "monthly"}
+        for k,v in sample_emails.items():
+            try:
+                self.admin.update_database("people_database", k, v, keep_open=True)
+            except Exception as e: 
+                print("Error adding sample data to people database:",e)
+            self.admin.disconnect()
 
 
     # This method controls the flow of the entire class.
