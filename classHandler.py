@@ -6,6 +6,7 @@ class Handler:
     def __init__(self, profile="marcus", dbname="postgres", info=False):
         # attributes for Handler admin is the default PostgreSQL admin user
         if profile == "admin":
+            self.user = "postgres"
             self.dbname = "postgres" or dbname
         # attributes for Handler superuser use the scanner database
         elif profile == "superuser":
@@ -59,7 +60,7 @@ class Handler:
                 print(f"Details: {e.diag.message_detail.strip()}")
             if getattr(e.diag, 'context', None):
                 print(f"Context: {e.diag.context.strip()}")
-        print("\n\n")
+        print("\n")
 
     
     # send command allows single commands to be sent to the server
@@ -174,50 +175,90 @@ class Handler:
     # request_config(self)
     # Query looks like: Handler instance .send_query("SELECT key, value FROM config_database;")
     
-
-    from psycopg2 import sql
-
-    # Modify in next sprint ADD database parameter.
-def update_database(self, database, key, value, keep_open=False):
-    # Prepare connection + cursor holders
-    conn = None
-    cur = None
-    try:
-        # If keeping open, reuse or create a shared connection
-        if keep_open:
-            if not hasattr(self, "_shared_conn") or self._shared_conn is None or self._shared_conn.closed:
-                self._shared_conn = self.connect()
-            conn = self._shared_conn
-        else:
-            conn = self.connect()
-        cur = conn.cursor()
-        # SAFE PARAMETERIZED QUERY — prevents SQL injection
-        cur.execute(
-            f"""
-            INSERT INTO {database} (key, value)
-            VALUES (%s, %s)
-            ON CONFLICT (key)
-            DO UPDATE SET value = EXCLUDED.value;
-            """,
-            (key, value)
-        )
-        conn.commit()
-        print(f"Configuration key '{key}' updated successfully.")
-    except psycopg2.Error as e:
-        print(f"Database error during config update: {e}")
-        if conn and not conn.closed:
-            conn.rollback()
-        self.report_error(e)
-        raise e
-    finally:
-        # Always close cursor
-        if cur:
-            cur.close()
-        # If NOT keeping the connection open, close it normally
-        if not keep_open and conn and not conn.closed:
-            conn.close()
+    def update_database(self, database, kname, vname, key, value, keep_open=False):
+        conn = None
+        cur = None
+        try:
+            if keep_open:
+                if not hasattr(self, "_shared_conn") or self._shared_conn is None or self._shared_conn.closed:
+                    self._shared_conn = self.connect()
+                conn = self._shared_conn
+            else:
+                conn = self.connect()
+            cur = conn.cursor()
+            cur.execute(
+                sql.SQL("""
+                    INSERT INTO {table} ({col_key}, {col_value})
+                    VALUES (%s, %s)
+                    ON CONFLICT ({col_key})
+                    DO UPDATE SET {col_value} = EXCLUDED.{col_value};
+                    """).format(
+                        table=sql.Identifier(database),
+                        col_key=sql.Identifier(kname),
+                        col_value=sql.Identifier(vname)
+                    ),
+                (key, value)
+            )
+            conn.commit()
+            print(f"Configuration key '{key}' updated to {value}")
+        except psycopg2.Error as e:
+            print(f"Database error during config update: {e}")
+            if conn and not conn.closed:
+                conn.rollback()
+            self.report_error(e)
+            raise e
+        finally:
+            if cur:
+                cur.close()
+            if not keep_open and conn and not conn.closed:
+                conn.close()
 
     def disconnect(self):
         if hasattr(self, "_shared_conn") and self._shared_conn and not self._shared_conn.closed:
             self._shared_conn.close()
             self._shared_conn = None
+
+
+    # Function for handling people database updates and inserts
+    def update_people(self, employee_id, fields):
+        if not fields:
+            return
+        conn = None
+        cur = None
+        try:
+            conn = self.connect()
+            cur = conn.cursor()
+            valid_fields = {}
+            for k, v in fields.items():
+                if v is not None:
+                    s = str(v).strip().lower()
+                    if s != "" and s != " " and s != "none" and s != "none@none.com":
+                        valid_fields[k] = v
+            if not valid_fields:
+                return
+            columns = []
+            values = []
+            updates = []
+            for k, v in valid_fields.items():
+                columns.append(sql.Identifier(k))
+                values.append(v)
+                updates.append(sql.SQL("{} = EXCLUDED.{}").format(sql.Identifier(k), sql.Identifier(k)))
+            cur.execute(
+                sql.SQL("INSERT INTO people_database (employee_id, {cols}) VALUES (%s, {placeholders}) ON CONFLICT (employee_id) DO UPDATE SET {updates}")
+                .format(
+                    cols=sql.SQL(", ").join(columns),
+                    placeholders=sql.SQL(", ").join([sql.Placeholder() for _ in values]),
+                    updates=sql.SQL(", ").join(updates)
+                ),
+                [employee_id] + values
+            )
+            conn.commit()
+        except psycopg2.Error as e:
+            if conn and not conn.closed:
+                conn.rollback()
+            self.report_error(e)
+            raise e
+        finally:
+            if cur: cur.close()
+            if conn and not conn.closed:
+                conn.close()

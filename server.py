@@ -18,7 +18,7 @@ port = db["port"]
 host = db["host"]
 
 
-config = classSettings.Setting(user, password, db_name, port, host)
+config = classSettings.Setting()
 weather_data = weather_report(config.city, config.weather_key)
 news = News_Report(config.country, config.news_key)
 quoteOTDay = quote_generator().QotD
@@ -187,10 +187,35 @@ def settings():
                                 data = pd.DataFrame(jdata)
                             # Send DataFrame to database
                             for index, row in data.iterrows():
-                                user_handle.send_command(f"""
-                                INSERT INTO people_database (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department) VALUES (
-                                {int(row['employee_id'])}, '{row['first_name']}', '{row['last_name']}', '{row['email']}', '{row['phone']}', '{row['pic_path']}', '{row['employee_role']}', '{row['position']}', '{row['department']}');""")
-                                message_list.append(row)
+                                try:
+                                    user_handle.send_command("""
+                                        INSERT INTO people_database
+                                        (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department)
+                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                        ON CONFLICT (employee_id)
+                                        DO UPDATE SET
+                                            first_name=EXCLUDED.first_name,
+                                            last_name=EXCLUDED.last_name,
+                                            email=EXCLUDED.email,
+                                            phone=EXCLUDED.phone,
+                                            pic_path=EXCLUDED.pic_path,
+                                            employee_role=EXCLUDED.employee_role,
+                                            position=EXCLUDED.position,
+                                            department=EXCLUDED.department;
+                                    """, (
+                                        int(row['employee_id']),
+                                        row['first_name'],
+                                        row['last_name'],
+                                        row['email'],
+                                        row['phone'],
+                                        row['pic_path'],
+                                        row['employee_role'],
+                                        row['position'],
+                                        row['department']
+                                    ))
+                                    message_list.append(f"{row['firstname']} {row['lastname']} uploaded")
+                                except Exception as e_row:
+                                    message_list.append(f"Skipped {row['firstname']} {row['lastname']} due to error: {e_row}")
                             message_list.append(f"File {filename} uploaded")
                         except Exception as e:
                             error = f"Failed to import data: {e}"
@@ -215,91 +240,57 @@ def settings():
             action = request.form.get('manual-entry-action')
             try:
                 employee_id = int(request.form.get('idnumber'))
-                first_name = request.form.get('fname').strip().title()
-                last_name = request.form.get('lname').strip().title()
-                email = request.form.get('email').strip().lower()
-                phone = request.form.get('pnumber').strip()
-                pic_path = request.form.get('filename').strip()
-                employee_role = request.form.get('role').strip().title()
-                position = request.form.get('position').strip().title()
-                department = request.form.get('department').strip().title()
+                first_name = request.form.get('fname')
+                last_name = request.form.get('lname')
+                email = request.form.get('email')
+                phone = request.form.get('pnumber')
+                pic_path = request.form.get('filename')
+                employee_role = request.form.get('role')
+                position = request.form.get('position')
+                department = request.form.get('department')
             except Exception as e:
                 flash(f"Error parsing form input: {e}", "error")
                 return redirect(url_for("frontend.settings"))
 
-            if action == "add":
+            if action == "remove":
                 try:
-                    user_handle.send_command(f"""
-                        INSERT INTO people_database 
-                        (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department)
-                        VALUES
-                        ({employee_id}, '{first_name}', '{last_name}', '{email}', '{phone}', '{pic_path}', '{employee_role}', '{position}', '{department}')
-                        ON CONFLICT (employee_id) DO NOTHING;
-                    """)
-                    flash(f"Added {first_name} {last_name} to the database", "success")
-                except Exception as e:
-                    flash(f"Failed to add entry: {e}", "error")
-
-            elif action == "update":
-                try:
-                    fields = {
-                        "first_name": first_name,
-                        "last_name": last_name,
-                        "email": email,
-                        "phone": phone,
-                        "pic_path": pic_path,
-                        "employee_role": employee_role,
-                        "position": position,
-                        "department": department
-                    }
-                    def is_skip(v):
-                        if v is None:
-                            return True
-                        s = str(v).strip().lower()
-                        return s in {"", " ", "none", "none@none.com"}
-
-                    update_fields = {k: v for k, v in fields.items() if not is_skip(v)}
-
-                    if update_fields:
-                        kv_parts = []
-                        for k, v in update_fields.items():
-                            safe_v = str(v).replace("'", "''")
-                            kv_parts.append(f"{k} = '{safe_v}'")
-                        key_values = ", ".join(kv_parts)
-
-                        user_handle.send_command(
-                            f"UPDATE people_database SET {key_values} WHERE employee_id = {int(employee_id)};"
-                        )
-                        flash(f"Updated employee ID {employee_id} in the database {key_values}", "success")
-                    else:
-                        flash("No valid fields to update", "warning")
-                except Exception as e:
-                    flash(f"Update failed: {e}", "error")
-
-                except Exception as e:
-                    flash(f"Failed to update entry: {e}", "error")
-
-            elif action == "remove":
-                try:
-                    user_handle.send_command(f"""
-                        DELETE FROM people_database
-                        WHERE employee_id = {employee_id};
-                    """)
+                    user_handle.send_command(
+                        "DELETE FROM people_database WHERE employee_id = %s;",
+                        (employee_id,)
+                    )
                     flash(f"Removed employee ID {employee_id} from the database", "success")
                 except Exception as e:
                     flash(f"Failed to remove entry: {e}", "error")
-            else:
-                flash("Invalid action selected", "warning")
+            else:  # add/update
+                try:
+                    user_handle.update_people_database(
+                        employee_id,
+                        first_name=first_name,
+                        last_name=last_name,
+                        email=email,
+                        phone=phone,
+                        pic_path=pic_path,
+                        employee_role=employee_role,
+                        position=position,
+                        department=department
+                    )
+                    flash(f"{action.title()} operation successful for employee ID {employee_id}", "success")
+                except Exception as e:
+                    flash(f"{action.title()} failed: {e}", "error")
 
             return redirect(url_for("frontend.settings"))
+
         
         
     
-    config = classSettings.Setting(user, password, db_name, port, host)
+    config = classSettings.Setting()
     news = News_Report(config.country, config.news_key)
     weather_data = weather_report(config.city, config.weather_key)
     
     return render_template("settings.html", cf=config)
+
+
+
 
 @frontend.route('/reports')
 def reports():
