@@ -12,6 +12,9 @@ class Postgre_Install:
         self.system = platform.system().lower()
         # Create instance of Handler with admin privilages
         self.admin = Handler("admin")
+        # Create instance of Handler with user privilages for normal operations
+        self.user_handle = Handler("user")
+
 
     # List of all likely psql paths
     def path_list(self):
@@ -65,19 +68,22 @@ class Postgre_Install:
             r"/mnt/c/Program Files/PostgreSQL/16/bin",
         ]
 
+
     # Automatically looks for PostgreSQL install
     def check_install(self):
         print("Checking for PostgreSQL installation...")
         try:
-            # Try to connect to the default psql database
-            self.admin.connect()
+            # Try to connect to the default postgres database (not scanner which may not exist)
+            temp_admin = Handler(profile="admin", dbname="postgres")
+            temp_admin.connect()
+            temp_admin.disconnect()
             print("Connection to default psql server confirmed.")
-            # Skip the rest of this function
             return True
         except Exception as e:
             print(f"Failed to connect to psql server: {e}")
             print("Locating installation manually")
-        # Search through every likely Path for pqsl
+        
+        # Search through every likely Path for psql
         for path in self.path_list():
             # Check which version of psql to look for.
             if os.name == "nt":
@@ -98,10 +104,12 @@ class Postgre_Install:
                         f.write(f'\nexport PATH="$PATH:{path}"\n')
                 print(f"Added '{path}' to PATH.")
                 return True
-        # If Path cannot be loacted function returns false
+        
+        # If Path cannot be located function returns false
         if shutil.which("psql") is None:
             print("Failure: PATH detection \n!!! Could not locate PostgreSQL installation !!!\nYou must install PostgreSQL")
             return False
+
 
     # Detect os and automaticaly install psql.
     def install_psql(self):
@@ -157,156 +165,153 @@ class Postgre_Install:
             print("Failure: installing psql\n!!! Automatic installation failed !!!\nPlease install PostgreSQL manually then try running this program again")
             return False
 
+
     # Setup the database that you will need for the program to run
     def create_database(self):
         print("No Databases found: creating them")
         try:
-            # Create the End User username
-            self.admin.send_command(sql.SQL("CREATE USER marcus WITH PASSWORD 'stoic';"))
+            # Make sure we're connected to postgres database as admin
+            self.admin.disconnect()
+            self.admin = Handler(profile="admin", dbname="postgres")
+            self.admin.connect()
+            
+            # Try to create the user, but don't fail if it exists
+            try:
+                self.admin.send_command(sql.SQL("CREATE USER marcus WITH PASSWORD 'stoic';"))
+                print("User 'marcus' created successfully")
+            except Exception as e:
+                if "already exists" in str(e):
+                    print("User 'marcus' already exists, continuing...")
+                else:
+                    raise
 
             # Create database owned by the new user
-            self.admin.send_command(sql.SQL("CREATE DATABASE scanner OWNER marcus;"))
-            # Reconnect to the new database
-            self.admin = Handler(profile="superuser")
+            try:
+                self.admin.send_command(sql.SQL("CREATE DATABASE scanner OWNER marcus;"))
+                print("Database 'scanner' created successfully")
+            except Exception as e:
+                if "already exists" in str(e):
+                    print("Database 'scanner' already exists, continuing...")
+                else:
+                    raise
 
-            # Drop tables if they exist
-            self.drop_tables("people_database")
-            self.drop_tables("timesheet_database")
-            self.drop_tables("config_database")
-            self.drop_tables("email_list")
+            # NOW disconnect from postgres and connect to scanner as marcus
+            self.admin.disconnect()
+            self.user_handle = Handler(profile="user", dbname="scanner")
+            self.user_handle.connect()
 
-            # Create config_database table which stores key value pairs for configuration settings.
-            self.admin.send_command(sql.SQL("""
-                CREATE TABLE config_database (
-                    key VARCHAR(50) PRIMARY KEY,
-                    value VARCHAR(128)
-                );
-            """))
+            # Create schema and set search path
+            self.user_handle.send_command(sql.SQL("CREATE SCHEMA IF NOT EXISTS public;"))
+            self.user_handle.send_command(sql.SQL("SET search_path TO public;"))
 
-            start_config = Setting(autorun=False).start_settings()
+            # Create tables (now owned by marcus since we're connected as marcus)
+            tables = {
+                "config_database": "CREATE TABLE config_database (key VARCHAR(50) PRIMARY KEY, value VARCHAR(128));",
+                "email_list": "CREATE TABLE email_list(key VARCHAR(255) PRIMARY KEY, value VARCHAR(8));",
+                "people_database": (
+                    "CREATE TABLE people_database (employee_id INTEGER PRIMARY KEY, first_name VARCHAR(50), "
+                    "last_name VARCHAR(50), email VARCHAR(50), phone VARCHAR(15), pic_path VARCHAR(128) UNIQUE, "
+                    "employee_role VARCHAR(50), position VARCHAR(50), department VARCHAR(50));"
+                ),
+                "timesheet_database": (
+                    "CREATE TABLE timesheet_database (id SERIAL PRIMARY KEY, employee_id INTEGER NOT NULL "
+                    "REFERENCES people_database(employee_id) ON DELETE CASCADE, clock_in TIMESTAMPTZ DEFAULT NOW(), "
+                    "clock_out TIMESTAMPTZ, work_date DATE DEFAULT CURRENT_DATE);"
+                )
+            }
+
+            for name, command in tables.items():
+                self.user_handle.send_command(sql.SQL(command))
+
+            print("Tables created successfully")
+
             # Insert default config data
+            start_config = Setting(autorun=False).start_settings()
             for k, v in start_config.items():
                 try:
-                    self.admin.update_database("config_database", "key","value", k, v, keep_open=True)
+                    self.user_handle.update_database("config_database", "key", "value", k, v, keep_open=True)
                 except Exception as e:
                     print(f"Error inserting default config '{k}': {e}")
-            self.admin.disconnect()
 
-             # Create email_list which stores the emails and send freq for reports
-            self.admin.send_command(sql.SQL("""
-                CREATE TABLE email_list(
-                    key VARCHAR(255) PRIMARY KEY,
-                    value VARCHAR(8));"""))
-
-            # Create people_database table
-            self.admin.send_command(sql.SQL("""
-                CREATE TABLE people_database (
-                    employee_id INTEGER PRIMARY KEY,
-                    first_name VARCHAR(50),
-                    last_name VARCHAR(50),
-                    email VARCHAR(50), 
-                    phone VARCHAR(15),
-                    pic_path VARCHAR(128) UNIQUE,
-                    employee_role VARCHAR(50),
-                    position VARCHAR(50),
-                    department VARCHAR(50));"""))
-
-            # Create timesheet_database table
-            self.admin.send_command(sql.SQL("""
-                CREATE TABLE timesheet_database (
-                    id SERIAL PRIMARY KEY,
-                    employee_id INTEGER NOT NULL REFERENCES people_database(employee_id) ON DELETE CASCADE,
-                    clock_in TIMESTAMPTZ DEFAULT NOW(),
-                    clock_out TIMESTAMPTZ,
-                    work_date DATE DEFAULT CURRENT_DATE);"""))
-
-            # Grant privileges to user
-            self.admin.send_command(sql.SQL("GRANT ALL PRIVILEGES ON DATABASE scanner TO marcus;"))
-            self.admin.send_command(sql.SQL("GRANT ALL PRIVILEGES ON SCHEMA public TO marcus;"))
-            self.admin.send_command(sql.SQL("GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO marcus;"))
-            self.admin.send_command(sql.SQL("ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO marcus;"))
-
-            # Update config_database to mark initialization complete
-            self.admin.update_database("config_database", "key", "value", dt.now().strftime("%m-%d-%y"), "config_date")
-            self.admin.update_database("config_database", "key", "value", "True", "config_status")
-            
-            # Add test data to people and email databases for debugging.
+            # Add test data
             self.insert_test_data()
 
             print("@@@ Database creation complete @@@")
+
             # Verify table creation
-            self.admin.send_query("SELECT * FROM config_database;")
-            self.admin.send_query("SELECT * FROM people_database;")
-            self.admin.send_query("SELECT * FROM timesheet_database;")
-            self.admin.send_query("SELECT * FROM email_list;")
+            for table in tables.keys():
+                self.user_handle.send_query(f"SELECT * FROM {table};")
+
+            self.user_handle.disconnect()
             return True
 
         except Exception as e:
             print(f"Failure in create_database: {e}")
+            import traceback
+            traceback.print_exc()
             return False
 
+
+    # Check if the database and required tables exist
     def check_database(self):
-        print(f"Checking if scanner is fully initialized.")
-        
-        # Try to connect to check the db exists
+        print("Checking if scanner is fully initialized.")
         try:
-            # Check DB/User connection first
-            self.admin.connect()
-            # Check for required tables
-            tables = ['config_database', 'timesheet_database', 'people_database']
-            # A single query that fails if any table is missing
-            for table in tables:
-                self.admin.send_query(sql.SQL("SELECT 1 FROM {} LIMIT 0;").format(sql.Identifier(table)))
-            print(f"Database scanner is fully initialized with the required tables.")
+            self.user_handle.connect()
+            required_tables = [
+                "config_database",
+                "timesheet_database",
+                "people_database",
+                "email_list"
+            ]
+            # Validate each table exists
+            for table in required_tables:
+                self.user_handle.send_query(
+                    sql.SQL("SELECT 1 FROM {} LIMIT 0;").format(sql.Identifier(table))
+                )
+            print("Database scanner is fully initialized with the required tables.")
             return True
-        # Check for specific error codes.
         except OperationalError as e:
-            # Code '3D000' (DB missing), '28P01' (Password failed), '42P01' (Table missing)
-            if e.pgcode in ('3D000', '28P01'): 
-                print(f"!!! Failure: credentials not created !!!\nDatabase: scanner\nor\nUser: marcus")
+            # Missing DB or authentication failure
+            if e.pgcode in ("3D000", "28P01"):
+                print("!!! Failure: credentials not created !!!")
+                print("Database: scanner\nor\nUser: marcus")
                 return False
-            if e.pgcode == '42P01':
+            # Missing table
+            if e.pgcode == "42P01":
                 print("Database exists, but one or more essential tables are missing.")
                 return False
+            # Any other OperationalError
             print(f"Database check failed\n{e}")
             return False
-        # Catch other errors
         except Exception as e:
             print(f"Unexpected error during database check: {e}")
             return False
+        finally:
+            self.user_handle.disconnect()
+
 
     # Testing method for development
     def insert_test_data(self):
-        try:
-            self.admin.send_command(sql.SQL("""
-                INSERT INTO people_database
-                (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department)
-                VALUES
-                (11111111, 'Han', 'Solo', 'hsolo@scanner.com', '100-555-1976', '11111111.jpg', 'Scoundrel', 'Pilot', 'Only in it for the money'),
-                (22222222, 'Luke', 'Skywalker', 'lskywalker@scanner.com', '100-555-1978', '22222222.jpg', 'Jedi Master', 'Like his father', 'Peace and Justice')
-                ON CONFLICT (employee_id)
-                DO UPDATE SET
-                    first_name = EXCLUDED.first_name,
-                    last_name = EXCLUDED.last_name,
-                    email = EXCLUDED.email,
-                    phone = EXCLUDED.phone,
-                    pic_path = EXCLUDED.pic_path,
-                    employee_role = EXCLUDED.employee_role,
-                    position = EXCLUDED.position,
-                    department = EXCLUDED.department;
-            """))
-        except Exception as e:
-            print("Error adding sample data to people_database:", e)
-    
+        sample_people = [
+            (11111111, {"first_name": "Han", "last_name": "Solo", "email": "hsolo@scanner.com","phone": "100-555-1976", "pic_path": "11111111.jpg", "employee_role": "Pilot", "position": "Scoudrel", "department": "Only in it for the money"}),
+            (22222222, {"first_name": "Luke", "last_name": "Skywalker", "email": "luke@scanner.com", "phone": "100-555-1234", "pic_path": "22222222.jpg", "employee_role": "", "position": "Jedi Master", "department": "Like his father"}),
+            (33333333, {"first_name": "Jaina", "last_name": "Solo", "email": "jsolo@scanner.com", "phone": "100-555-4321", "pic_path": "33333333.jpg", "employee_role": "Sword of the Jedi", "position": "", "department": "Jedi Order"}),
+        ]
+        for employee_id, fields in sample_people:
+            try:
+                self.user_handle.update_people(employee_id, fields)  # Changed from self.admin
+            except Exception as e:
+                print("Error adding sample data to people_database:", e)
+
         sample_emails = {"marcus.aurelius@scanner.com": "daily",
                         "test@scanner.com": "weekly",
                         "scanner@scanner.com": "monthly"}
         for k,v in sample_emails.items():
             try:
-                self.admin.update_database("email_list", "key", "value",  k, v, keep_open=True)
+                self.user_handle.update_database("email_list", "key", "value",  k, v, keep_open=True)  # Changed from self.admin
             except Exception as e: 
-                print("Error adding sample data to people database:",e)
-        self.admin.disconnect()
+                print("Error adding sample data to email_list:",e)
+
 
     # This method controls the flow of the entire class.
     # Call this method in order to begin initalization fo the program.
@@ -337,26 +342,101 @@ class Postgre_Install:
         else:
             print("Database already exists. Setup skipped.")
 
-        # Final Status Check
-        if failure_detected:
-            print("\n!!! Program Initialization Failed !!!")
-            sleep(5)
-            return False
-        else:
-            print("\n>>> Program Initialization Successful <<<")
-            return True
 
-    # Quick function to delete database to be used in debugging
     def drop_database(self, dropDB):
         try:
-            # Connect with default credentials and drop database
-            self.admin.send_command(sql.SQL("DROP DATABASE IF EXISTS {};").format(sql.Identifier(dropDB)))
+            # IMPORTANT: Must be connected to a DIFFERENT database (like postgres) to drop scanner
+            # Disconnect current connection first
+            if hasattr(self, 'admin') and self.admin:
+                self.admin.disconnect()
+            
+            # Connect to postgres database (not scanner) to drop scanner
+            temp_admin = Handler(profile="admin", dbname="postgres")
+            temp_admin.connect()
+            temp_admin.send_command(sql.SQL("DROP DATABASE IF EXISTS {} WITH (FORCE);").format(sql.Identifier(dropDB)))
+            temp_admin.disconnect()
             print(f"Database {dropDB} deleted")
         except Exception as e:
-            print(f"Failed to drop database:{e}")
+            print(f"Failed to drop database: {e}")
 
-    # quick function to delete users to be used in bebugging
+
     def drop_user(self, dropUser):
+        try:
+            # First reassign ownership and drop dependencies
+            if hasattr(self, 'admin') and self.admin:
+                self.admin.disconnect()
+                
+            temp_admin = Handler(profile="admin", dbname="postgres")
+            temp_admin.connect()
+            
+            # Drop all objects owned by the user
+            temp_admin.send_command(sql.SQL("DROP OWNED BY {} CASCADE;").format(sql.Identifier(dropUser)))
+            # Now drop the user
+            temp_admin.send_command(sql.SQL("DROP USER IF EXISTS {};").format(sql.Identifier(dropUser)))
+            temp_admin.disconnect()
+            print(f"User {dropUser} deleted")
+        except Exception as e:
+            print(f"Failed to drop user '{dropUser}': {e}")
+
+
+    # quick function to delete tables.
+    def drop_tables(self, table_name):
+        try:
+            # Make sure we're connected to the scanner database
+            if hasattr(self, 'admin') and self.admin:
+                self.admin.disconnect()
+            
+            # Check if scanner database exists first
+            temp_admin = Handler(profile="admin", dbname="postgres")
+            temp_admin.connect()
+            
+            result = temp_admin.send_query(
+                "SELECT 1 FROM pg_database WHERE datname='scanner';"
+            )
+            
+            if not result:
+                print(f"Database 'scanner' does not exist, skipping table drop for {table_name}")
+                temp_admin.disconnect()
+                return
+            
+            temp_admin.disconnect()
+            
+            # Now connect to scanner to drop the table
+            self.admin = Handler(profile="admin", dbname="scanner")
+            self.admin.connect()
+            self.admin.send_command(sql.SQL("DROP TABLE IF EXISTS {} CASCADE;").format(sql.Identifier(table_name)))
+            self.admin.disconnect()
+            print(f"Table {table_name} deleted")
+        except Exception as e:
+            print(f"Failed to drop {table_name}: {e}")
+
+            
+    # function for uninstalling postgresql for clean installs.
+    def uninstall_psql(self):
+        # Delete in correct order: tables -> database -> user
+        print("Clearing databases\n\n\n")
+        
+        # First, make sure we're connected to postgres db, not scanner
+        try:
+            if hasattr(self, 'admin'):
+                self.admin.disconnect()
+            if hasattr(self, 'user_handle'):
+                self.user_handle.disconnect()
+        except:
+            pass
+        
+        # Reconnect to postgres database
+        self.admin = Handler(profile="admin", dbname="postgres")
+        self.admin.connect()
+        
+        # Drop the database (this will drop all tables inside it)
+        self.drop_database('scanner')
+        
+        # Then drop the user
+        self.drop_user('marcus')
+        
+        print("Starting uninstall of PostgreSQL\n\n\n")
+        # ... rest of your uninstall code
         try:
             # Connect with deault credentials and drop user.
             self.admin.send_command(sql.SQL("DROP OWNED BY {};").format(sql.Identifier(dropUser)))
@@ -364,73 +444,3 @@ class Postgre_Install:
             print(f"User {dropUser} deleted")
         except Exception as e:
             print(f"Failed to drop user '{dropUser}': {e}")
-    
-    # quick function to delete tables.
-    def drop_tables(self, table_name):
-        try:
-            self.admin.send_command(sql.SQL("DROP TABLE IF EXISTS {} CASCADE;").format(sql.Identifier(table_name)))
-            print(f"Table {table_name} deleted")
-        except Exception as e:
-            print(f"Failed to drop {table_name}")
-    
-    # function for uninstalling postgresql for clean installs.
-    def uninstall_psql(self):
-        # Delete user database and tables before uninstalling 
-        print("Clearing databases\n\n\n")
-        self.drop_tables('config_database')
-        self.drop_tables('people_database')
-        self.drop_tables('timesheet_database')
-        self.drop_tables('email_list')
-        self.drop_database('scanner')
-        self.drop_user('marcus')
-        print("Starting uninstall of PostgreSQL\n\n\n")
-        print(f"Detected OS: {self.system.title()}")
-        try:
-            # detect windows use chocolatey 
-            if self.system == "windows":
-                print("Uninstalling PostgreSQL using Chocolatey.")
-                if shutil.which("choco") is None:
-                    print("Chocolatey not found. Cannot uninstall automatically on Windows.")
-                    return False
-                cmd = "choco uninstall postgresql --yes"
-
-            elif self.system == "darwin":
-                print("Uninstalling PostgreSQL using Homebrew...")
-                if shutil.which("brew") is None:
-                    print("Homebrew not found. Cannot uninstall automatically on Mac.")
-                    return False
-                cmd = "brew uninstall postgresql"
-            # detect linux
-            elif self.system == "linux":
-                # detect Linux package manager
-                if shutil.which("apt"):
-                    print("Uninstalling PostgreSQL using apt.")
-                    cmd = "sudo apt remove --purge -y postgresql* && sudo apt autoremove -y"
-                elif shutil.which("dnf"):
-                    print("Uninstalling PostgreSQL using dnf.")
-                    cmd = "sudo dnf remove -y postgresql*"
-                elif shutil.which("yum"):
-                    print("Uninstalling PostgreSQL using yum.")
-                    cmd = "sudo yum remove -y postgresql*"
-                elif shutil.which("pacman"):
-                    print("Uninstalling PostgreSQL using pacman.")
-                    cmd = "sudo pacman -Rns --noconfirm postgresql"
-                else:
-                    print("Could not detect Linux package manager. Please uninstall PostgreSQL manually.")
-                    return False
-            else:
-                print("Unsupported OS. Cannot uninstall PostgreSQL automatically.")
-                return False
-
-            # Execute the uninstall command
-            result = subprocess.run(cmd, shell=True, check=True, text=True, capture_output=True)
-            print(result.stdout.strip())
-            print("^^^ PostgreSQL successfully uninstalled ^^^")
-            return True
-
-        except subprocess.CalledProcessError as e:
-            print(f"Failed to uninstall PostgreSQL.\nError: {e.stderr.strip()}")
-            return False
-        except Exception as e:
-            print(f"Unexpected error during uninstallation: {e}")
-            return False

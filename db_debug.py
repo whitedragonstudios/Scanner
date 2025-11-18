@@ -100,7 +100,7 @@ class DBDebugger:
         self.handler.send_command(cmd)
 
 
-user_handle = Handler(user="marcus", password="stoic", dbname="scanner", port=5000)
+user_handle = Handler(profile="user")
 debugger = DBDebugger(user_handle)
 
 # Run quick diagnostics

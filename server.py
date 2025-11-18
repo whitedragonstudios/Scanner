@@ -7,15 +7,7 @@ from classHandler import Handler
 from classPerson import Person, Default_Person
 from classInstall import Postgre_Install
 from datetime import datetime as dt
-import databaseConfig
 import pandas as pd
-
-db = databaseConfig. databaseSettings()
-user = db["user"]
-password = db["password"]
-db_name = db["db_name"]
-port = db["port"]
-host = db["host"]
 
 
 config = classSettings.Setting()
@@ -26,7 +18,7 @@ quoteOTDay = quote_generator().QotD
 
 # Intialize flask server
 app = Flask(__name__)
-app.secret_key = password
+app.secret_key = "stoic"
 frontend = Blueprint('frontend', __name__, template_folder='templates', static_folder='static')
 recent_list = []
 
@@ -67,16 +59,14 @@ def home():
                            )
 
 
-
-
 @frontend.route('/settings', methods=['GET', 'POST'])
 def settings():
     if request.method == "POST":
         global config, weather_data, news
-        user_handle = Handler(user, password, db_name)
+        user_handle = Handler("user")
         # Danger Zone
         def danger(action):
-            uninstall = Postgre_Install("postgres", password, db_name, port, host)
+            uninstall = Postgre_Install()
             if action == "restore":
                 config_list = {
                     'config_status': 'True',
@@ -94,7 +84,7 @@ def settings():
                     'news_key': '04fbd2b9df7b49f6b6a626b4a4ae36be'
                 }
                 for key, value in config_list.items():
-                    user_handle.update_config(key,value)
+                    user_handle.update_database("config_database", "key", "value", key, value)
                 user_handle.send_query("SELECT * FROM config_database;")
                 msg = "Configuration restored to defaults"
 
@@ -128,28 +118,30 @@ def settings():
         def single_button(key, handle):
             if key in request.form:
                 new_value = request.form.get(key)
-                handle.update_config(key, new_value)
+                handle.update_database("config_database", "key", "value", key, new_value)
                 return f"{key} updated to {new_value}"
+            return None
             
         keys = ["company", "city", "weather_key", "news_key"]
         for key in keys:
             msg = single_button(key, user_handle)
-            flash(msg, "success")
-            return redirect(url_for("frontend.settings"))
+            print(msg)
+        #return redirect(url_for("frontend.settings"))
 
         # color updates dynamically
         if request.form.get("form_type") == "colors":
             for key, value in request.form.items():
                 if hasattr(config, key):
                     setattr(config, key, value)
-                    user_handle.update_config(key, value)
+                    user_handle.update_database("config_database", "key", "value", key, value)
                     flash(f"{key} updated to {value}", "success")
             return redirect(url_for("frontend.settings"))
         
         # reset colors to deault settings
         if "reset_colors" in request.form:
-            for key,value in config.default_colors.items():
-                user_handle.update_config(key,value)
+            defualt = config.default_colors()
+            for key,value in defualt.items():
+                user_handle.update_database("config_database", "key", "value", key, value)
                 flash(f"{key} reset to {value}", "info")
             user_handle.send_query("SELECT * FROM config_database;")
             return redirect(url_for("frontend.settings"))
@@ -159,8 +151,7 @@ def settings():
             report_email = request.form.get("emails").strip().lower().replace("'", "''")
             freq = request.form.get("send-reports").strip().lower().replace("'", "''")
             try:
-                user_handle.send_command(f"INSERT INTO email_list (email, frequency) VALUES ('{report_email}', '{freq}');")
-                user_handle.send_query(f"SELECT (email, frequency) FROM email_list WHERE email = '{report_email}';")
+                user_handle.update_database("email_list", "key", "value", "report_email", "freq")
                 flash(f"Added {report_email} at frequency {freq } to database", "success")
             except Exception as e:
                 flash(f"Failed to insert {report_email} into database: {e}", "error")
@@ -171,57 +162,57 @@ def settings():
             error = None
             message_list = []
             if file and file.filename:
-                    filename = file.filename
-                    allowed_extensions = {'.csv', '.xlsx', '.json'}
-                    ext = os.path.splitext(filename)[1].lower()
-                    if ext not in allowed_extensions:
-                        error = "Unsupported file type. Please upload a CSV, XLSX, or JSON file."
-                    else:
-                        try:
-                            if ext == ".csv":
-                                data = pd.read_csv(file)
-                            elif ext == ".xlsx":
-                                data = pd.read_excel(file)
-                            elif ext == ".json":
-                                jdata = json.load(file)
-                                data = pd.DataFrame(jdata)
-                            # Send DataFrame to database
-                            for index, row in data.iterrows():
-                                try:
-                                    user_handle.send_command("""
-                                        INSERT INTO people_database
-                                        (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department)
-                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                                        ON CONFLICT (employee_id)
-                                        DO UPDATE SET
-                                            first_name=EXCLUDED.first_name,
-                                            last_name=EXCLUDED.last_name,
-                                            email=EXCLUDED.email,
-                                            phone=EXCLUDED.phone,
-                                            pic_path=EXCLUDED.pic_path,
-                                            employee_role=EXCLUDED.employee_role,
-                                            position=EXCLUDED.position,
-                                            department=EXCLUDED.department;
-                                    """, (
-                                        int(row['employee_id']),
-                                        row['first_name'],
-                                        row['last_name'],
-                                        row['email'],
-                                        row['phone'],
-                                        row['pic_path'],
-                                        row['employee_role'],
-                                        row['position'],
-                                        row['department']
-                                    ))
-                                    message_list.append(f"{row['firstname']} {row['lastname']} uploaded")
-                                except Exception as e_row:
-                                    message_list.append(f"Skipped {row['firstname']} {row['lastname']} due to error: {e_row}")
-                            message_list.append(f"File {filename} uploaded")
-                        except Exception as e:
-                            error = f"Failed to import data: {e}"
-                    if error is not None:
-                        return error
-                    return message_list
+                filename = file.filename
+                allowed_extensions = {'.csv', '.xlsx', '.json'}
+                ext = os.path.splitext(filename)[1].lower()
+                if ext not in allowed_extensions:
+                    error = "Unsupported file type. Please upload a CSV, XLSX, or JSON file."
+                else:
+                    try:
+                        if ext == ".csv":
+                            data = pd.read_csv(file)
+                        elif ext == ".xlsx":
+                            data = pd.read_excel(file)
+                        elif ext == ".json":
+                            jdata = json.load(file)
+                            data = pd.DataFrame(jdata)
+                        # Send DataFrame to database
+                        for index, row in data.iterrows():
+                            try:
+                                user_handle.send_command("""
+                                    INSERT INTO people_database
+                                    (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department)
+                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                    ON CONFLICT (employee_id)
+                                    DO UPDATE SET
+                                        first_name=EXCLUDED.first_name,
+                                        last_name=EXCLUDED.last_name,
+                                        email=EXCLUDED.email,
+                                        phone=EXCLUDED.phone,
+                                        pic_path=EXCLUDED.pic_path,
+                                        employee_role=EXCLUDED.employee_role,
+                                        position=EXCLUDED.position,
+                                        department=EXCLUDED.department;
+                                """, (
+                                    int(row['employee_id']),
+                                    row['first_name'],
+                                    row['last_name'],
+                                    row['email'],
+                                    row['phone'],
+                                    row['pic_path'],
+                                    row['employee_role'],
+                                    row['position'],
+                                    row['department']
+                                ))
+                                message_list.append(f"{row['firstname']} {row['lastname']} uploaded")
+                            except Exception as e_row:
+                                message_list.append(f"Skipped {row['firstname']} {row['lastname']} due to error: {e_row}")
+                        message_list.append(f"File {filename} uploaded")
+                    except Exception as e:
+                        error = [f"Failed to import data: {e}"]
+                if error is not None:
+                    return error
+                return message_list
 
         # file upload
         if "fileUpload" in request.files:
@@ -263,7 +254,7 @@ def settings():
                     flash(f"Failed to remove entry: {e}", "error")
             else:  # add/update
                 try:
-                    user_handle.update_people_database(
+                    user_handle.update_people(
                         employee_id,
                         first_name=first_name,
                         last_name=last_name,

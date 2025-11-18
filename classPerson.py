@@ -1,15 +1,7 @@
 import datetime as dt
 from datetime import datetime as dt, timezone
 from classHandler import Handler
-import databaseConfig
 
-# Load settings for handler object
-db = databaseConfig. databaseSettings()
-user = db["user"]
-password = db["password"]
-db_name = db["db_name"]
-port = db["port"]
-host = db["host"]
 
 # Person takes input from idscan and stores and updates all information to retrieve employee data and update timesheets
 # A new instance of person is initalized with each scan
@@ -19,7 +11,7 @@ class Person():
         # recent list handles live updates to the home screen and reports from what was entered in the database.
         self.recent = recent_list
         # Handler instance connects to db
-        self.handle = Handler(user=user, password=password, dbname=db_name, port=port, host=host)
+        self.handle = Handler(profile="user")
         # Upon init idnumber is used to look_up data in people_database
         data = self.look_up()
         if data:
@@ -41,7 +33,7 @@ class Person():
             WHERE employee_id = {self.id}""")
         if not employee:
             return None # return none to use default_person
-        return employee[0] #query returns a list of tuples index 0  bypasses dealing with the list.
+        return employee[0] #query returns a list of tuples index 0 bypasses dealing with the list.
 
 
     # Assign takes the place of initalizing data in case no data is returned from lookup assign allows for graceful failure.
