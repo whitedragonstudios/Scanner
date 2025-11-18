@@ -125,7 +125,8 @@ def settings():
         keys = ["company", "city", "weather_key", "news_key"]
         for key in keys:
             msg = single_button(key, user_handle)
-            print(msg)
+            if msg is not None:
+                print(msg)
         #return redirect(url_for("frontend.settings"))
 
         # color updates dynamically
@@ -179,35 +180,20 @@ def settings():
                         # Send DataFrame to database
                         for index, row in data.iterrows():
                             try:
-                                user_handle.send_command("""
-                                    INSERT INTO people_database
-                                    (employee_id, first_name, last_name, email, phone, pic_path, employee_role, position, department)
-                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                                    ON CONFLICT (employee_id)
-                                    DO UPDATE SET
-                                        first_name=EXCLUDED.first_name,
-                                        last_name=EXCLUDED.last_name,
-                                        email=EXCLUDED.email,
-                                        phone=EXCLUDED.phone,
-                                        pic_path=EXCLUDED.pic_path,
-                                        employee_role=EXCLUDED.employee_role,
-                                        position=EXCLUDED.position,
-                                        department=EXCLUDED.department;
-                                """, (
+                                user_handle.update_people(
                                     int(row['employee_id']),
-                                    row['first_name'],
-                                    row['last_name'],
-                                    row['email'],
-                                    row['phone'],
-                                    row['pic_path'],
-                                    row['employee_role'],
-                                    row['position'],
-                                    row['department']
-                                ))
-                                message_list.append(f"{row['firstname']} {row['lastname']} uploaded")
+                                    {'first_name': row['first_name'],
+                                    'last_name': row['last_name'],
+                                    'email': row['email'],
+                                    'phone': row['phone'],
+                                    'pic_path': row['pic_path'],
+                                    'employee_role': row['employee_role'],
+                                    'position': row['position'],
+                                    'department': row['department']})
+                                message_list.append(f"{row['first_name']} {row['last_name']} uploaded")
                             except Exception as e_row:
-                                message_list.append(f"Skipped {row['firstname']} {row['lastname']} due to error: {e_row}")
-                        message_list.append(f"File {filename} uploaded")
+                                message_list.append(f"Skipped {row.get('first_name', 'Unknown')} {row.get('last_name', 'Unknown')} due to error: {e_row}")
+                        message_list.insert(0, f"File {filename} uploaded")
                     except Exception as e:
                         error = [f"Failed to import data: {e}"]
                 if error is not None:
@@ -245,10 +231,8 @@ def settings():
 
             if action == "remove":
                 try:
-                    user_handle.send_command(
-                        "DELETE FROM people_database WHERE employee_id = %s;",
-                        (employee_id,)
-                    )
+                    sql ="DELETE FROM people_database WHERE employee_id = %s;" %employee_id
+                    user_handle.send_command(sql)
                     flash(f"Removed employee ID {employee_id} from the database", "success")
                 except Exception as e:
                     flash(f"Failed to remove entry: {e}", "error")
@@ -256,24 +240,21 @@ def settings():
                 try:
                     user_handle.update_people(
                         employee_id,
-                        first_name=first_name,
-                        last_name=last_name,
-                        email=email,
-                        phone=phone,
-                        pic_path=pic_path,
-                        employee_role=employee_role,
-                        position=position,
-                        department=department
-                    )
+                        {'first_name': first_name,
+                        'last_name': last_name,
+                        'email': email,
+                        'phone': phone,
+                        'pic_path': pic_path,
+                        'employee_role': employee_role,
+                        'position': position,
+                        'department': department})
                     flash(f"{action.title()} operation successful for employee ID {employee_id}", "success")
                 except Exception as e:
                     flash(f"{action.title()} failed: {e}", "error")
 
             return redirect(url_for("frontend.settings"))
 
-        
-        
-    
+    # Refresh config, weather, and news after updates
     config = classSettings.Setting()
     news = News_Report(config.country, config.news_key)
     weather_data = weather_report(config.city, config.weather_key)

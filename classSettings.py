@@ -13,7 +13,7 @@ class Setting:
         self.user_handle=Handler(profile='user')
         # data is also the raw dictionary which is returned from this method.
         data = self.user_handle.send_query("SELECT key, value FROM config_database;")
-        print(data)
+        #print(data)
         data = dict(data)
         self.config_status = data["config_status"]
         self.config_date = data["config_date"]

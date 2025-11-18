@@ -439,8 +439,8 @@ class Postgre_Install:
         # ... rest of your uninstall code
         try:
             # Connect with deault credentials and drop user.
-            self.admin.send_command(sql.SQL("DROP OWNED BY {};").format(sql.Identifier(dropUser)))
-            self.admin.send_command(sql.SQL("DROP USER IF EXISTS {};").format(sql.Identifier(dropUser)))
-            print(f"User {dropUser} deleted")
+            self.admin.send_command(sql.SQL("DROP OWNED BY {};").format(sql.Identifier('marcus')))
+            self.admin.send_command(sql.SQL("DROP USER IF EXISTS {};").format(sql.Identifier('marcus')))
+            print(f"User 'marcus' deleted")
         except Exception as e:
-            print(f"Failed to drop user '{dropUser}': {e}")
+            print(f"Failed to drop user 'marcus': {e}")
