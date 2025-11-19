@@ -411,11 +411,10 @@ class Postgre_Install:
             print(f"Failed to drop {table_name}: {e}")
 
             
-    # function for uninstalling postgresql for clean installs.
+   # function for uninstalling postgresql for clean installs.
     def uninstall_psql(self):
         # Delete in correct order: tables -> database -> user
         print("Clearing databases\n\n\n")
-        
         # First, make sure we're connected to postgres db, not scanner
         try:
             if hasattr(self, 'admin'):
@@ -424,23 +423,100 @@ class Postgre_Install:
                 self.user_handle.disconnect()
         except:
             pass
-        
         # Reconnect to postgres database
         self.admin = Handler(profile="admin", dbname="postgres")
         self.admin.connect()
         
         # Drop the database (this will drop all tables inside it)
         self.drop_database('scanner')
-        
         # Then drop the user
         self.drop_user('marcus')
-        
         print("Starting uninstall of PostgreSQL\n\n\n")
-        # ... rest of your uninstall code
+        print(f"Detected OS: {self.system.title()}")
         try:
-            # Connect with deault credentials and drop user.
-            self.admin.send_command(sql.SQL("DROP OWNED BY {};").format(sql.Identifier('marcus')))
-            self.admin.send_command(sql.SQL("DROP USER IF EXISTS {};").format(sql.Identifier('marcus')))
-            print(f"User 'marcus' deleted")
+            # Detect Windows - use Chocolatey
+            if self.system == "windows":
+                print("Uninstalling PostgreSQL on Windows...")
+                # Method 1: Try Chocolatey
+                if shutil.which("choco"):
+                    print("Using Chocolatey...")
+                    cmd = "choco uninstall postgresql --yes"
+                # Method 2: Try official uninstaller
+                else:
+                    print("Looking for PostgreSQL uninstaller...")
+                    # Common PostgreSQL installation paths
+                    possible_paths = [
+                        r"C:\Program Files\PostgreSQL\18\uninstall-postgresql.exe",
+                        r"C:\Program Files\PostgreSQL\17\uninstall-postgresql.exe",
+                        r"C:\Program Files\PostgreSQL\16\uninstall-postgresql.exe",
+                        r"C:\Program Files\PostgreSQL\15\uninstall-postgresql.exe",
+                        r"C:\Program Files\PostgreSQL\14\uninstall-postgresql.exe",
+                    ]
+                    uninstaller = None
+                    for path in possible_paths:
+                        if os.path.exists(path):
+                            uninstaller = path
+                            break
+                    if uninstaller:
+                        print(f"Found uninstaller at: {uninstaller}")
+                        # Run uninstaller in unattended mode
+                        cmd = f'"{uninstaller}" --mode unattended'
+                    else:
+                        print("PostgreSQL uninstaller not found.")
+                        print("Please uninstall PostgreSQL manually:")
+                        print("  1. Open Control Panel > Programs and Features")
+                        print("  2. Find 'PostgreSQL' in the list")
+                        print("  3. Click 'Uninstall'")
+                        print("\nOr run the uninstaller directly from:")
+                        print("  C:\\Program Files\\PostgreSQL\\[version]\\uninstall-postgresql.exe")
+                        return False
+            # Detect macOS - use Homebrew
+            elif self.system == "darwin":
+                print("Uninstalling PostgreSQL using Homebrew...")
+                if shutil.which("brew") is None:
+                    print("Homebrew not found. Cannot uninstall automatically on macOS.")
+                    print("Please uninstall PostgreSQL manually:")
+                    print("  - If installed via Postgres.app: Move Postgres.app to Trash")
+                    print("  - If installed via installer: Run the uninstaller from /Library/PostgreSQL/")
+                    return False
+                cmd = "brew uninstall postgresql"
+            # Detect Linux - detect package manager
+            elif self.system == "linux":
+                if shutil.which("apt"):
+                    print("Uninstalling PostgreSQL using apt...")
+                    cmd = "sudo apt remove --purge -y postgresql* && sudo apt autoremove -y"
+                elif shutil.which("dnf"):
+                    print("Uninstalling PostgreSQL using dnf...")
+                    cmd = "sudo dnf remove -y postgresql*"
+                elif shutil.which("yum"):
+                    print("Uninstalling PostgreSQL using yum...")
+                    cmd = "sudo yum remove -y postgresql*"
+                elif shutil.which("pacman"):
+                    print("Uninstalling PostgreSQL using pacman...")
+                    cmd = "sudo pacman -Rns --noconfirm postgresql"
+                else:
+                    print("Could not detect Linux package manager.")
+                    print("Please uninstall PostgreSQL manually using your distribution's package manager.")
+                    return False
+            else:
+                print("Unsupported OS. Cannot uninstall PostgreSQL automatically.")
+                print(f"Detected system: {self.system}")
+                return False
+            # Execute the uninstall command
+            print(f"Running command: {cmd}")
+            result = subprocess.run(cmd, shell=True, check=True, text=True, capture_output=True)
+            print(result.stdout.strip())
+            print("^^^ PostgreSQL successfully uninstalled ^^^")
+            return True
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to uninstall PostgreSQL.")
+            print(f"Command: {cmd}")
+            print(f"Error: {e.stderr.strip()}")
+            print("\nYou may need to:")
+            print("  1. Run this script with administrator/sudo privileges")
+            print("  2. Manually uninstall PostgreSQL using your system's package manager")
+            return False
         except Exception as e:
-            print(f"Failed to drop user 'marcus': {e}")
+            print(f"Unexpected error during uninstallation: {e}")
+            return False
+            
