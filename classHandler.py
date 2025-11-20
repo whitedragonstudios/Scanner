@@ -137,47 +137,64 @@ class Handler:
             if not keep_open and conn and not conn.closed:
                 conn.close()
 
-    # ADDED: Missing update_people method
+    # Insert or update a person in people_database
     def update_people(self, employee_id, fields):
-        """Insert or update a person in people_database"""
+        messages = {"error": [], "warning": [], "info": [], "success": []}
         conn = cur = None
         try:
             conn = self.connect()
             cur = conn.cursor()
+            cur.execute("SELECT employee_id FROM people_database WHERE employee_id = %s", (employee_id,))
+            existing = cur.fetchone()
             
-            # Build the INSERT statement dynamically
-            columns = ['employee_id'] + list(fields.keys())
-            values = [employee_id] + list(fields.values())
+            if existing:
+                update_fields = {k: v for k, v in fields.items() if v and str(v).strip()}
+                if not update_fields:
+                    messages["info"].append(f"No new data to update for employee {employee_id}")
+                    print(f"No new data to update for employee {employee_id}")
+                    return
+                
+                update_parts = sql.SQL(', ').join([
+                    sql.SQL("{} = %s").format(sql.Identifier(k))
+                    for k in update_fields.keys()
+                ])
+                
+                query = sql.SQL("UPDATE people_database SET {updates} WHERE employee_id = %s;").format(
+                    updates=update_parts
+                )
+                
+                values = list(update_fields.values()) + [employee_id]
+                messages["info"].append(f"Updated employee {employee_id}")
+                print(f"Updating existing employee {employee_id} with values: {values}")
+                cur.execute(query, values)
+            else:
+                # Employee doesn't exist - do INSERT with all fields
+                columns = ['employee_id'] + list(fields.keys())
+                values = [employee_id] + list(fields.values())
+                placeholders = sql.SQL(', ').join([sql.Placeholder()] * len(values))
+                
+                query = sql.SQL("INSERT INTO people_database ({columns}) VALUES ({placeholders});").format(
+                    columns=sql.SQL(', ').join(map(sql.Identifier, columns)),
+                    placeholders=placeholders
+                )
+                messages["info"].append(f"Inserted new employee {employee_id}")
+                print(f"Inserting new employee {employee_id} with values: {values}")
+                cur.execute(query, values)
             
-            # Build conflict resolution for all fields except employee_id
-            update_clause = sql.SQL(', ').join([
-                sql.SQL("{} = EXCLUDED.{}").format(sql.Identifier(k), sql.Identifier(k))
-                for k in fields.keys()
-            ])
-            
-            query = sql.SQL("""
-                INSERT INTO people_database ({columns})
-                VALUES ({placeholders})
-                ON CONFLICT (employee_id)
-                DO UPDATE SET {updates};
-            """).format(
-                columns=sql.SQL(', ').join(map(sql.Identifier, columns)),
-                placeholders=sql.SQL(', ').join(sql.Placeholder() * len(values)),
-                updates=update_clause
-            )
-            
-            cur.execute(query, values)
             conn.commit()
-            print(f"Employee {employee_id} updated successfully")
+            messages["success"].append(f"Employee {employee_id} saved successfully")
+            print(f"Employee {employee_id} saved successfully")
             
         except psycopg2.Error as e:
             if conn and not conn.closed:
                 conn.rollback()
             self.report_error(e)
+            messages["error"].append(f"Database error for employee {employee_id}\n{e}")
             raise
         finally:
             if cur: cur.close()
             if conn: conn.close()
+            return messages
 
     def disconnect(self):
         if hasattr(self, "_shared_conn") and self._shared_conn and not self._shared_conn.closed:

@@ -16,9 +16,9 @@ quoteOTDay = quote_generator().QotD
 def message_parser(messages):
     for k,v in messages.items():
         if len(v) > 0:
-            revmsg = list(reversed(v))
+            #revmsg = list(reversed(v))
             catagory = k
-            for msg in revmsg:
+            for msg in v:
                 flash(msg, catagory)
     return messages
 

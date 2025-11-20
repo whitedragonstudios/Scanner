@@ -34,7 +34,7 @@ def danger(action, handle):
         try:
             print("clearing email list")
             handle.send_command("DELETE FROM email_list;")
-            messages["success"].append("Email list delteted")
+            messages["success"].append("Email list deleted")
         except Exception as e:
             messages["error"].append(f"Failed to clear email list.\n{e}")
         return messages
@@ -130,43 +130,46 @@ def upload(file, handle):
 
 def manual_entry(action, req_dict, handle):
     messages = {"error": [], "warning": [], "info": [], "success": []}
-    key_list = ['fname', 'lname', 'email', 'pnumber', 'filename', 'role', 'position', 'department']
-    variable_list = [first_name, last_name, email, phone, pic_path, employee_role, position, department ] = [None]*8
     try:
-        employee_id = int(req_dict['idnumber'])
+        employee_id = int(req_dict.get('idnumber'))
         messages['info'].append(f"Processing employee ID {employee_id}")
-    except Exception as e:
+    except (ValueError, TypeError) as e:
         messages['error'].append(f"Invalid employee ID\n{e}")
-    index = 0
-    for item in key_list:
-        try:
-            variable_list[index] = req_dict[item]
-        except Exception as e:
-            messages['error'].append(f"Error parsing {item}\n{e}")
-        index += 1
+        return messages
+    first_name = req_dict.get('fname', '').strip().title()
+    last_name = req_dict.get('lname', '').strip().title()
+    email = req_dict.get('email', '').strip().lower()
+    phone = req_dict.get('pnumber', '').strip()
+    pic_path = req_dict.get('filename', '').strip()
+    employee_role = req_dict.get('role', '').strip().title()
+    position = req_dict.get('position', '').strip().title()
+    department = req_dict.get('department', '').strip().title()
+    
+    print(f"Manual entry data: fname={first_name}, lname={last_name}")
 
     if action == "remove":
         try:
-            sql = f"DELETE FROM people_database WHERE employee_id = {employee_id};"
-            handle.send_command(sql)
+            handle.send_command(f"DELETE FROM people_database WHERE employee_id = {employee_id};")
+            handle.send_query(f"SELECT * FROM people_database WHERE employee_id = {employee_id};") 
             messages['warning'].append(f"Removed employee ID {employee_id} from the database")
         except Exception as e:
             messages['error'].append(f"Failed to remove entry {employee_id}\n{e}")
     else:  # add/update
         try:
-            handle.update_people(
+            msg = handle.update_people(
                 employee_id,
-                {'first_name': first_name,
-                'last_name': last_name,
-                'email': email,
-                'phone': phone,
-                'pic_path': pic_path,
-                'employee_role': employee_role,
-                'position': position,
-                'department': department})
-            messages['success'].append(f"Employee ID {employee_id} updated successfully")
+                {
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'email': email,
+                    'phone': phone,
+                    'pic_path': pic_path,
+                    'employee_role': employee_role,
+                    'position': position,
+                    'department': department
+                })
+            messages = {k: messages[k] + msg[k] for k in messages}
         except Exception as e:
             messages['error'].append(f"Failed to update employee ID {employee_id}\n{e}")
     return messages
-
 
