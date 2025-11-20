@@ -100,7 +100,7 @@ class DBDebugger:
         self.handler.send_command(cmd)
 
 
-user_handle = Handler(user="marcus", password="stoic", dbname="scanner", port=5000)
+user_handle = Handler(profile="user")
 debugger = DBDebugger(user_handle)
 
 # Run quick diagnostics
@@ -112,5 +112,5 @@ debugger.describe_table("email_list")
 debugger.count_rows("config_database")
 debugger.preview_table("config_database", limit=50)
 debugger.preview_table("email_list", limit=4)
-debugger.preview_table("people_database", limit=4)
+debugger.preview_table("people_database", limit=110)
 debugger.preview_table("timesheet_database", limit=4)
