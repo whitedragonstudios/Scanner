@@ -163,8 +163,3 @@ def reports():
         recent_people = recent_list
         )
     
-app.register_blueprint(frontend)
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=2000, debug=True)
-    #serve(app, host="0.0.0.0", port=2000))
