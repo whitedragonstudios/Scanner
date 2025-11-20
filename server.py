@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, Blueprint, flash, url_for
+from flask import Flask, render_template, request, redirect, Blueprint, flash
 import classSettings
 from classNews import News_Report
 from classQuotes import quote_generator
@@ -13,6 +13,16 @@ news = News_Report(config.country, config.news_key)
 quoteOTDay = quote_generator().QotD
 
 
+def message_parser(messages):
+    for k,v in messages.items():
+        if len(v) > 0:
+            revmsg = list(reversed(v))
+            catagory = k
+            for msg in revmsg:
+                flash(msg, catagory)
+    return messages
+
+
 # Intialize flask server
 app = Flask(__name__)
 app.secret_key = "stoic"
@@ -20,10 +30,14 @@ frontend = Blueprint('frontend', __name__, template_folder='templates', static_f
 recent_list = []
 
 
+
+
 # Set default and index route
 @frontend.route ('/')
 def index():
     return redirect('/home')
+
+
 
 
 # Render updates from person to webpage
@@ -40,7 +54,7 @@ def home():
             try:
                 employee = Person(idscan, recent_list)
             except Exception as e:
-                print(f"Error: home Person failed to find mathcing ID {e}")
+                print(f"Error: Person failed to find mathcing ID {e}")
                 employee = Default_Person(recent_list, idscan)
         recent_list = employee.recent
 
@@ -56,6 +70,8 @@ def home():
                            )
 
 
+
+
 @frontend.route('/settings', methods=['GET', 'POST'])
 def settings():
     if request.method == "POST":
@@ -67,18 +83,21 @@ def settings():
         if action:
             msg = services.danger(action, user_handle)
             config = classSettings.Setting()
-            flash(msg, "success")
+            message_parser(msg)
         
         # Simple config changes    
         keys = ["company", "city", "weather_key", "news_key"]
+        updated = False
         for key in keys:
             try:
                 msg = services.single_button(key, user_handle)
-                if msg is not None:
-                    print(msg)
+                if len(msg['success']) > 0:
+                    message_parser(msg)
                     updated = True
+                elif len(msg['error']) > 0:
+                    message_parser(msg)
             except Exception as e:
-                flash(f"Failed to update {key}: {e}", "error")
+                print(f"Failed to update {key}: {e}")
         if updated:
             config = classSettings.Setting()
             news = News_Report(config.country, config.news_key)
@@ -106,7 +125,7 @@ def settings():
                 except Exception as e:
                     flash(f"Failed to reset {key}: {e}", "error")
             config = classSettings.Setting()
-            user_handle.send_query("SELECT * FROM config_database;")
+            #user_handle.send_query("SELECT * FROM config_database;")
 
 
         # Emails
@@ -122,21 +141,15 @@ def settings():
         # file upload
         if "fileUpload" in request.files:
             file_handle = request.files["fileUpload"]
-            msgs = services.upload(file_handle)
-            try:
-                for msg in msgs:
-                    flash(msg, "info")
-            except:
-                flash(msgs, "error")
+            msgs = services.upload(file_handle, user_handle)
+            message_parser(msgs)
 
         # manual database entry
         if 'manual-entry-action' in request.form:
             action = request.form.get('manual-entry-action')
             request_dict = request.form.to_dict()
-            services.manual_entry(action, request_dict, user_handle)
-        
-    # Refresh config, weather, and news after updates
-    #config = classSettings.Setting()
+            msg = services.manual_entry(action, request_dict, user_handle)
+            message_parser(msg)
     
     return render_template("settings.html", cf=config)
 
