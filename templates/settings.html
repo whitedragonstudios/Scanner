@@ -88,12 +88,12 @@
                 <div class="left-div">
                     <h2>Change Company Name</h2>
                     <form action="/settings" method="post">
-                        <input class="textBox" type="text" name="company" id="company" placeholder="{{ cf.company }}" maxlength="50" required>
+                        <input class="textBox" type="text" name="company" id="company" placeholder="{{cf.company}}" maxlength="50" required>
                         <button class="color_button" type="submit">Submit</button>
                     </form>
                     <h2>Change City</h2>
                     <form action="/settings" method="post">
-                        <input class="textBox" type="text" name="city" id="city" placeholder="{{ cf.city }}" maxlength="50" required>
+                        <input class="textBox" type="text" name="city" id="city" placeholder="{{cf.city}}" maxlength="50" required>
                         <button class="color_button" type="submit">Submit</button>
                     </form>
                     <h2>API Keys</h2>
@@ -182,9 +182,7 @@
                     <h2>Manual Entry</h2>
                     <p> Manually add, update, or remove an entry from the database</p>
                     <form action="/settings" method="post">
-                        <input type="radio" id="add" name="manual-entry-action" value="add" required>
-                        <label for="add">ADD</label>
-                        <input type="radio" id="update" name="manual-entry-action" value="update">
+                        <input type="radio" id="update" name="manual-entry-action" value="update" required>
                         <label for="update">UPDATE</label>
                         <input type="radio" id="remove" name="manual-entry-action" value="remove">
                         <label for="remove">REMOVE</label>
@@ -192,18 +190,18 @@
                         <p>All fields must be filled. Enter 'None' if no change, 'NA' if blank.</p>
 
                         <input type="number" id="idnumber" name="idnumber" placeholder="id: 12345678" required titel = "Enter id number of the employee you want to edit. If removing id is the only field needed all others can be none.">
-                        <input type="text" id="filename" name="filename" placeholder="picture filename: 12345678.jpg"  required title="Enter the filename of the employee's picture you want to edit. Be sure to include the file extension. ie .jpg or .png">
+                        <input type="text" id="filename" name="filename" placeholder="picture filename: 12345678.jpg" title="Enter the filename of the employee's picture you want to edit. Be sure to include the file extension. ie .jpg or .png">
                         <br>
-                        <input type="text" id="fname" name="fname" placeholder="first name: Marcus" title="Enter the first name of the employee you want to edit" required>
-                        <input type="text" id="lname" name="lname" placeholder="last name: Aurelius" title="Enter the last name of the employee you want to edit" required>
+                        <input type="text" id="fname" name="fname" placeholder="first name: Marcus" title="Enter the first name of the employee you want to edit" >
+                        <input type="text" id="lname" name="lname" placeholder="last name: Aurelius" title="Enter the last name of the employee you want to edit" >
                         <br>
-                        <input type="email" id="email" name="email" placeholder="e-mail: maurelius@scanner.com" maxlength="254"title="Enter the e-mail of the employee you want to edit. If updating and you want it skipped enter 'none@none.com" required>
-                        <input type="text" id="pnumber" name="pnumber" placeholder="phone: 800-555-1234" required maxlength="13" title="Enter the phone number of the employee you want to edit">
+                        <input type="email" id="email" name="email" placeholder="e-mail: maurelius@scanner.com" maxlength="254"title="Enter the e-mail of the employee you want to edit.">
+                        <input type="text" id="pnumber" name="pnumber" placeholder="phone: 800-555-1234" maxlength="13" title="Enter the phone number of the employee you want to edit">
                         <br>
-                        <input type="text" id="role" name="role" placeholder="role: Philosopher" required title="Enter the role of the employee you want to edit">
-                        <input type="text" id="position" name="position" placeholder="position: Emperor" required title="Enter the position of the employee you want to edit">
+                        <input type="text" id="role" name="role" placeholder="role: Philosopher" title="Enter the role of the employee you want to edit">
+                        <input type="text" id="position" name="position" placeholder="position: Emperor" title="Enter the position of the employee you want to edit">
                         <br>
-                        <input type="text" id="department" name="department" placeholder="department: Roman Empire" required title="Enter the department of the employee you want to edit">
+                        <input type="text" id="department" name="department" placeholder="department: Roman Empire" title="Enter the department of the employee you want to edit">
                         <br>
                         <button type="submit">Submit</button>
                     </form>

@@ -8,7 +8,7 @@ class News_Report():
         self.news_key = news_key
         # A banned list can be passed to not display certain news sources defaults to an empty list
         self.banned_list = banned_list or []
-        # Autorun is true by default to automically send api request.
+        # Autorun is true by default to automatically send api request.
         self.autorun = autorun or True
         if self.autorun:
             self.articles = self.update_news()
@@ -17,24 +17,58 @@ class News_Report():
     # get news sends API request and returns json dictionary of news articles.
     def get_news(self):
         try: 
-            NEWS_response = requests.get(f"https://newsapi.org/v2/top-headlines?country={self.country}&apiKey={self.news_key}").json()
+            NEWS_response = requests.get(
+                f"https://newsapi.org/v2/top-headlines?country={self.country}&apiKey={self.news_key}"
+            ).json()
+            
+            # Check if the API returned an error
+            if 'status' in NEWS_response and NEWS_response['status'] == 'error':
+                print(f"ERROR: News API returned error: {NEWS_response.get('message', 'Unknown error')}")
+                return self.error_data()
+            
+            # Check if articles exist in response
+            if 'articles' not in NEWS_response:
+                print(f"ERROR: No articles in API response: {NEWS_response}")
+                return self.error_data()
+                
+            return NEWS_response
+            
         except requests.exceptions.RequestException as e:
             print("ERROR: (get_news) api request >>>", e)
-            # error in request returns usable data for parse_news
-            NEWS_response = healine_list ={'articles': ["Connection Error", "Connection Error", "Connection Error", "Connection Error", "Connection Error", "Connection Error", "Connection Error", "Connection Error"]}
-        #print("A  >>> NEWS_response", NEWS_response)
-        return NEWS_response
+            return self.error_data()
+
 
     # parse news organizes news articles into a list of dictionaries which flask expects.
-    def parse_news(self,news_response):
+    def parse_news(self, news_response):
         parsed_news = []
+        
+        # Ensure articles exist and is a list
+        if 'articles' not in news_response or not isinstance(news_response['articles'], list):
+            return [{'src': 'Error', 'art': 'No news available', 'url': '#'}]
+        
         for item in news_response['articles']:
-            source = item['source']['name']
-            article = item['title'] # further testing if title or description returns best short form results.
-            url = item['url']
-            # check sourcse against banned list.
-            if source not in self.banned_list:
-                parsed_news.append({'src':source, "art":article,"url":url}) 
+            try:
+                # Handle case where item might be a string (from error_data)
+                if isinstance(item, str):
+                    parsed_news.append({'src': 'Error', 'art': item, 'url': '#'})
+                    continue
+                
+                source = item.get('source', {}).get('name', 'Unknown Source')
+                article = item.get('title', item.get('description', 'No title available'))
+                url = item.get('url', '#')
+                
+                # check sources against banned list.
+                if source not in self.banned_list:
+                    parsed_news.append({'src': source, 'art': article, 'url': url})
+                    
+            except (KeyError, TypeError) as e:
+                print(f"ERROR: Parsing news item: {e}")
+                continue
+        
+        # If no articles were parsed, return error message
+        if not parsed_news:
+            return [{'src': 'Error', 'art': 'No news available', 'url': '#'}]
+            
         return parsed_news
 
 
@@ -43,4 +77,30 @@ class News_Report():
         news_response = self.get_news()
         articles = self.parse_news(news_response)
         return articles
-
+    
+    
+    # Return error data structure when API fails
+    def error_data(self):
+        return {
+            'status': 'error',
+            'articles': [
+                {
+                    'source': {'name': 'Error'},
+                    'title': 'Unable to fetch news',
+                    'description': 'API connection error',
+                    'url': '#'
+                },
+                {
+                    'source': {'name': 'Error'},
+                    'title': 'Check your API key',
+                    'description': 'Invalid or expired API key',
+                    'url': '#'
+                },
+                {
+                    'source': {'name': 'Error'},
+                    'title': 'Check your internet connection',
+                    'description': 'Unable to reach news service',
+                    'url': '#'
+                }
+            ]
+        }

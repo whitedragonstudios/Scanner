@@ -11,6 +11,14 @@ Fifth Spring 11/14 - present
 5) intergrate server.py to main.py
 6) Update flow diagrams
 
+1) update_config made universal. changed db setup to match key value partern
+2) handler only takes a porfile parameter, and an optional database paramater
+** Need to intergate password encryption to handler
+3) server has been simplified doesn't seem routes need to be seperate
+4) services for server seperated conditionals remain for readability but complex actions are abstracted to services
+5) server.py added to main which checks config status and handles install process.
+6) 
+
 Fourth Sprint 11/3 - 11/12/25
 1) intergrate server.py and settings.py into one script.
 2) Make functions to update config settings from menu.HTML

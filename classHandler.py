@@ -1,26 +1,32 @@
 import psycopg2, os
+from psycopg2 import sql
 
-# 
 class Handler:
-    def __init__(self, user="postgres", password="", dbname="postgres", port=5000, host="localhost", info=False):
-        # Default attributes for Handler are for postgre default account
-        self.user = user or "postgres"
-        self.password = password or ""
-        self.dbname = dbname or "postgres"
-        self.port = port or 5000 
-        self.host = host or "localhost"
+    def __init__(self, profile="marcus", dbname="scanner", info=False):
+        # Set user and database properly
+        if profile == "admin":
+            self.user = "postgres"
+            self.dbname = dbname or "postgres"
+        elif profile == "superuser":
+            self.user = "postgres"
+            self.dbname = dbname or "scanner"
+        else:
+            self.user = "marcus"
+            self.dbname = dbname or "scanner"
+
+        self.password = "stoic"
+        self.port = 5000
+        self.host = "localhost"
         self.info = info
+        self._shared_conn = None
 
-
-    # Connect handles connections to database
     def connect(self):
-        # info flag is for debugging it shows which settings where used for connecting.
         if self.info:
             print(f"""Connecting...
-                ---Database: {self.dbname}
-                ---User: {self.user}
-                ---Port: {self.port}
-                ---Host: {self.host}""")
+        ---Database: {self.dbname}
+        ---User: {self.user}
+        ---Port: {self.port}
+        ---Host: {self.host}""")
         try:
             conn = psycopg2.connect(
                 dbname=self.dbname,
@@ -29,185 +35,168 @@ class Handler:
                 host=self.host,
                 port=self.port
             )
-            # Usually commit is used explicitly, autocommit is just a precaution.
-            conn.autocommit = True 
+            conn.autocommit = True
+            # Ensure public schema is used in this session
+            with conn.cursor() as cur:
+                cur.execute("SET search_path TO public;")
             return conn
-        except Exception:
+        except Exception as e:
+            print("Failed to connect:", e)
             raise
 
-    
-    # this method reports errors from the server and reports them to python.
     def report_error(self, e):
-        print("\n\n!!! PostgreSQL Error !!!")
-        # Capture the error message if it exists.
+        print("!!! PostgreSQL Error !!!")
         msg = e.pgerror.strip() if e.pgerror else str(e)
         print(f"Message: {msg}")
-        # Handles different types of messages
         if hasattr(e, 'diag') and e.diag:
             print(f"SQLSTATE: {e.pgcode}")
             if getattr(e.diag, 'message_detail', None):
                 print(f"Details: {e.diag.message_detail.strip()}")
             if getattr(e.diag, 'context', None):
                 print(f"Context: {e.diag.context.strip()}")
-        print("\n\n")
+        print("\n")
 
-    
-    # send command allows single commands to be sent to the server
     def send_command(self, cmd):
-        conn = None
-        cur = None
-        # Try making the connection
+        conn = cur = None
         try:
             conn = self.connect()
             cur = conn.cursor()
-            print(f"<<< Executing command >>>")
+            print("<<< Executing command >>>")
             print(cmd)
-            # Exacutes the command
             cur.execute(cmd)
-            # Commmt explicit
             conn.commit()
-            print(f">>> Executed command <<<")
-            # Print feedback
+            print(">>> Executed command <<<")
             for notice in conn.notices:
                 print("NOTICE:", notice)
         except psycopg2.Error as e:
-            # Close and roll back the connection attempt
             if conn and not conn.closed:
                 conn.rollback()
             self.report_error(e)
-            raise e
-        # Close the connection after each command
-        finally:
-            if cur: cur.close()
-            if conn: conn.close()
-        # Adding a parameter to keep the connection open may be better for scale but UX and large scale testing required
-
-
-    # Open file (not working 11/12/25 permissions error) allows the use of sql scripts for sending complex commands to the server
-    def open_file(self, filename):
-        # check the path to the file
-        if not os.path.exists(filename):
-            print(f"Cannot locate file: {filename}")
-            return
-        conn = None
-        cur = None
-        # Try to establish connection
-        try:
-            conn = self.connect()
-            cur = conn.cursor()
-            print(f"<<< Processing SQL script >>>\n{filename}")
-            # Open the file and read into memory
-            with open(filename, 'r') as f:
-                sql_script = f.read()
-            # Seperate multiple SQL commands based on ;
-            statements = sql_script.split(";")
-            clean_statements = []
-            # Cleans out SQL comments
-            for stmt in statements:
-                stmt = stmt.strip()
-                if stmt and not stmt.startswith("--"):
-                    clean_statements.append(stmt)
-            # Exacutes each command
-            for stmt in clean_statements:
-                print(stmt)
-                cur.execute(stmt)
-            # Explicit Commmit
-            conn.commit()
-            print(f">>> Executed SQL file <<<")
-        except psycopg2.Error as e:
-            # Close and roll back the connection attempt
-            if conn and not conn.closed:
-                conn.rollback()
-            self.report_error(e)
-            raise e
-        # Close the connection after all commands have completed.
+            raise
         finally:
             if cur: cur.close()
             if conn: conn.close()
 
-
-    # Send query sends a single query and returns a structured tuple
     def send_query(self, query):
-        conn = None
-        cur = None
+        conn = cur = None
         results = []
-        # Attemps connection
         try:
             conn = self.connect()
             cur = conn.cursor()
-            print(f"<<< Executing Query >>>")
+            print("<<< Executing Query >>>")
             print(query)
-            # Excecute query
             cur.execute(query)
-            # Fetch the results of the query returns a tuple
             results = cur.fetchall()
             print("--- Query Results ---")
-            # Print each row as a list of tuples
             for row in results:
                 print(row)
             print("--- End Results ---")
-            print(f">>> Query Exacuted <<<")
-            # Capture feedback
             for notice in conn.notices:
                 print("NOTICE:", notice)
             return results
         except psycopg2.Error as e:
-            # Roll back and release if connection fails.
             self.report_error(e)
-            raise e
-        # Close the connection after each command
+            raise
         finally:
             if cur: cur.close()
             if conn: conn.close()
-    
 
-    # Depreciate in next sprint and replace with send query
-    # request_config(self)
-    # Query looks like: Handler instance .send_query("SELECT key, value FROM config_database;")
-    def request_config(self):
-        conn = None
-        cur = None
-        config = {}
-        try: 
-            conn = self.connect()
-            cur = conn.cursor()
-            print("<<< Loading configuration >>>")
-            # query is hard coded
-            cur.execute("SELECT key, value FROM config_database;") 
-            for row in cur.fetchall():
-                config[row[0]] = row[1]
-            print(">>> Configuration loaded <<<")
-            #print(config)
-            return config
-        except psycopg2.Error as e:
-            self.report_error(e)
-            raise e
-        finally:
-            if cur: cur.close()
-            if conn: conn.close()
-    
-
-    # Modify in next sprint ADD database parameter.
-    def update_config(self, key, value):
-        conn = None
-        cur = None
-        db = 'config_database' # temp patch
-        # Try connection
+    def update_database(self, database, kname, vname, key, value, keep_open=False):
+        conn = cur = None
         try:
-            conn = self.connect()
+            if keep_open:
+                if not hasattr(self, "_shared_conn") or self._shared_conn is None or self._shared_conn.closed:
+                    self._shared_conn = self.connect()
+                conn = self._shared_conn
+            else:
+                conn = self.connect()
+
             cur = conn.cursor()
-            # Execute update command 
-            cur.execute(f"UPDATE {db} SET value = '{value}' WHERE key = '{key}';")  # Modify to account for collisions
-            conn.commit() 
-            print(f"Configuration key '{key}' updated successfully.")
+            cur.execute(
+                sql.SQL("""
+                    INSERT INTO {table} ({col_key}, {col_value})
+                    VALUES (%s, %s)
+                    ON CONFLICT ({col_key})
+                    DO UPDATE SET {col_value} = EXCLUDED.{col_value};
+                """).format(
+                    table=sql.Identifier(database),
+                    col_key=sql.Identifier(kname),
+                    col_value=sql.Identifier(vname)
+                ),
+                (key, value)
+            )
+            conn.commit()
+            print(f"Configuration key '{key}' updated to {value}")
         except psycopg2.Error as e:
-            # If conenction fails rollback
-            print(f"Database error during config update: {e}")
             if conn and not conn.closed:
                 conn.rollback()
             self.report_error(e)
-            raise e
-        # Close connection
-        finally: 
+            raise
+        finally:
+            if cur: cur.close()
+            if not keep_open and conn and not conn.closed:
+                conn.close()
+
+    # Insert or update a person in people_database
+    def update_people(self, employee_id, fields):
+        messages = {"error": [], "warning": [], "info": [], "success": []}
+        conn = cur = None
+        try:
+            conn = self.connect()
+            cur = conn.cursor()
+            cur.execute("SELECT employee_id FROM people_database WHERE employee_id = %s", (employee_id,))
+            existing = cur.fetchone()
+            
+            if existing:
+                update_fields = {k: v for k, v in fields.items() if v and str(v).strip()}
+                if not update_fields:
+                    messages["info"].append(f"No new data to update for employee {employee_id}")
+                    print(f"No new data to update for employee {employee_id}")
+                    return
+                
+                update_parts = sql.SQL(', ').join([
+                    sql.SQL("{} = %s").format(sql.Identifier(k))
+                    for k in update_fields.keys()
+                ])
+                
+                query = sql.SQL("UPDATE people_database SET {updates} WHERE employee_id = %s;").format(
+                    updates=update_parts
+                )
+                
+                values = list(update_fields.values()) + [employee_id]
+                messages["info"].append(f"Updated employee {employee_id}")
+                print(f"Updating existing employee {employee_id} with values: {values}")
+                cur.execute(query, values)
+            else:
+                # Employee doesn't exist - do INSERT with all fields
+                columns = ['employee_id'] + list(fields.keys())
+                values = [employee_id] + list(fields.values())
+                placeholders = sql.SQL(', ').join([sql.Placeholder()] * len(values))
+                
+                query = sql.SQL("INSERT INTO people_database ({columns}) VALUES ({placeholders});").format(
+                    columns=sql.SQL(', ').join(map(sql.Identifier, columns)),
+                    placeholders=placeholders
+                )
+                messages["info"].append(f"Inserted new employee {employee_id}")
+                print(f"Inserting new employee {employee_id} with values: {values}")
+                cur.execute(query, values)
+            
+            conn.commit()
+            messages["success"].append(f"Employee {employee_id} saved successfully")
+            print(f"Employee {employee_id} saved successfully")
+            
+        except psycopg2.Error as e:
+            if conn and not conn.closed:
+                conn.rollback()
+            self.report_error(e)
+            messages["error"].append(f"Database error for employee {employee_id}\n{e}")
+            raise
+        finally:
             if cur: cur.close()
             if conn: conn.close()
+            return messages
+
+    def disconnect(self):
+        if hasattr(self, "_shared_conn") and self._shared_conn and not self._shared_conn.closed:
+            self._shared_conn.close()
+            self._shared_conn = None
