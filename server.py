@@ -106,14 +106,18 @@ def settings():
         # color updates dynamically
         if request.form.get("form_type") == "colors":
             for key, value in request.form.items():
-                if hasattr(config, key):
-                    try:
-                        setattr(config, key, value)
-                        user_handle.update_database("config_database", "key", "value", key, value)
-                        config = classSettings.Setting()
-                        flash(f"{key} updated to {value}", "success")
-                    except Exception as e:
-                        flash(f"Failed to update {key}: {e}", "error")
+                if services.hex_check(value):
+                    if hasattr(config, key):
+                        try:
+                            setattr(config, key, value)
+                            user_handle.update_database("config_database", "key", "value", key, value)
+                            config = classSettings.Setting()
+                            flash(f"{key} updated to {value}", "success")
+                        except Exception as e:
+                            flash(f"Failed to update {key}: {e}", "error")
+                else:
+                    flash(f"{value} is not a valid Hex Color", "error")
+
         
         # reset colors to default settings
         if "reset_colors" in request.form:

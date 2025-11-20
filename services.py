@@ -1,9 +1,7 @@
 from classInstall import Postgre_Install
 from datetime import datetime as dt
 from flask import request
-import os
-import pandas as pd
-import json 
+import os, json, re, pandas as pd
 
 
 def danger(action, handle):
@@ -173,3 +171,8 @@ def manual_entry(action, req_dict, handle):
             messages['error'].append(f"Failed to update employee ID {employee_id}\n{e}")
     return messages
 
+def hex_check(value):
+    if re.match (r'^#[A-Fa-f0-9]{6}$'):
+        return True
+    else:
+        return False
