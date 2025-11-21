@@ -17,7 +17,7 @@ Fifth Spring 11/14 - present
 3) server has been simplified doesn't seem routes need to be seperate
 4) services for server seperated conditionals remain for readability but complex actions are abstracted to services
 5) server.py added to main which checks config status and handles install process.
-6) 
+6) It may be better to break down flow diagrams by output section
 
 Fourth Sprint 11/3 - 11/12/25
 1) intergrate server.py and settings.py into one script.

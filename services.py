@@ -2,24 +2,24 @@ from classInstall import Postgre_Install
 from datetime import datetime as dt
 from flask import request
 import os, json, re, pandas as pd
-
+from classSettings import Setting
 
 def danger(action, handle):
     messages = {"error": [], "warning": [], "info": [], "success": []}
     if action == "restore":
         print("restoring default config")
-        config_list = {
-            'config_status': 'True',
-            'config_date': dt.now().strftime("%m-%d-%y"),
-            'webpage_title': 'Populus Numerus',
-            'company': 'Scanner',
-            'city': 'New York City',
-            'lon': '-74.0060152',
-            'lat': '40.7127281',
-            'weather_key': 'baeb0ce1961c460b651e6a3a91bfeac6',
-            'country': 'us',
-            'news_key': '04fbd2b9df7b49f6b6a626b4a4ae36be'
-        }
+        # Should load config list from shared location
+        config_list = Setting.default_config()
+        #{'config_status': 'True',
+            #'config_date': dt.now().strftime("%m-%d-%y"),
+            #'webpage_title': 'Populus Numerus',
+            #'company': 'Scanner',
+            #'city': 'New York City',
+            #'lon': '-74.0060152',
+            #'lat': '40.7127281',
+            #'weather_key': 'baeb0ce1961c460b651e6a3a91bfeac6',
+            #'country': 'us',
+            #'news_key': '04fbd2b9df7b49f6b6a626b4a4ae36be'}
         for key, value in config_list.items():
             try:
                 handle.update_database("config_database", "key", "value", key, value)

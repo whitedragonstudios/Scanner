@@ -104,8 +104,8 @@ class Person():
             time = dt.fromisoformat(time)
         time_str = time.strftime("%I:%M %p %d-%m") #Format date time object to string
         direction = "==>" if action == "Clock In" else "<==" # connditional to determine which arrow to use.
-        io = "IN"if action == "Clock In" else "OUT" # conditional to determine which word to use.
-        self.return_data = f"{io} {time_str} {direction} {data[0][0]} {data[0][1]}"
+        self.io = "IN"if action == "Clock In" else "OUT" # conditional to determine which word to use.
+        self.return_data = f"{self.io} {time_str} {direction} {data[0][0]} {data[0][1]}"
         print(self.return_data)
         return self.return_data # returns formatted data which can be added to recent list.
 

@@ -1,4 +1,5 @@
 from classHandler import Handler
+from datetime import datetime as dt
 
 
 class Setting:
@@ -55,11 +56,26 @@ class Setting:
             "border_color" : "#3399ff"
             }
     
+
+    def default_config(self):
+        return{
+                "config_status": "True",
+                "config_date": dt.now().strftime("%m-%d-%y"),
+                "webpage_title": "Populus Numerus",
+                "company": "Scanner",
+                "city": "New York City",
+                "lon": "-74.0060152",
+                "lat": "40.7127281",
+                "weather_key": "baeb0ce1961c460b651e6a3a91bfeac6",
+                "country": "us",
+                "news_key": "04fbd2b9df7b49f6b6a626b4a4ae36be"
+                }
+    
     
     def start_settings(self):
         return{
-                "config_status": "False",
-                "config_date": "2025-01-01",
+                "config_status": "True",
+                "config_date": dt.now().strftime("%m-%d-%y"),
                 "webpage_title": "Populus Numerus",
                 "company": "Scanner",
                 "main_background_color": "#0a0a1f",

@@ -7,10 +7,16 @@ from classHandler import Handler
 from classPerson import Person, Default_Person
 import services
 
-config = classSettings.Setting()
-weather_data = weather_report(config.city, config.weather_key)
-news = News_Report(config.country, config.news_key)
-quoteOTDay = quote_generator().QotD
+
+def preload_data():
+    try:
+        config = classSettings.Setting()
+        weather_data = weather_report(config.city, config.weather_key)
+        news = News_Report(config.country, config.news_key)
+        quoteOTDay = quote_generator().QotD
+    except Exception as e:
+        print("Error preloading data")
+    return config, weather_data, news, quoteOTDay
 
 
 def message_parser(messages):
@@ -29,7 +35,7 @@ app.secret_key = "stoic"
 frontend = Blueprint('frontend', __name__, template_folder='templates', static_folder='static')
 recent_list = []
 
-
+config, weather_data, news, quoteOTDay = preload_data()
 
 
 # Set default and index route
@@ -53,8 +59,10 @@ def home():
         else:
             try:
                 employee = Person(idscan, recent_list)
+                message_parser({"success":[f"{idscan} Clocked {employee.io}"]})
             except Exception as e:
                 print(f"Error: Person failed to find mathcing ID {e}")
+                message_parser({"error":["Failed to match person to ID"]})
                 employee = Default_Person(recent_list, idscan)
         recent_list = employee.recent
 
@@ -87,21 +95,22 @@ def settings():
         
         # Simple config changes    
         keys = ["company", "city", "weather_key", "news_key"]
-        updated = False
-        for key in keys:
-            try:
-                msg = services.single_button(key, user_handle)
-                if len(msg['success']) > 0:
-                    message_parser(msg)
-                    updated = True
-                elif len(msg['error']) > 0:
-                    message_parser(msg)
-            except Exception as e:
-                print(f"Failed to update {key}: {e}")
-        if updated:
-            config = classSettings.Setting()
-            news = News_Report(config.country, config.news_key)
-            weather_data = weather_report(config.city, config.weather_key)
+        if any(key in request.form for key in keys):
+            updated = False
+            for key in keys:
+                try:
+                    msg = services.single_button(key, user_handle)
+                    if len(msg['success']) > 0:
+                        message_parser(msg)
+                        updated = True
+                    elif len(msg['error']) > 0:
+                        message_parser(msg)
+                except Exception as e:
+                    print(f"Failed to update {key}: {e}")
+            if updated:
+                config = classSettings.Setting()
+                news = News_Report(config.country, config.news_key)
+                weather_data = weather_report(config.city, config.weather_key)
 
         # color updates dynamically
         if request.form.get("form_type") == "colors":
