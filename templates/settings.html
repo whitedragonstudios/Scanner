@@ -38,22 +38,22 @@
                     <button id="restore" name = "action" value = "restore"
                     title="This will reset your configuration settings to factory defaults. ALL color schemes and API keys will be permanently lost">
                     Restore</button>
-                    <br><br><hr><br>
+                    <hr>
                     <h3> Reset email list</h3>
                     <button id="clear" name = "action" value = "clear"
                     title="This will permanently delete all emails which reports are sent to">
                     Reset</button>
-                    <br><br><hr><br>
+                    <hr>
                     <h3>Delete employee database</h3>
                     <button id="delete_people" name = "action" value = "delete_people"
                     title="This will permanently delete all employee data and timesheets. Epmloyee information will a have to be re-entered any all timsehets will be lost forever">
                     Delete</button>
-                    <br><br><hr><br>
+                    <hr>
                     <h3>Delete timesheets database</h3>
                     <button id="delete_timesheets" name = "action" value = "delete_timesheets"
                     title="This will permanently delete all employee data and timesheets. Epmloyee information will a have to be re-entered any all timsehets will be lost forever">
                     Delete</button>
-                    <br><br><hr><br>
+                    <hr>
                     <h3>Reinstall app; delete all databases and start a clean install</h3>
                     <button id="clean"  name = "action" value = "clean"
                     title="This will remove ALL data and reinitialize the entire system. Only use if there is a catastrophic failure and other troubleshooting is exhausted.">
@@ -110,19 +110,25 @@
                         <button class="color_button" type="submit">News Key</button>
                     </form>
                     <br>
-                    <h2> Email Notifications</h2>
-                    <p> Enter the email addresses where reports can be sent to.</p>
-                    <form action="/settings" method="post">
-                        <input type="email" name="emails" id="emails" placeholder="marcus.aurelius@scanner.com" maxlength="254" required title="Enter the email which you want reports to be sent to.">
-                        <p>Select how frequently reports should be e-mailed</p>
-                        <input type="radio" id="daily" name="send-reports" value="daily">
-                        <label for="html">Daily</label>
-                        <input type="radio" id="weekly" name="send-reports" value="weekly">
-                        <label for="css">Weekly</label>
-                        <input type="radio" id="monthly" name="send-reports" value="monthly">
-                        <label for="javascript">Monthly</label>
-                        <button class="color_button" type="submit">Submit</button>
-                    </form>
+                    <h2>Email Notifications</h2>
+                    <p>Enter the email addresses and frequency that email will recieve reports.</p>
+                    <div class="radio-group">
+                        <form action="/settings" method="post">
+                            <div class="radio-row">
+                                <input type="radio" id="daily" name="send-reports" value="daily">
+                                <label for="daily">Daily</label>
+                                <input type="radio" id="weekly" name="send-reports" value="weekly">
+                                <label for="weekly">Weekly</label>
+                                <input type="radio" id="monthly" name="send-reports" value="monthly">
+                                <label for="monthly">Monthly</label>
+                            </div>
+                            <div class="email-row">
+                                <input type="email" name="emails" id="emails" placeholder="marcus.aurelius@scanner.com" maxlength="254" required title="Enter the email which you want reports to be sent to.">
+                                <button class="color_button" type="submit">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
                 <div class="middle-div">
                     <div class="color-section">
@@ -183,29 +189,29 @@
                     <h2>Manual Entry</h2>
                     <p> Manually add, update, or remove an entry from the database</p>
                     <form action="/settings" method="post">
+                    <div class="radio-row">
                         <input type="radio" id="update" name="manual-entry-action" value="update" required>
                         <label for="update">UPDATE</label>
                         <input type="radio" id="remove" name="manual-entry-action" value="remove">
                         <label for="remove">REMOVE</label>
+                    </div>
 
-                        <p>All fields must be filled. Enter 'None' if no change, 'NA' if blank.</p>
-
-                        <input type="number" id="idnumber" name="idnumber" placeholder="id: 12345678" required titel = "Enter id number of the employee you want to edit. If removing id is the only field needed all others can be none.">
-                        <input type="text" id="filename" name="filename" placeholder="picture filename: 12345678.jpg" title="Enter the filename of the employee's picture you want to edit. Be sure to include the file extension. ie .jpg or .png">
-                        <br>
-                        <input type="text" id="fname" name="fname" placeholder="first name: Marcus" title="Enter the first name of the employee you want to edit" >
-                        <input type="text" id="lname" name="lname" placeholder="last name: Aurelius" title="Enter the last name of the employee you want to edit" >
-                        <br>
-                        <input type="email" id="email" name="email" placeholder="e-mail: maurelius@scanner.com" maxlength="254"title="Enter the e-mail of the employee you want to edit.">
-                        <input type="text" id="pnumber" name="pnumber" placeholder="phone: 800-555-1234" maxlength="13" title="Enter the phone number of the employee you want to edit">
-                        <br>
-                        <input type="text" id="role" name="role" placeholder="role: Philosopher" title="Enter the role of the employee you want to edit">
-                        <input type="text" id="position" name="position" placeholder="position: Emperor" title="Enter the position of the employee you want to edit">
-                        <br>
-                        <input type="text" id="department" name="department" placeholder="department: Roman Empire" title="Enter the department of the employee you want to edit">
-                        <br>
-                        <button type="submit">Submit</button>
-                    </form>
+                    <input type="number" id="idnumber" name="idnumber" placeholder="id: 12345678" required title="Enter id number of the employee you want to edit. If removing id is the only field needed all others can be none.">
+                    <input type="text" id="filename" name="filename" placeholder="picture filename: 12345678.jpg" title="Enter the filename of the employee's picture you want to edit. Be sure to include the file extension. ie .jpg or .png">
+                    
+                    <input type="text" id="fname" name="fname" placeholder="first name: Marcus" title="Enter the first name of the employee you want to edit">
+                    <input type="text" id="lname" name="lname" placeholder="last name: Aurelius" title="Enter the last name of the employee you want to edit">
+                    
+                    <input type="email" id="email" name="email" placeholder="e-mail: maurelius@scanner.com" maxlength="254" title="Enter the e-mail of the employee you want to edit.">
+                    <input type="text" id="pnumber" name="pnumber" placeholder="phone: 800-555-1234" maxlength="13" title="Enter the phone number of the employee you want to edit">
+                    
+                    <input type="text" id="role" name="role" placeholder="role: Philosopher" title="Enter the role of the employee you want to edit">
+                    <input type="text" id="position" name="position" placeholder="position: Emperor" title="Enter the position of the employee you want to edit">
+                    
+                    <input type="text" id="department" name="department" placeholder="department: Roman Empire" title="Enter the department of the employee you want to edit">
+                    
+                    <button type="submit">Submit</button>
+                </form>
 
                 </div>
             </div>

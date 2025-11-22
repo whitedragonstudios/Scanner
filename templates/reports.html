@@ -68,10 +68,13 @@
                     </form>
             </div>
             
-           <div class="reports-content">
+           
+
+            <div class="reports-content">
 
                 <!-- Header row for main info -->
                 <div class="report-header">
+                    <span class="col-pic"></span>
                     <span class="col-name">Name</span>
                     <span class="col-id">Employee ID</span>
                     <span class="col-email">Email</span>
@@ -100,17 +103,23 @@
                             <span class="user-department">{{ person.department }}</span>
                         </div>
 
-                        <!-- Time entries -->
+                        <!-- Time entries with header -->
                         <div class="time-entries">
                             {% if person.times %}
-                                {% for t in person.times %}
-                                    <div class="time-row">
-                                        <span class="time-date">{{ t.date }}</span>
-                                        <span class="time-in">{{ t.clockin }}</span>
-                                        <span class="time-out">{{ t.clockout }}</span>
-                                        <span class="time-duration">{{ t.duration }}</span>
-                                    </div>
-                                {% endfor %}
+                            <div class="time-header">
+                                <span>Date</span>
+                                <span>Clock In</span>
+                                <span>Clock Out</span>
+                                <span>Duration</span>
+                            </div>
+                            {% for t in person.times %}
+                                <div class="time-row">
+                                    <span class="time-date">{{ t.date }}</span>
+                                    <span class="time-in">{{ t.clockin }}</span>
+                                    <span class="time-out">{{ t.clockout }}</span>
+                                    <span class="time-duration">{{ t.duration }}</span>
+                                </div>
+                            {% endfor %}
                             {% else %}
                                 <div class="time-row no-times">
                                     <span>No time entries available</span>

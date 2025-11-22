@@ -6,10 +6,10 @@
     width: 100%;
 }
 
-/* Header row */
+/* Header row for main info */
 .report-header {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: 100px repeat(7, 1fr);
     font-weight: bold;
     padding: 10px;
     border-bottom: 2px solid var(--border-color);
@@ -65,10 +65,20 @@
     gap: 6px;
 }
 
+/* Time header row */
+.time-header {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    font-weight: bold;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+}
+
 /* Time row layout */
 .time-row {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr; /* Date, In, Out, Duration */
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
     font-size: 0.9rem;
 }
@@ -88,8 +98,7 @@
         gap: 10px;
     }
 
-    .time-row {
+    .time-header, .time-row {
         grid-template-columns: 1fr 1fr;
-        gap: 10px;
     }
 }
