@@ -1,4 +1,4 @@
-/* ================= SETTINGS PAGE ===================== */
+/* ================= SETTINGS PAGE - LAYOUT ===================== */
 
 /* Three-column layout */
 .settings-content {
@@ -7,6 +7,7 @@
     margin-top: 20px;
 }
 
+/* Common styling for all three columns */
 .left-div,
 .middle-div,
 .right-div {
@@ -18,7 +19,7 @@
     flex: 1;
 }
 
-/* Middle div shrinks to fit content (for picture/color section) */
+/* Middle div: shrinks to fit content (for color pickers) */
 .middle-div {
     flex: 0 0 auto;
     display: flex;
@@ -26,12 +27,9 @@
     align-items: center;
 }
 
-/* Right div for DB updates/manual entry */
-.right-div {
-    flex: 1;
-}
+/* ================= GLOBAL FORM DEFAULTS ===================== */
 
-/* Forms styling */
+/* Default form styling - vertical layout */
 form {
     display: flex;
     flex-direction: column;
@@ -39,173 +37,76 @@ form {
     margin-bottom: 20px;
 }
 
+/* Default input styling */
 form input[type="text"],
 form input[type="email"],
+form input[type="number"],
 form input[type="file"] {
     padding: 6px 10px;
     border-radius: 5px;
     border: 1px solid var(--border-color);
     font-size: 14px;
+    box-sizing: border-box;
 }
 
+/* Default button positioning */
 form button {
     width: auto;
     align-self: flex-start;
 }
 
-/* ================= Color Section ===================== */
-.color-section {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-    align-items: center; /* center-align everything */
-}
+/* ================= LEFT DIV - HORIZONTAL FORMS ===================== */
 
-.color-section form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;  /* Center the form contents */
-    gap: 12px;
-    width: 100%;
-}
-
-.color-row {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.color-row label {
-    min-width: 120px;
-    text-align: right;   /* Right-justify the labels */
-}
-
-.color-text-box {
-    width: 48px;
-    height: 36px;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-}
-
-/* Center the Save/Reset buttons */
-.color-section button {
-    width: 150px;
-    text-align: center;
-    align-self: center;  /* Override any other alignment */
-}
-
-.color-section form button {
-    align-self: center;  /* Specifically center buttons within forms */
-}
-/* ================= Danger Zone ===================== */
-.danger {
-    background-color: #2a0000;
-    border: 1px solid #ff3333;
-    border-radius: 10px;
-    padding: 10px;        /* Reduced from 20px */
-    text-align: center;
-}
-
-.danger h1, .danger h2, .danger h3 {
-    text-align: center;
-    margin-bottom: 8px;   /* Reduced from 12px */
-}
-
-.danger button {
-    margin: 5px auto;     /* Reduced from 10px auto */
-    display: block;
-    width: 200px;
-    font-size: 16px;
-}
-
-/* ================= Responsive ===================== */
-@media (max-width: 1000px) {
-    .settings-content {
-        flex-direction: column;
-    }
-    .middle-div, .left-div, .right-div {
-        width: 100%;
-    }
-}
-
-/* ================= Radio Buttons ===================== */
-.radio-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.radio-group form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.radio-row {
-    display: flex;
-    gap: 20px;            /* spacing between each radio + label */
-    align-items: center;   /* vertically center the labels */
-    margin-bottom: 10px;
-}
-
-.radio-row input[type="radio"] {
-    margin: 0 5px 0 0;     /* small gap between radio and label */
-}
-
-.radio-row label {
-    margin: 0;
-    font-size: 14px;
-    white-space: nowrap;   /* keep labels on one line */
-}
-
-/* ================= LEFT DIV FORMS ===================== */
+/* Override: make left-div forms horizontal (input + button side-by-side) */
 .left-div form {
-    display: flex;
-    flex-direction: row !important;    /* Force horizontal, override the general form rule */
+    flex-direction: row;
     align-items: center;
     gap: 10px;
     margin-bottom: 15px;
-    flex-wrap: nowrap;                 /* Keep items on same line */
+    flex-wrap: nowrap;
 }
 
-/* All text input boxes in left div */
+/* Left div inputs grow to fill space */
 .left-div input[type="text"],
 .left-div input[type="email"] {
-    flex: 1;                           /* Let input grow to fill available space */
-    max-width: 300px;                  /* Optional: set a max width */
-    padding: 6px 10px;
-    font-size: 14px;
-    box-sizing: border-box;
+    flex: 1;
+    max-width: 300px;
 }
 
-/* Buttons in left div forms */
+/* Left div buttons stay fixed size */
 .left-div button.color_button {
     flex: 0 0 auto;
     padding: 6px 12px;
     font-size: 14px;
 }
 
-/* Exception for radio-group form - keep it vertical */
+/* ================= LEFT DIV - EMAIL NOTIFICATION SECTION ===================== */
+
+/* Exception: radio-group form stays vertical */
 .radio-group form {
-    display: flex !important;
-    flex-direction: column !important;
+    flex-direction: column;
     gap: 10px;
 }
 
-/* Input and button row within radio-group form */
-.radio-group form input[type="email"] {
-    flex: 1;
-    max-width: 300px;
+/* Radio buttons in horizontal row */
+.radio-row {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
-/* Horizontal layout for email input + button */
-.radio-group form > input[type="email"],
-.radio-group form > button {
-    display: inline-block;
+.radio-row input[type="radio"] {
+    margin: 0 5px 0 0;
 }
 
-/* Create a horizontal row for email + button */
+.radio-row label {
+    margin: 0;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* Email input + button in horizontal row */
 .email-row {
     display: flex;
     flex-direction: row;
@@ -222,8 +123,53 @@ form button {
     flex: 0 0 auto;
 }
 
+/* ================= MIDDLE DIV - COLOR SECTION ===================== */
 
-/* ================= RIGHT DIV FORMS ===================== */
+.color-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    align-items: center;
+}
+
+.color-section form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+/* Color picker rows */
+.color-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.color-row label {
+    min-width: 120px;
+    text-align: right;
+}
+
+.color-text-box {
+    width: 48px;
+    height: 36px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+/* Center the Save/Reset buttons */
+.color-section button {
+    width: 150px;
+    text-align: center;
+    align-self: center;
+}
+
+/* ================= RIGHT DIV - DATABASE FORMS ===================== */
+
+/* Right div forms use flex-wrap for 2-column input layout */
 .right-div form {
     display: flex;
     flex-direction: row;
@@ -232,7 +178,7 @@ form button {
     align-items: flex-start;
 }
 
-/* Radio buttons row for update/remove - full width */
+/* Full-width elements */
 .right-div .radio-row {
     width: 100%;
     display: flex;
@@ -240,29 +186,79 @@ form button {
     align-items: center;
 }
 
-/* Paragraph text - full width */
 .right-div form p {
     width: 100%;
     margin: 0;
 }
 
-/* Container for text/email/number inputs - two per row */
+/* File upload elements in same row */
+.right-div form label[for="fileUpload"] {
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.right-div form input[type="file"] {
+    flex: 1;
+    max-width: calc(100% - 120px); /* Leave space for button */
+}
+
+.right-div form input[type="file"] + button {
+    flex: 0 0 auto;
+    width: auto;
+    padding: 6px 20px;
+}
+
+/* Two inputs per row */
 .right-div form input[type="text"],
 .right-div form input[type="email"],
 .right-div form input[type="number"] {
-    width: calc(50% - 5px);  /* Two inputs per row with gap handled by flex gap */
-    padding: 6px 10px;
-    font-size: 14px;
-    box-sizing: border-box;
+    width: calc(50% - 5px);
 }
 
-/* Make department input smaller - share row with button */
+/* Department input shares row with submit button */
 .right-div form input#department {
-    width: calc(50% - 5px);  /* Same width as other inputs */
+    width: calc(50% - 5px);
 }
 
-/* Submit button styling - inline with department */
 .right-div form button[type="submit"] {
-    width: calc(50% - 5px);  /* Match input width */
+    width: calc(50% - 5px);
     margin-top: 0;
+}
+
+/* ================= SIDEBAR - DANGER ZONE ===================== */
+
+.danger {
+    background-color: #2a0000;
+    border: 1px solid #ff3333;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+}
+
+.danger h1, 
+.danger h2, 
+.danger h3 {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.danger button {
+    margin: 5px auto;
+    display: block;
+    width: 200px;
+    font-size: 16px;
+}
+
+/* ================= RESPONSIVE DESIGN ===================== */
+
+@media (max-width: 1000px) {
+    .settings-content {
+        flex-direction: column;
+    }
+    
+    .middle-div, 
+    .left-div, 
+    .right-div {
+        width: 100%;
+    }
 }

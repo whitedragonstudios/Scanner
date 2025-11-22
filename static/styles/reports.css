@@ -6,99 +6,140 @@
     width: 100%;
 }
 
-/* Header row for main info */
-.report-header {
-    display: grid;
-    grid-template-columns: 100px repeat(7, 1fr);
-    font-weight: bold;
-    padding: 10px;
-    border-bottom: 2px solid var(--border-color);
-    gap: 20px;
-}
-
 /* Single user card */
 .report-card {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 20px;
     background-color: var(--content-color);
     color: var(--content-text-color);
     border: 1px solid var(--border-color);
     border-radius: 10px;
-    padding: 10px;
-}
-
-/* Grid for picture, main info, and time entries */
-.report-grid {
-    display: grid;
-    grid-template-columns: 100px 1fr 2fr;
-    gap: 20px;
+    padding: 20px;
     align-items: start;
 }
 
-/* Profile picture spans full height */
+/* Profile picture on left, spans full height */
 .profile-pic {
-    grid-row: span 2;
-    width: 100px;
-    height: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    grid-row: span 2;  /* Allow picture to span into time entries area */
 }
 
 .profile-pic img {
-    width: 100%;
-    height: 100%;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
-    border-radius: 50%;
+    border-radius: 10px;
+    border: 2px solid var(--border-color);
 }
 
-/* Main user info aligned in columns like header */
-.user-info {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 20px;
-}
-
-.user-info span {
-    font-size: 0.95rem;
-}
-
-/* Time entries stacked vertically */
-.time-entries {
+/* Right side container */
+.report-details {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 15px;
 }
 
-/* Time header row */
-.time-header {
+/* User info section */
+.user-info-section {
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+.info-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.info-column {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.info-header {
     font-weight: bold;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 4px;
-    margin-bottom: 4px;
+    font-size: 0.9rem;
+    color: var(--button-color);
+    text-transform: uppercase;
 }
 
-/* Time row layout */
-.time-row {
+.info-value {
+    font-size: 1.05rem;
+}
+
+/* Time entries section */
+.time-entries-section h3 {
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+    color: var(--button-color);
+}
+
+.time-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    font-size: 0.9rem;
+    gap: 8px;
+    row-gap: 2px;
 }
 
-.time-row.no-times {
+.time-column {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.time-header {
+    font-weight: bold;
+    font-size: 0.95rem;
+    color: var(--button-color);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 3px;
+    margin-bottom: 2px;
+}
+
+.time-value {
+    font-size: 1rem;
+    padding: 2px 0;
+    line-height: 1.2;
+}
+
+.no-times {
     color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+    font-size: 1rem;
 }
 
 /* Responsive adjustments */
 @media (max-width: 900px) {
-    .report-grid {
+    .report-card {
         grid-template-columns: 1fr;
     }
 
-    .user-info {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
+    .profile-pic {
+        grid-row: auto;
     }
 
-    .time-header, .time-row {
-        grid-template-columns: 1fr 1fr;
+    .profile-pic img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .time-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .info-grid,
+    .time-grid {
+        grid-template-columns: 1fr;
     }
 }

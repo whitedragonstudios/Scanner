@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, Blueprint, flash
+from flask import Flask, render_template, request, redirect, Blueprint, flash, session
 import classSettings, classScheduler
 from classNews import News_Report
 from classQuotes import quote_generator
@@ -22,10 +22,14 @@ def preload_data():
 def message_parser(messages):
     for k,v in messages.items():
         if len(v) > 0:
-            #revmsg = list(reversed(v))
+            counter = 1
             catagory = k
             for msg in v:
                 flash(msg, catagory)
+                counter +=1
+                if counter > 12:
+                    flash(f"{len(v)-counter} more", catagory)
+                    break
     return messages
 
 
@@ -44,14 +48,13 @@ def index():
     return redirect('/home')
 
 
-
-
-# Render updates from person to webpage
-@frontend.route ('/home', methods=['GET', 'POST'])
+@frontend.route('/home', methods=['GET', 'POST'])
 def home():
     global recent_list
+    
     employee = None
     idscan = None
+    
     if request.method == 'POST':
         idscan = request.form.get('idscan')
         if not idscan:
@@ -60,21 +63,45 @@ def home():
             try:
                 employee = Person(idscan, recent_list)
                 message_parser({"success":[f"{idscan} Clocked {employee.io}"]})
+                
+                # Save last successful scan ID to session
+                session['last_scan_id'] = idscan
+                
             except Exception as e:
-                print(f"Error: Person failed to find mathcing ID {e}")
+                print(f"Error: Person failed to find matching ID {e}")
                 message_parser({"error":["Failed to match person to ID"]})
                 employee = Default_Person(recent_list, idscan)
+                
         recent_list = employee.recent
+        session['recent_list'] = recent_list
+        
+    else:  # GET request
+        # Restore recent list from session
+        if 'recent_list' in session:
+            recent_list = session['recent_list']
+        
+        # If there was a last scan, recreate that person
+        if 'last_scan_id' in session:
+            try:
+                idscan = session['last_scan_id']
+                employee = Person(idscan, recent_list)
+            except:
+                employee = Default_Person(recent_list, None)
+        else:
+            employee = Default_Person(recent_list, None)
 
-    # Pass idnumber to person object. Person object returns name, group, time, and image (if availible)
+    # Fallback if employee is still None
+    if employee is None:
+        employee = Default_Person(recent_list, idscan)
+
     return render_template("home.html", 
-                           recent_people = recent_list,
-                           scan = employee or Default_Person(recent_list, idscan),
-                           cf = config,
-                           quote = quoteOTDay[0],
-                           author = quoteOTDay[1],
-                           wd = weather_data,
-                           news_articles = news.articles
+                           recent_people=recent_list,
+                           scan=employee,
+                           cf=config,
+                           quote=quoteOTDay[0],
+                           author=quoteOTDay[1],
+                           wd=weather_data,
+                           news_articles=news.articles
                            )
 
 
@@ -85,7 +112,6 @@ def settings():
     if request.method == "POST":
         global config, weather_data, news
         
-
         # Danger Zone
         action = request.form.get("action")
         if action:
@@ -167,48 +193,30 @@ def settings():
     return render_template("settings.html", cf=config)
 
 
-fake = [
-    {
-        "fname": "Han",
-        "lname": "Solo",
-        "idnumber": 11111111,
-        "role": "Pilot",
-        "position": "Smuggler",
-        "department": "Operations",
-        "time": "08:00",
-        "date": "2025-11-21",
-        "pic": "11111111.jpg",
-        "recent_people": ["Clock In: 08:00", "Clock Out: 17:00"]
-    },
-    {
-        "fname": "Luke",
-        "lname": "Skywalker",
-        "idnumber": 22222222,
-        "role": "Jedi",
-        "position": "Like his father",
-        "department": "",
-        "time": "08:00",
-        "date": "2025-11-21",
-        "pic": "22222222.jpg",
-        "recent_people": ["Clock In: 08:00", "Clock Out: 17:00"]
-    }
-    
-]
+
 
 @frontend.route('/reports', methods=['GET', 'POST'])
 def reports():
-    search = None
-    search_result = []
+
+
+    search = session.get('last_search')
+    field = session.get('last_field', 'name')
+    time_entries = session.get('last_time_entries', '10')
+    search_result = session.get('search_result', [])
+
     if request.method == "POST":
         search = request.form.get("search")
         field = request.form.get("field")
+        time_entries = request.form.get("time_entries", 10)
         if search is not None:
-            se = classScheduler.search_event(search, field)
+            se = classScheduler.search_event(search, field, time_entries)
             search_result = se.results
         
-            
-
-
+            # Save to session
+            session['last_search'] = search
+            session['last_field'] = field
+            session['last_time_entries'] = time_entries
+            session['search_result'] = search_result
 
     return render_template("reports.html", 
         cf = config,

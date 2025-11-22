@@ -1,11 +1,11 @@
 from classHandler import Handler
-from classSettings import Setting
-from datetime import datetime as dt, date
+from datetime import datetime as dt, date, timedelta
 
 class search_event():
-    def __init__(self, search, field, autorun = True):
+    def __init__(self, search, field, num_entries = 10, autorun = True):
         self.search = search.title().strip().replace("'", "''")
         self.field = field
+        self.num_entries = num_entries or 10
         self.search_handle = Handler("user")
         if autorun == True:
             self.assign()
@@ -84,7 +84,7 @@ class search_event():
     
     def format_time(self, value):
         if value is None:
-            return "--------"
+            return "-----"
         if isinstance(value, str):
             value = dt.fromisoformat(value)
         if isinstance(value, dt):
@@ -100,18 +100,42 @@ class search_event():
                 FROM timesheet_database
                 WHERE employee_id = {idnumber}
                 ORDER BY clock_in DESC
-                LIMIT 10"""
+                LIMIT {self.num_entries}"""
             result = self.search_handle.send_query(query)
         except Exception as e:
             print(f"Error classSchedule.time_parser: {e}")
+            return []
 
         time_list = []
         for item in result:
+            # Keep original datetime objects for calculation
+            clockin_dt = item[2] if isinstance(item[2], dt) else dt.fromisoformat(item[2]) if item[2] else None
+            clockout_dt = item[3] if isinstance(item[3], dt) else dt.fromisoformat(item[3]) if item[3] else None
+            
+            # Format for display
             clockin = self.format_time(item[2])
             clockout = self.format_time(item[3])
-            date = self.format_time(item[4])
-            clock_row = {"clockin":clockin, "clockout":clockout,"date":date}
+            date_str = self.format_time(item[4])
+            
+            # Calculate duration using datetime objects
+            if clockin_dt is not None and clockout_dt is not None:
+                duration_delta = clockout_dt - clockin_dt
+                # Format duration as hours:minutes
+                total_seconds = int(duration_delta.total_seconds())
+                hours = total_seconds // 3600
+                minutes = (total_seconds % 3600) // 60
+                duration = f"{hours}h {minutes}m"
+            else: 
+                duration = "-----"
+                
+            clock_row = {
+                "clockin": clockin, 
+                "clockout": clockout,
+                "date": date_str,
+                "duration": duration
+            }
             time_list.append(clock_row)
+        
         return time_list
     
 
