@@ -1,0 +1,84 @@
+/* ================================================================== */
+/* HOME PAGE SPECIFIC STYLES                                         */
+/* ================================================================== */
+
+/* Main header scan section */
+.main-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+}
+
+.largeTextbox {
+    width: 240px;
+    height: 50px;
+    font-size: 30px;
+    padding: 6px 10px;
+}
+
+.largeButton {
+    width: 150px;
+    height: 50px;
+    font-size: 30px;
+}
+
+/* Content boxes layout */
+.content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.left-div, .middle-div, .right-div {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+}
+
+/* Weather box inside sidebar */
+.weather-table {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.weather-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 4px 0;
+}
+
+.weather-row .label {
+    font-weight: bold;
+    text-align: right;
+    flex: 1;
+}
+
+.weather-row .value {
+    flex: 1;
+    padding-left: 10px;
+}
+
+/* Quote styling */
+.quote {
+    display: inline-block;
+    text-align: left;
+}
+
+.author {
+    display: block;
+    text-align: right;
+    margin-top: 0.5rem;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+/* Recent list */
+.right-div.recent ul {
+    list-style-type: disc;
+    padding-left: 1.5em;
+}

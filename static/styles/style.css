@@ -1,4 +1,7 @@
-/* GLOBAL ===================================================================================================================================================== GLOBAL  */
+/* ========================================================
+   GLOBAL STYLES
+   Applies to all pages
+======================================================== */
 * {
     margin: 0;
     padding: 0;
@@ -18,86 +21,48 @@ body {
     width: 100%;
 }
 
+/* =============================
+   BUTTON STYLES
+============================= */
 button {
     display: inline-block;
-    width: 100px;
-    height: 50px;
     font-size: 16px;
     background-color: var(--button-color);
     color: var(--button-text-color);
-    border: 2px solid var(--button-border-color);
+    border: 2px solid var(--button-border-color, transparent);
     border-radius: 5px;
-    transition: 0.4s;
     cursor: pointer;
     text-decoration: none;
-    transition: background-color 0.3s, transform 0.2s;
     padding: 10px 20px;
+    transition: background-color 0.3s, transform 0.2s;
 }
-
 
 button:hover {
     background-color: var(--button-hover-color);
 }
 
+/* Large buttons */
 .largeButton {
     width: 150px;
     height: 50px;
     font-size: 30px;
 }
 
-.middle-div form{
-    display: flex;
-    align-items: center; 
-}
-
-.color-section {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.color-section form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.color-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.color-row label {
-    min-width: 120px;
-}
-
-.color-text-box {
-    width: 48px;
-    height: 36px;
+.huge-button {
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+    background-color: var(--button-color, #1a73ff);
+    color: var(--button-text-color, #fff);
     border-radius: 6px;
-    border: 1px solid var(--border-color);
 }
 
-.color_button {
-    margin-top: 12px;
-    height: 36px;
-    padding: 6px 12px;
-    font-size: 13px;
-    border-radius: 6px;
-    align-self: center;
-}
-
-
-.largeTextbox {
-    width: 240px;
-    height: 50px;
-    font-size: 30px;
-}
-
-
-
-/* TOP MENU ======================================================================================================================================================= TOP MENU */
+/* =============================
+   TOP MENU
+============================= */
 .top-menu {
     display: flex;
     justify-content: center;
@@ -113,8 +78,8 @@ button:hover {
     color: var(--text-color);
     padding: 0.5rem 1rem;
     border-radius: 5px;
-    transition: all 0.2s ease-in-out;
     font-size: 40px;
+    transition: all 0.2s ease-in-out;
 }
 
 .top-menu a:hover {
@@ -122,8 +87,9 @@ button:hover {
     color: var(--button-text-color);
 }
 
-
-/* SIDEBAR ========================================================================================================================================================= SIDEBAR */
+/* =============================
+   SIDEBAR
+============================= */
 .sidebar {
     width: 15%;
     background-color: var(--sidebar-color);
@@ -136,23 +102,20 @@ button:hover {
     position: relative;
 }
 
-
 .box {
-  background-color: var(--sidebar-color);
-  border: 1px solid var(--border-color);
-  border-radius: 5px;
-  padding: 2%;
-  text-align: center;
-  transition: transform 0.25s, box-shadow 0.25s;
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  position: relative;
-  text-align: center; 
+    background-color: var(--sidebar-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 2%;
+    text-align: center;
+    transition: transform 0.25s, box-shadow 0.25s;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 1rem;
 }
 
-
-.url-button{
+.url-button {
     display: inline-block;
     padding: 10px 20px;
     margin-top: 10px;
@@ -167,115 +130,15 @@ button:hover {
     transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
-
-.url-button:hover{
+.url-button:hover {
     background-color: #4a47ec;
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
-.url-button:active{
-    background-color: #8d8d8d;
-}
 
-.box:hover {
-  transform: translateY(-4px);
-}
-
-.weather-box {
-    padding: 10px;
-    display: inline-block;
-    text-align: left;
-}
-
-
-.weather-table {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-top: 10px;
-}
-
-.weather-row {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 4px 0;
-}
-
-.weather-row .label {
-    font-weight: bold;
-    text-align: right;
-    flex: 1;
-}
-
-.weather-row .value {
-    text-align: left;
-    flex: 1;
-    padding-left: 10px;
-}
-
-
-.quote {
-  display: inline-block;
-  text-align: left;
-}
-
-.box ul {
-  padding-left: 1.5em;
-  margin: 0;
-  list-style: none;
-}
-
-.box .quote::before {
-  content: "⭐";
-  font-size: 1.2em;
-  position: absolute;
-  left: 0;
-  top: -20;
-}
-
-
-
-.author {
-  display: block;
-  text-align: right;
-  margin-top: 0.5rem;
-  font-style: italic;
-  font-size: 0.9rem;
-}
-
-
-/* Danger Zone ================================================================================================================================================== Danger Zone*/
-.danger {
-    background-color: #2a0000;
-    border: 1px solid #ff3333;
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 20px;
-}
-
-.danger h1 h2 {
-    text-align: center;
-}
-
-.danger button {
-    background-color: #b30000;
-    color: white;
-    border: 1px solid #ff4d4d;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    margin: 8px 0;
-    transition: background-color 0.2s, transform 0.2s;
-}
-
-.danger button:hover {
-    background-color: #ff1a1a;
-    transform: scale(1.05);
-}
-
-
-/* MAIN CONTENT ================================================================================================================================================================= */
+/* =============================
+   MAIN CONTENT AREA
+============================= */
 .main-content {
     flex: 1;
     display: flex;
@@ -285,48 +148,29 @@ button:hover {
     gap: 2rem;
 }
 
-h1 {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-
+/* Main content container with 3 columns: left/mid/right */
 .content {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: row;
     gap: 20px;
-    padding: 20px;
+    width: 100%;
     background-color: var(--content-color);
     color: var(--content-text-color);
     border-radius: 10px;
+    padding: 20px;
 }
 
-
+/* Columns inside content */
 .left-div, .middle-div, .right-div {
     flex: 1;
-
-    background-color: rgba(255, 255, 255, 0.05);
+    min-width: 150px;
     padding: 20px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
-
-.left-div {
-    flex :2;
-    margin-right: 10px;
-}
-.middle-div {
-    margin: 0 10px;
-}
-.right-div {
-    flex: 3;
-    margin-left: 10px;
-}
-
-/* Responsive collapse */
+/* Collapse columns on small screens */
 @media (max-width: 1000px) {
     .content {
         flex-direction: column;
@@ -336,9 +180,10 @@ h1 {
     }
 }
 
+/* Flash messages */
 #flash-messages {
-    position: fixed;       /* stays visible */
-    top: 80px;             /* adjust to below your top menu */
+    position: fixed;
+    top: 80px;
     right: 20px;
     width: auto;
     max-width: 300px;
@@ -357,16 +202,45 @@ h1 {
     animation: fadeInOut 10s forwards;
 }
 
-/* Different styles per category */
-.flash.success { background-color: #4caf50; }   /* green */
-.flash.error   { background-color: #f44336; }   /* red */
-.flash.warning { background-color: #ff9800; }   /* orange */
-.flash.info    { background-color: #2196f3; }   /* blue */
+.flash.success { background-color: #4caf50; }
+.flash.error   { background-color: #f44336; }
+.flash.warning { background-color: #ff9800; }
+.flash.info    { background-color: #2196f3; }
 
-/* Fade in/out animation */
 @keyframes fadeInOut {
     0% { opacity: 0; transform: translateY(-10px); }
     10% { opacity: 1; transform: translateY(0); }
     90% { opacity: 1; transform: translateY(0); }
     100% { opacity: 0; transform: translateY(-10px); }
+}
+
+/* =============================
+   FORMS
+============================= */
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-row input.name,
+.form-row select,
+.form-row button.updateDB {
+    font-size: 16px;
+    padding: 6px 10px;
+}
+
+/* Danger Zone */
+.danger {
+    background-color: #2a0000;
+    border: 1px solid #ff3333;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.danger button:hover {
+    background-color: #ff1a1a;
+    transform: scale(1.05);
 }

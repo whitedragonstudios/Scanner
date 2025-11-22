@@ -1,0 +1,95 @@
+/* Container for all reports */
+.reports-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Header row */
+.report-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    font-weight: bold;
+    padding: 10px;
+    border-bottom: 2px solid var(--border-color);
+    gap: 20px;
+}
+
+/* Single user card */
+.report-card {
+    background-color: var(--content-color);
+    color: var(--content-text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* Grid for picture, main info, and time entries */
+.report-grid {
+    display: grid;
+    grid-template-columns: 100px 1fr 2fr;
+    gap: 20px;
+    align-items: start;
+}
+
+/* Profile picture spans full height */
+.profile-pic {
+    grid-row: span 2;
+    width: 100px;
+    height: 100%;
+}
+
+.profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Main user info aligned in columns like header */
+.user-info {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 20px;
+}
+
+.user-info span {
+    font-size: 0.95rem;
+}
+
+/* Time entries stacked vertically */
+.time-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Time row layout */
+.time-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr; /* Date, In, Out, Duration */
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.time-row.no-times {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .report-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .user-info {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .time-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+}

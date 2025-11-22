@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, Blueprint, flash
-import classSettings
+import classSettings, classScheduler
 from classNews import News_Report
 from classQuotes import quote_generator
 from classWeather import weather_report
@@ -36,7 +36,7 @@ frontend = Blueprint('frontend', __name__, template_folder='templates', static_f
 recent_list = []
 
 config, weather_data, news, quoteOTDay = preload_data()
-
+user_handle = Handler("user")
 
 # Set default and index route
 @frontend.route ('/')
@@ -84,7 +84,7 @@ def home():
 def settings():
     if request.method == "POST":
         global config, weather_data, news
-        user_handle = Handler("user")
+        
 
         # Danger Zone
         action = request.form.get("action")
@@ -167,12 +167,51 @@ def settings():
     return render_template("settings.html", cf=config)
 
 
+fake = [
+    {
+        "fname": "Han",
+        "lname": "Solo",
+        "idnumber": 11111111,
+        "role": "Pilot",
+        "position": "Smuggler",
+        "department": "Operations",
+        "time": "08:00",
+        "date": "2025-11-21",
+        "pic": "11111111.jpg",
+        "recent_people": ["Clock In: 08:00", "Clock Out: 17:00"]
+    },
+    {
+        "fname": "Luke",
+        "lname": "Skywalker",
+        "idnumber": 22222222,
+        "role": "Jedi",
+        "position": "Like his father",
+        "department": "",
+        "time": "08:00",
+        "date": "2025-11-21",
+        "pic": "22222222.jpg",
+        "recent_people": ["Clock In: 08:00", "Clock Out: 17:00"]
+    }
+    
+]
 
-
-@frontend.route('/reports')
+@frontend.route('/reports', methods=['GET', 'POST'])
 def reports():
+    search = None
+    search_result = []
+    if request.method == "POST":
+        search = request.form.get("search")
+        field = request.form.get("field")
+        if search is not None:
+            se = classScheduler.search_event(search, field)
+            search_result = se.results
+        
+            
+
+
+
     return render_template("reports.html", 
-        cf = config, 
-        recent_people = recent_list
+        cf = config,
+        search_result = search_result,
         )
     

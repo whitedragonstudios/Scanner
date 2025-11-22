@@ -1,0 +1,98 @@
+/* ================================================================== */
+/* SETTINGS PAGE SPECIFIC STYLES                                     */
+/* ================================================================== */
+
+/* Danger Zone */
+.danger {
+    background-color: #2a0000;
+    border: 1px solid #ff3333;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.danger h1, .danger h2 {
+    text-align: center;
+}
+
+.danger button {
+    background-color: #b30000;
+    color: white;
+    border: 1px solid #ff4d4d;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 8px 0;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.danger button:hover {
+    background-color: #ff1a1a;
+    transform: scale(1.05);
+}
+
+/* Color picker section */
+.color-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.color-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.color-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.color-row label {
+    min-width: 120px;
+}
+
+.color-text-box {
+    width: 48px;
+    height: 36px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.color_button {
+    margin-top: 12px;
+    height: 36px;
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+    align-self: flex-start;
+}
+
+/* Upload and manual entry */
+.right-div form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.right-div input[type="file"] {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* Manual entry form */
+.right-div input[type="text"],
+.right-div input[type="email"],
+.right-div input[type="number"] {
+    padding: 6px 10px;
+    font-size: 16px;
+    width: 100%;
+    margin-bottom: 6px;
+}
+
+.right-div input[type="radio"] {
+    margin-left: 10px;
+    margin-right: 4px;
+}

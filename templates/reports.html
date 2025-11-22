@@ -6,6 +6,8 @@
     <title>Reports</title>
     <!-- link css stylesheet for flask -->
     <link href="{{url_for('static', filename='styles/style.css')}}" rel="stylesheet"/>
+    <link href="{{url_for('static', filename='styles/reports.css')}}" rel="stylesheet"/>
+
     <style>
         :root {
             /* Main */
@@ -29,8 +31,10 @@
 <body>
     <div class="page-wrapper">
         <div class="sidebar"> 
-            Live Reports 
+            
             <div>
+                <button class= "huge-button" type="submit" id="send-now" name = "send-now" value = "send-now" title="Ignore email schedule and send email reports now"> Send Report Now</button>
+                <br><hr><br>
                 <h1>Clocked in </h1>
                     <div>
                         <ul>
@@ -46,35 +50,80 @@
                 <a href="/reports">Reports</a>
                 <a href="/settings">Settings</a>
             </div>
-            <h1>Reports</h1>
-            <div class="content"> 
-                <!-- Left Div: forms -->
-                <div class="left-div">
-                    
-                </div>
-                <div class="middle-div">
-                    <h1> Search</h1>
-                    <h2> Search by name or ID</h2>
-                    <form> 
-                        <input class="name" type="text" name="searchname" id="searchname" placeholder="Han Solo" maxlength="50" required>
+            <div>
+                <form class="form-row" method="POST" action="/reports">
+                        <label for="search">Search</label>
+                        <input class="name" type="text" name="search" id="search" placeholder="Han Solo" maxlength="50" required> 
+                        <label for="field">Select Field</label>
+                        <select id="field" name="field" required>
+                            <option value="name" selected>Name </option>
+                            <option value="idnumber" >ID Number</option>
+                            <option value="email">Email</option>
+                            <option value="phone">Phone</option>
+                            <option value="role">Role</option>
+                            <option value="position">Position</option>
+                            <option value="department">Department</option>
+                        </select>
                         <button class="updateDB" type="submit">Search</button>
                     </form>
-                    <br>
-                    <h2>Custom Search </h2>
-                    <p> You can enter your own PostgreSQL searches here </p>
-                    <form action="/manual" method="post">
-                        <input type="text" id="fileUpload" name="manual" required>
-                        <button class = "updateDB" type="Submit">Search</button>
-                    </form>
-                    
-                </div>
-                <div class="right-div">
-                    <h1> Recent </h1>
-                    <ul>{% for person in recent_people %}
-                            <li>{{ person }}</li>
-                    {% endfor %} </ul>
-                </div>
             </div>
+            
+           <div class="reports-content">
+
+                <!-- Header row for main info -->
+                <div class="report-header">
+                    <span class="col-name">Name</span>
+                    <span class="col-id">Employee ID</span>
+                    <span class="col-email">Email</span>
+                    <span class="col-phone">Phone</span>
+                    <span class="col-role">Role</span>
+                    <span class="col-position">Position</span>
+                    <span class="col-department">Department</span>
+                </div>
+
+                {% for person in search_result %}
+                <div class="report-card">
+                    <div class="report-grid">
+                        <!-- Profile picture -->
+                        <div class="profile-pic">
+                            <img src="{{ url_for('static', filename='images/' + (person.pic_path or 'error.jpg')) }}">
+                        </div>
+
+                        <!-- Main user info -->
+                        <div class="user-info">
+                            <span class="user-name">{{ person.first_name }} {{ person.last_name }}</span>
+                            <span class="user-id">{{ person.employee_id }}</span>
+                            <span class="user-email">{{ person.email }}</span>
+                            <span class="user-phone">{{ person.phone }}</span>
+                            <span class="user-role">{{ person.employee_role }}</span>
+                            <span class="user-position">{{ person.position }}</span>
+                            <span class="user-department">{{ person.department }}</span>
+                        </div>
+
+                        <!-- Time entries -->
+                        <div class="time-entries">
+                            {% if person.times %}
+                                {% for t in person.times %}
+                                    <div class="time-row">
+                                        <span class="time-date">{{ t.date }}</span>
+                                        <span class="time-in">{{ t.clockin }}</span>
+                                        <span class="time-out">{{ t.clockout }}</span>
+                                        <span class="time-duration">{{ t.duration }}</span>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="time-row no-times">
+                                    <span>No time entries available</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+
+
         </div>
     </div>
 </body>
