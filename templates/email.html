@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ cf.company }} – Time Report</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, Helvetica, sans-serif;">
+
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color: #f4f4f4; padding: 20px;">
+    <tr>
+        <td align="center">
+            <table width="800" cellpadding="0" cellspacing="0"
+                style="background-color: #ffffff; border-radius: 6px; padding: 20px;">
+                <tr>
+                    <td style="padding-bottom: 20px; border-bottom: 1px solid #dddddd;">
+                        <table width="100%">
+                            <tr>
+                                <td width="80">
+                                    <img src="{{ logo.jpg }}" width="60" alt="Company Logo"
+                                         style="display: block;">
+                                </td>
+                                <td style="font-size: 22px; font-weight: bold;">
+                                    {{ cf.company }} – Timesheet Report
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr><td height="20"></td></tr>
+                <tr>
+                    <td>
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="45%" valign="top" style="padding-right: 20px;">
+                                    <h3 style="margin-top: 0;">Employees Who Did Not Clock Out</h3>
+                                    {% if no-clockout %}
+                                        <table width="100%" cellpadding="6" cellspacing="0">
+                                            {% for employee in no-clockout %}
+                                            <tr>
+                                                <td style="border-bottom: 1px solid #eeeeee;">
+                                                    <strong>{{ employee.fname }} {{employee.lname}}</strong><br>
+                                                    <span style="color: #777777; font-size: 13px;">
+                                                        ID: {{ employee.id }} |
+                                                        Department: {{employee.department}}
+                                                        {{employee.employee_role}} {{employee.position}}
+                                                        Email: {{employee.email}}
+                                                        Phone: {{employee.phone}}
+                                                        Clocked in: {{ employee.clock_in }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </table>
+                                    {% else %}
+                                        <p style="color: #555555;">
+                                            All employees clocked out properly.
+                                        </p>
+                                    {% endif %}
+                                </td>
+
+                                <!-- RIGHT COLUMN -->
+                                <td width="55%" valign="top" align="center">
+                                    <h3 style="margin-top: 0;">Clocked-In Duration</h3>
+                                    <img src="{{ chart_url }}"
+                                         alt="Clocked Time Graph"
+                                         width="100%"
+                                         style="border: 1px solid #dddddd; padding: 5px;">
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <!-- SPACER -->
+                <tr><td height="30"></td></tr>
+
+                <!-- FOOTER -->
+                <tr>
+                    <td style="border-top: 1px solid #dddddd; padding-top: 15px;">
+                        <p style="font-size: 14px; color: #555555;">
+                            The full report has been generated as an Excel file for your records.
+                        </p>
+
+                        <p style="font-size: 14px;">
+                            <a href="{{ excel_url }}"
+                               style="background-color: #2e7dff; color: #ffffff;
+                                      padding: 10px 16px; text-decoration: none;
+                                      border-radius: 4px; display: inline-block;">
+                                Download Full Excel Report
+                            </a>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

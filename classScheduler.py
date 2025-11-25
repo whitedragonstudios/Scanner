@@ -1,5 +1,5 @@
 from classHandler import Handler
-from datetime import datetime as dt, date
+from datetime import datetime as dt, date, timedelta
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -157,7 +157,12 @@ class search_event():
 
 class mailer():
     def __init__(self):
-        self.mail_handle = Handler("user")
+        self.user_handle = Handler("user")
+        self.today = date.today()
+        self.yesterday = self.today - timedelta(hours=24)
+        self.week = self.today - timedelta(days=7)
+        self.month = self.today - timedelta(days=30)
+
 
     def send_now(self):
         try:
@@ -170,8 +175,19 @@ class mailer():
         except Exception as e:
             print(f"Error sending email: {e}")
         finally:
-            server.quit() # Close the connection
+            server.quit()
 
+
+    def generate_report(self, now, later):
+        self.user_handle.send_query(f"""SELECT p.employee_id, p.first_name, p.last_name, t.clock_in, t.work_date
+            FROM timesheet_database t
+            JOIN people_database p
+            ON p.employee_id = t.employee_id
+            WHERE t.clock_out IS NULL
+            AND t.work_date BETWEEN %s AND %s
+            ORDER BY t.work_date, t.clock_in;
+            """%(now, later))
+        
     def compose_email(self):
         sender_email = "your_email@example.com"
         sender_password = "your_app_password" # Use an app password for security
@@ -186,7 +202,7 @@ class mailer():
         msg.attach(MIMEText(body, 'plain'))
 
     def get_emails(self):
-        data = self.mail_handle.send_query("SELECT * FROM email_list")
+        data = self.user_handle.send_query("SELECT * FROM email_list")
         mailing_list = {}
         for item in data:
             email = item[0]
