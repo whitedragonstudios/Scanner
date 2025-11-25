@@ -1,5 +1,10 @@
 from classHandler import Handler
-from datetime import datetime as dt, date, timedelta
+from datetime import datetime as dt, date
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+
 
 class search_event():
     def __init__(self, search, field, num_entries = 10, autorun = True):
@@ -151,5 +156,45 @@ class search_event():
         
 
 class mailer():
+    def __init__(self):
+        self.mail_handle = Handler("user")
+
+    def send_now(self):
+        try:
+            server = smtplib.SMTP('smtp.gmail.com', 587) # Adjust for your email provider
+            server.starttls() # Enable TLS encryption
+            server.login(sender_email, sender_password)
+            text = msg.as_string()
+            server.sendmail(sender_email, receiver_email, text)
+            print("Email sent successfully!")
+        except Exception as e:
+            print(f"Error sending email: {e}")
+        finally:
+            server.quit() # Close the connection
+
+    def compose_email(self):
+        sender_email = "your_email@example.com"
+        sender_password = "your_app_password" # Use an app password for security
+        receiver_email = "recipient_email@example.com"
+        subject = "Test Email from Python"
+        body = "This is a test email sent using Python."
+
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = receiver_email
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'plain'))
+
+    def get_emails(self):
+        data = self.mail_handle.send_query("SELECT * FROM email_list")
+        mailing_list = {}
+        for item in data:
+            email = item[0]
+            freq = item[1]
+            mailing_list[freq] = email
+        return mailing_list
+
+
+class present():
     def __init__(self):
         pass
