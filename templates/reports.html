@@ -33,16 +33,10 @@
         <div class="sidebar"> 
             
             <div>
-                <form method="POST" action="/reports">
-                    <button class= "huge-button" type="submit" id="preview" name = "preview" value = "preview" title="Ignore email schedule and send email reports now">Preview Report</button>
-                    <br>
-                    <button class= "huge-button" type="submit" id="save-now" name = "save-now" value = "save-now" title="Ignore email schedule and send email reports now"> Save Report Now</button>
-                    <br>
-                    <button class= "huge-button" type="submit" id="send-now" name = "send-now" value = "send-now" title="Ignore email schedule and send email reports now"> Send Report Now</button>
-                    
-                </form>
-                <br><hr><br>
+                
+
                 <h1>Clocked in </h1>
+                    <hr>
                     <div>
                         <ul>
                             <li>
@@ -54,122 +48,55 @@
         <div class="main-content">
             <div class="top-menu">
                 <a href="/home">Home</a>
+                <a href="/search">Search</a>
                 <a href="/reports">Reports</a>
                 <a href="/settings">Settings</a>
             </div>
             <div>
                 <form class="form-row" method="POST" action="/reports">
-                    <label for="search">Search</label>
-                    <input class="name" type="text" name="search" id="search" placeholder="Han Solo" maxlength="50" required> 
-                    <label for="field">Select Field</label>
-                    <select id="field" name="field" required>
-                        <option value="name" selected>Name</option>
-                        <option value="idnumber">ID Number</option>
-                        <option value="email">Email</option>
-                        <option value="phone">Phone</option>
-                        <option value="role">Role</option>
-                        <option value="position">Position</option>
-                        <option value="department">Department</option>
-                    </select>
-                    <label for="time_entries">Time Entries</label>
-                    <select id="time_entries" name="time_entries">
-                        <option value="5">Last 5</option>
-                        <option value="10" selected>Last 10</option>
-                        <option value="20">Last 20</option>
-                        <option value="30">Last 30</option>
-                        <option value="40">Last 40</option>
-                        <option value="50">Last 50</option>
-                        <option value="60">Last 60</option>
-                        <option value="70">Last 70</option>
-                        <option value="80">Last 80</option>
-                        <option value="90">Last 90</option>
-                        <option value="100">Last 100</option>
-                    </select>
-                    <button class="updateDB" type="submit">Search</button>
+                    <button class="updateDB" type="submit" id="save-now" name = "save-now" value = "save-now" title="Save report of last 30 days to computer"> Save Report</button>
+                    <br>
+                    <button class="updateDB" type="submit" id="send-now" name = "send-now" value = "send-now" title="Sends report to everyone who recieves 'now' reports"> Send Report Now</button>
                 </form>
             </div>
             <div class="reports-content">
-                {% for person in search_result %}
-                <div class="report-card">
-                    <!-- Picture spans left side -->
-                    <div class="profile-pic">
-                        <img src="{{ url_for('static', filename='images/' + (person.pic_path or 'error.jpg')) }}" alt="Profile Picture">
-                    </div>
-
-                    <!-- Right side: user info + times -->
-                    <div class="report-details">
-                        <!-- User info section -->
-                        <div class="user-info-section">
-                            <div class="info-grid">
-                                <div class="info-column">
-                                    <span class="info-header">Name</span>
-                                    <span class="info-value">{{ person.first_name }} {{ person.last_name }}</span>
-                                </div>
-                                <div class="info-column">
-                                    <span class="info-header">Employee ID</span>
-                                    <span class="info-value">{{ person.employee_id }}</span>
-                                </div>
-                                <div class="info-column">
-                                    <span class="info-header">Email</span>
-                                    <span class="info-value">{{ person.email }}</span>
-                                </div>
-                                <div class="info-column">
-                                    <span class="info-header">Phone</span>
-                                    <span class="info-value">{{ person.phone }}</span>
-                                </div>
-                                <div class="info-column">
-                                    <span class="info-header">Role</span>
-                                    <span class="info-value">{{ person.employee_role }}</span>
-                                </div>
-                                <div class="info-column">
-                                    <span class="info-header">Position</span>
-                                    <span class="info-value">{{ person.position }}</span>
-                                </div>
-                                <div class="info-column">
-                                    <span class="info-header">Department</span>
-                                    <span class="info-value">{{ person.department }}</span>
-                                </div>
-                            </div>
+                <div class="excel-wrapper">
+                    <div class="excel-table">
+                        <!-- HEADER ROW -->
+                        <div class="excel-row excel-header">
+                            <div class="excel-cell">Work Date</div>
+                            <div class="excel-cell">Clock In</div>
+                            <div class="excel-cell">Clock Out</div>
+                            <div class="excel-cell">ID</div>
+                            <div class="excel-cell">First Name</div>
+                            <div class="excel-cell">Last Name</div>
+                            <div class="excel-cell">Email</div>
+                            <div class="excel-cell">Phone</div>
+                            <div class="excel-cell">Role</div>
+                            <div class="excel-cell">Position</div>
+                            <div class="excel-cell">Department</div>
                         </div>
-
-                        <!-- Time entries section -->
-                        <div class="time-entries-section">
-                            <h3>Time Entries</h3>
-                            {% if person.times %}
-                            <div class="time-grid">
-                                <div class="time-column">
-                                    <span class="time-header">Date</span>
-                                    {% for t in person.times %}
-                                    <span class="time-value">{{ t.date }}</span>
-                                    {% endfor %}
-                                </div>
-                                <div class="time-column">
-                                    <span class="time-header">Clock In</span>
-                                    {% for t in person.times %}
-                                    <span class="time-value">{{ t.clockin }}</span>
-                                    {% endfor %}
-                                </div>
-                                <div class="time-column">
-                                    <span class="time-header">Clock Out</span>
-                                    {% for t in person.times %}
-                                    <span class="time-value">{{ t.clockout }}</span>
-                                    {% endfor %}
-                                </div>
-                                <div class="time-column">
-                                    <span class="time-header">Duration</span>
-                                    {% for t in person.times %}
-                                    <span class="time-value">{{ t.duration }}</span>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            {% else %}
-                            <p class="no-times">No time entries available</p>
-                            {% endif %}
+                        <!-- DATA ROWS -->
+                        {% for row in report_data %}
+                        <div class="excel-row">
+                            <div class="excel-cell">{{ row.work_date }}</div>
+                            <div class="excel-cell">{{ row.clock_in }}</div>
+                            <div class="excel-cell">{{ row.clock_out }}</div>
+                            <div class="excel-cell">{{ row.employee_id }}</div>
+                            <div class="excel-cell">{{ row.first_name }}</div>
+                            <div class="excel-cell">{{ row.last_name }}</div>
+                            <div class="excel-cell">{{ row.email }}</div>
+                            <div class="excel-cell">{{ row.phone }}</div>
+                            <div class="excel-cell">{{ row.employee_role }}</div>
+                            <div class="excel-cell">{{ row.position }}</div>
+                            <div class="excel-cell">{{ row.department }}</div>
                         </div>
+                        {% endfor %}
+
                     </div>
                 </div>
-                {% endfor %}
             </div>
+
         </div>
     </div>
 </body>

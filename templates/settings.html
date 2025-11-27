@@ -66,6 +66,7 @@
             <!-- Top menu bar -->
             <div class="top-menu">
                 <a href="/home">Home</a>
+                <a href="/search">Search</a>
                 <a href="/reports">Reports</a>
                 <a href="/settings">Settings</a>
             </div>
@@ -115,7 +116,9 @@
                     <div class="radio-group">
                         <form action="/settings" method="post">
                             <div class="radio-row">
-                                <input type="radio" id="daily" name="send-reports" value="daily">
+                                <input type="radio" id="now" name="send-reports" value="now">
+                                <label for="now">Now</label>
+                                <input type="radio" id="now" name="send-reports" value="now">
                                 <label for="daily">Daily</label>
                                 <input type="radio" id="weekly" name="send-reports" value="weekly">
                                 <label for="weekly">Weekly</label>

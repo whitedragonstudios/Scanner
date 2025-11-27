@@ -195,10 +195,8 @@ def settings():
 
 
 
-@frontend.route('/reports', methods=['GET', 'POST'])
-def reports():
-
-
+@frontend.route('/search', methods=['GET', 'POST'])
+def search():
     search = session.get('last_search')
     field = session.get('last_field', 'name')
     time_entries = session.get('last_time_entries', '10')
@@ -224,8 +222,24 @@ def reports():
         if request.form.get("save-now"):
             classScheduler.mailer().save_report()
         
-    return render_template("reports.html", 
+    return render_template("search.html", 
         cf = config,
         search_result = search_result,
         )
     
+@frontend.route('/reports', methods=['GET', 'POST'])
+def reports():
+
+
+    if request.method == "POST":
+        pass
+        if request.form.get("preview"):
+            pass
+        if request.form.get("send-now"):
+            classScheduler.mailer().send_now()
+        if request.form.get("save-now"):
+            classScheduler.mailer().save_report()
+        
+    return render_template("reports.html", 
+        cf = config,
+        )

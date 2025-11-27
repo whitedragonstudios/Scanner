@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <!-- link css stylesheet for flask -->
+    <link href="{{url_for('static', filename='styles/style.css')}}" rel="stylesheet"/>
+    <link href="{{url_for('static', filename='styles/search.css')}}" rel="stylesheet"/>
+
+    <style>
+        :root {
+            /* Main */
+            --bg-color: {{cf.main_background_color or '#0a0a1f'}};
+            --text-color: {{cf.main_text_color or '#f0f0f0'}};
+            /* Content */
+            --content-color: {{cf.content_color or '#1c1c33'}};
+            --content-text-color: {{cf.content_text_color or' #ffffff'}};
+            /* Sidebar */
+            --sidebar-color: {{cf.sidebar_color or '#193763'}};
+            --sidebar-text-color: {{cf.sidebar_text_color or '#ffffff'}};
+            /* Buttons */
+            --button-color: {{cf.button_color or '#1a73ff'}};
+            --button-text-color: {{cf.button_text_color or '#ffffff'}};
+            --button-hover-color: {{cf.button_hover_color or '#0050b3'}};
+            /* Borders */
+            --border-color: {{cf.border_color or' #3399ff'}};
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="sidebar"> 
+            
+            <div>
+                <h2> Direct Search</h2>
+
+                <div>
+                    <form action="/search" method="post">
+                        <div>
+                            <input type="radio" id="timeDB" name="tdb" value="timeDB">
+                            <label for="tdb">Timesheet Database</label>
+                            <br>
+                            <input type="radio" id="configDB" name="cdb" value="configDB">
+                            <label for="cdb">Config Database</label>
+                            <br>
+                            <input type="radio" id="emailDB" name="edb" value="emailDB">
+                            <label for="edb">Email Database</label>
+                            <br>
+                            <label for="column">Column</label>
+                            <input type="text" name= "column" id="column">
+                            <br>
+                            <label for="key">Key</label>
+                            <input type="text" name= "key" id="key">
+                            <br>
+                            <label for="value">Value</label>
+                            <input type="text" name= "value" id="value">
+                            <button class ="huge-button" type= "Submit">Submit</button>
+                            <p> Queries will be formatted <br> SELECT {column} FROM {database} WHERE {key} = {value)</p>
+                        </div>
+                    </form>
+                </div>
+
+                
+                
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="top-menu">
+                <a href="/home">Home</a>
+                <a href="/search">Search</a>
+                <a href="/reports">Reports</a>
+                <a href="/settings">Settings</a>
+            </div>
+            <div>
+                <form class="form-row" method="POST" action="/search">
+                    <label for="search">Search</label>
+                    <input class="name" type="text" name="search" id="search" placeholder="Han Solo" maxlength="50" required> 
+                    <label for="field">Select Field</label>
+                    <select id="field" name="field" required>
+                        <option value="name" selected>Name</option>
+                        <option value="idnumber">ID Number</option>
+                        <option value="email">Email</option>
+                        <option value="phone">Phone</option>
+                        <option value="role">Role</option>
+                        <option value="position">Position</option>
+                        <option value="department">Department</option>
+                    </select>
+                    <label for="time_entries">Time Entries</label>
+                    <select id="time_entries" name="time_entries">
+                        <option value="5">Last 5</option>
+                        <option value="10" selected>Last 10</option>
+                        <option value="20">Last 20</option>
+                        <option value="30">Last 30</option>
+                        <option value="40">Last 40</option>
+                        <option value="50">Last 50</option>
+                        <option value="60">Last 60</option>
+                        <option value="70">Last 70</option>
+                        <option value="80">Last 80</option>
+                        <option value="90">Last 90</option>
+                        <option value="100">Last 100</option>
+                    </select>
+                    <button class="updateDB" type="submit">Search</button>
+                </form>
+            </div>
+            <div class="reports-content">
+                {% for person in search_result %}
+                <div class="report-card">
+                    <!-- Picture spans left side -->
+                    <div class="profile-pic">
+                        <img src="{{ url_for('static', filename='images/' + (person.pic_path or 'error.jpg')) }}" alt="Profile Picture">
+                    </div>
+
+                    <!-- Right side: user info + times -->
+                    <div class="report-details">
+                        <!-- User info section -->
+                        <div class="user-info-section">
+                            <div class="info-grid">
+                                <div class="info-column">
+                                    <span class="info-header">Name</span>
+                                    <span class="info-value">{{ person.first_name }} {{ person.last_name }}</span>
+                                </div>
+                                <div class="info-column">
+                                    <span class="info-header">Employee ID</span>
+                                    <span class="info-value">{{ person.employee_id }}</span>
+                                </div>
+                                <div class="info-column">
+                                    <span class="info-header">Email</span>
+                                    <span class="info-value">{{ person.email }}</span>
+                                </div>
+                                <div class="info-column">
+                                    <span class="info-header">Phone</span>
+                                    <span class="info-value">{{ person.phone }}</span>
+                                </div>
+                                <div class="info-column">
+                                    <span class="info-header">Role</span>
+                                    <span class="info-value">{{ person.employee_role }}</span>
+                                </div>
+                                <div class="info-column">
+                                    <span class="info-header">Position</span>
+                                    <span class="info-value">{{ person.position }}</span>
+                                </div>
+                                <div class="info-column">
+                                    <span class="info-header">Department</span>
+                                    <span class="info-value">{{ person.department }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Time entries section -->
+                        <div class="time-entries-section">
+                            <h3>Time Entries</h3>
+                            {% if person.times %}
+                            <div class="time-grid">
+                                <div class="time-column">
+                                    <span class="time-header">Date</span>
+                                    {% for t in person.times %}
+                                    <span class="time-value">{{ t.date }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="time-column">
+                                    <span class="time-header">Clock In</span>
+                                    {% for t in person.times %}
+                                    <span class="time-value">{{ t.clockin }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="time-column">
+                                    <span class="time-header">Clock Out</span>
+                                    {% for t in person.times %}
+                                    <span class="time-value">{{ t.clockout }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="time-column">
+                                    <span class="time-header">Duration</span>
+                                    {% for t in person.times %}
+                                    <span class="time-value">{{ t.duration }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% else %}
+                            <p class="no-times">No time entries available</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

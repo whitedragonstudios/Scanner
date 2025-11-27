@@ -251,34 +251,33 @@ class mailer():
         for freq, emails in mail_list.items():
             if not emails:
                 continue
-            if freq == "daily":
+            if freq == "now":
                 report_bytes = self.generate_report(self.yesterday)
-            elif freq == "weekly":
-                report_bytes = self.generate_report(self.week)
-            elif freq == "monthly":
-                report_bytes = self.generate_report(self.month)
+                for receiver in emails:
+                    msg = MIMEMultipart()
+                    msg['From'] = self.sender
+                    msg['To'] = receiver
+                    msg['Subject'] = f"TimeWise {freq.title()} Report {self.today}"
 
-            for receiver in emails:
-                msg = MIMEMultipart()
-                msg['From'] = self.sender
-                msg['To'] = receiver
-                msg['Subject'] = f"TimeWise {freq.title()} Report {self.today}"
+                    part = MIMEApplication(report_bytes.getvalue(),
+                                        Name=f"timesheet_{self.today:%m-%d-%Y}.xlsx")
+                    part['Content-Disposition'] = f'attachment; filename="timesheet_{self.today:%m-%d-%Y}.xlsx"'
+                    msg.attach(part)
 
-                part = MIMEApplication(report_bytes.getvalue(),
-                                       Name=f"timesheet_{self.today:%m-%d-%Y}.xlsx")
-                part['Content-Disposition'] = f'attachment; filename="timesheet_{self.today:%m-%d-%Y}.xlsx"'
-                msg.attach(part)
-
-                try:
-                    server.sendmail(self.sender, receiver, msg.as_string())
-                    print(f"Email sent to {receiver} successfully!")
-                except Exception as e:
-                    print(f"Error sending email to {receiver}: {e}")
+                    try:
+                        server.sendmail(self.sender, receiver, msg.as_string())
+                        print(f"Email sent to {receiver} successfully!")
+                    except Exception as e:
+                        print(f"Error sending email to {receiver}: {e}")
         server.quit()
 
     def get_emails(self):
         data = self.user_handle.send_query("SELECT * FROM email_list;")
-        mailing_list = {"daily": [], "weekly": [], "monthly": []}
+        mailing_list = {"now":[], "daily": [], "weekly": [], "monthly": []}
         for email, freq in data:
             mailing_list[freq].append(email)
         return mailing_list
+
+class present():
+    def __init__(self):
+        pass

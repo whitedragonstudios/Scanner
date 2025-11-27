@@ -1,145 +1,45 @@
-/* Container for all reports */
-.reports-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-}
 
-/* Single user card */
-.report-card {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    gap: 20px;
-    background-color: var(--content-color);
-    color: var(--content-text-color);
+.excel-wrapper {
+    width: 100%;
+    height: calc(100vh - 180px);
+    overflow: auto;
+    background: var(--content-color);
     border: 1px solid var(--border-color);
     border-radius: 10px;
-    padding: 20px;
-    align-items: start;
 }
 
-/* Profile picture on left, spans full height */
-.profile-pic {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    grid-row: span 2;  /* Allow picture to span into time entries area */
+.excel-table {
+    min-width: 1200px;
+    display: table;
+    border-collapse: collapse;
 }
 
-.profile-pic img {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 10px;
-    border: 2px solid var(--border-color);
+.excel-row {
+    display: table-row;
 }
 
-/* Right side container */
-.report-details {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-/* User info section */
-.user-info-section {
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 15px;
-}
-
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
-}
-
-.info-column {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.info-header {
+.excel-header {
+    position: sticky;
+    top: 0;
+    background-color: var(--sidebar-color);
+    color: var(--sidebar-text-color);
     font-weight: bold;
+    z-index: 10;
+}
+
+.excel-cell {
+    display: table-cell;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    white-space: nowrap;
     font-size: 0.9rem;
-    color: var(--button-color);
-    text-transform: uppercase;
 }
 
-.info-value {
-    font-size: 1.05rem;
+.excel-row:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.03);
 }
 
-/* Time entries section */
-.time-entries-section h3 {
-    margin-bottom: 8px;
-    font-size: 1.1rem;
-    color: var(--button-color);
-}
-
-.time-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    row-gap: 2px;
-}
-
-.time-column {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.time-header {
-    font-weight: bold;
-    font-size: 0.95rem;
-    color: var(--button-color);
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 3px;
-    margin-bottom: 2px;
-}
-
-.time-value {
-    font-size: 1rem;
-    padding: 2px 0;
-    line-height: 1.2;
-}
-
-.no-times {
-    color: rgba(255, 255, 255, 0.5);
-    font-style: italic;
-    font-size: 1rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 900px) {
-    .report-card {
-        grid-template-columns: 1fr;
-    }
-
-    .profile-pic {
-        grid-row: auto;
-    }
-
-    .profile-pic img {
-        width: 100px;
-        height: 100px;
-    }
-
-    .info-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .time-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 600px) {
-    .info-grid,
-    .time-grid {
-        grid-template-columns: 1fr;
-    }
+.excel-row:hover {
+    background-color: rgba(51, 153, 255, 0.15);
+    cursor: default;
 }
