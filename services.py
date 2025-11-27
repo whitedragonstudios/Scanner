@@ -9,7 +9,7 @@ def danger(action, handle):
     if action == "restore":
         print("restoring default config")
         # Should load config list from shared location
-        config_list = Setting.default_config()
+        config_list = Setting().default_config()
         #{'config_status': 'True',
             #'config_date': dt.now().strftime("%m-%d-%y"),
             #'webpage_title': 'Populus Numerus',

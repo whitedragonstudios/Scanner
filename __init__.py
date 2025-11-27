@@ -1,25 +1,25 @@
 from . import (
-    classInstall,
-    classPerson,
-    classSettings,
     classHandler,
-    server,
-    server_menu,
-    databaseConfig,
-    classWeather,
+    classInstall,
+    classNews,
+    classPerson,
     classQuotes,
-    classNews
+    classScheduler,
+    classSettings,
+    classWeather,
+    server,
+    
+    
 )
 
 __all__ = [
-    "classNews",
-    "classQuotes",
-    "classSettings",
     "classHandler",
-    "classPerson",
     "classInstall",
+    "classNews",
+    "classPerson",
+    "classQuotes",
+    "classScheduler",
+    "classSettings",
+    "classWeather",
     "server",
-    "server_menu",
-    "databaseConfig",
-    "classWeather"
 ]

@@ -217,7 +217,13 @@ def reports():
             session['last_field'] = field
             session['last_time_entries'] = time_entries
             session['search_result'] = search_result
-
+        if request.form.get("preview"):
+            pass
+        if request.form.get("send-now"):
+            classScheduler.mailer().send_now()
+        if request.form.get("save-now"):
+            classScheduler.mailer().save_report()
+        
     return render_template("reports.html", 
         cf = config,
         search_result = search_result,

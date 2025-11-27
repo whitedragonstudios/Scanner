@@ -4,18 +4,17 @@ from datetime import datetime as dt
 
 class Setting:
     def __init__(self, autorun=True):
-        if autorun:
-            self.data = self.assign_settings()
-    
-    
-    # Setting can be accessed in two ways through a dictionary returned or through individual class attributes. Must test which is more efficient
-    def assign_settings(self):
         # Uses handler to retrieve config settings from database.
         self.user_handle=Handler(profile='user')
-        # data is also the raw dictionary which is returned from this method.
-        data = self.user_handle.send_query("SELECT key, value FROM config_database;")
+        if autorun:
+            data = self.user_handle.send_query("SELECT key, value FROM config_database;")
+            data = dict(data)
+            self.data = self.assign_settings(data)
+
+    
+    # Setting can be accessed in two ways through a dictionary returned or through individual class attributes. Must test which is more efficient
+    def assign_settings(self, data):
         #print(data)
-        data = dict(data)
         self.config_status = data["config_status"]
         self.config_date = data["config_date"]
         self.webpage_title = data["webpage_title"]
@@ -39,6 +38,9 @@ class Setting:
         self.country = data["country"]
         self.news_key = data["news_key"]
         #self.emails = data["emails"]
+        self.sender_email = data["sender_email"]
+        self.sender_password = data["sender_password"]
+        self.last_email = data["last_email_date"]
         return data
     
     # This method stotres default color settings.
@@ -61,14 +63,12 @@ class Setting:
         return{
                 "config_status": "True",
                 "config_date": dt.now().strftime("%m-%d-%y"),
-                "webpage_title": "Populus Numerus",
-                "company": "Scanner",
+                "webpage_title": "TimeWise Gateway",
+                "company": "TimeWise",
                 "city": "New York City",
                 "lon": "-74.0060152",
                 "lat": "40.7127281",
-                "weather_key": "baeb0ce1961c460b651e6a3a91bfeac6",
                 "country": "us",
-                "news_key": "04fbd2b9df7b49f6b6a626b4a4ae36be"
                 }
     
     
@@ -76,8 +76,8 @@ class Setting:
         return{
                 "config_status": "True",
                 "config_date": dt.now().strftime("%m-%d-%y"),
-                "webpage_title": "Populus Numerus",
-                "company": "Scanner",
+                "webpage_title": "TimeWise Gateway",
+                "company": "TimeWise",
                 "main_background_color": "#0a0a1f",
                 "main_text_color": "#f0f0f0",
                 "content_color": "#1c1c33",
@@ -91,7 +91,11 @@ class Setting:
                 "city": "New York City",
                 "lon": "-74.0060152",
                 "lat": "40.7127281",
-                "weather_key": "baeb0ce1961c460b651e6a3a91bfeac6",
                 "country": "us",
-                "news_key": "04fbd2b9df7b49f6b6a626b4a4ae36be"
+                # is setup in intial config does not get reset
+                "weather_key": "baeb0ce1961c460b651e6a3a91bfeac6",
+                "news_key": "04fbd2b9df7b49f6b6a626b4a4ae36be",
+                "sender_email": "timewisemailer@gmail.com",
+                "sender_password": "qtwd mvdt kcgt acmz",
+                "last_email_date": dt.now().strftime("%m-%d-%y")
                 }

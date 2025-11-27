@@ -33,7 +33,14 @@
         <div class="sidebar"> 
             
             <div>
-                <button class= "huge-button" type="submit" id="send-now" name = "send-now" value = "send-now" title="Ignore email schedule and send email reports now"> Send Report Now</button>
+                <form method="POST" action="/reports">
+                    <button class= "huge-button" type="submit" id="preview" name = "preview" value = "preview" title="Ignore email schedule and send email reports now">Preview Report</button>
+                    <br>
+                    <button class= "huge-button" type="submit" id="save-now" name = "save-now" value = "save-now" title="Ignore email schedule and send email reports now"> Save Report Now</button>
+                    <br>
+                    <button class= "huge-button" type="submit" id="send-now" name = "send-now" value = "send-now" title="Ignore email schedule and send email reports now"> Send Report Now</button>
+                    
+                </form>
                 <br><hr><br>
                 <h1>Clocked in </h1>
                     <div>
