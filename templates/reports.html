@@ -31,19 +31,24 @@
 <body>
     <div class="page-wrapper">
         <div class="sidebar"> 
-            
-            <div>
-                
-
-                <h1>Clocked in </h1>
-                    <hr>
-                    <div>
-                        <ul>
-                            <li>
-                            </li>
-                        </ul>
-                    </div>
-            </div>
+            <h1>Clocked in </h1>
+            <table>
+                <tbody>
+                    {% for date, entries in live %}
+                        <tr class="date-row">
+                            <td colspan="3"><hr>{{ date }}<hr></td>
+                            
+                        </tr>
+                        {% for entry in entries %}
+                        <tr>
+                            <td></td>
+                            <td>{{ entry.clock_in }}</td>
+                            <td>{{ entry.fname }} {{ entry.lname }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
         <div class="main-content">
             <div class="top-menu">
@@ -64,30 +69,28 @@
                     <div class="excel-table">
                         <!-- HEADER ROW -->
                         <div class="excel-row excel-header">
-                            <div class="excel-cell">Work Date</div>
+                            <div class="excel-cell">Date</div>
                             <div class="excel-cell">Clock In</div>
                             <div class="excel-cell">Clock Out</div>
+                            <div class="excel-cell">Duration</div>
                             <div class="excel-cell">ID</div>
                             <div class="excel-cell">First Name</div>
                             <div class="excel-cell">Last Name</div>
-                            <div class="excel-cell">Email</div>
-                            <div class="excel-cell">Phone</div>
                             <div class="excel-cell">Role</div>
                             <div class="excel-cell">Position</div>
                             <div class="excel-cell">Department</div>
                         </div>
                         <!-- DATA ROWS -->
-                        {% for row in report_data %}
+                        {% for row in report %}
                         <div class="excel-row">
-                            <div class="excel-cell">{{ row.work_date }}</div>
+                            <div class="excel-cell">{{ row.date }}</div>
                             <div class="excel-cell">{{ row.clock_in }}</div>
                             <div class="excel-cell">{{ row.clock_out }}</div>
+                            <div class="excel-cell">{{ row.duration }}</div>
                             <div class="excel-cell">{{ row.employee_id }}</div>
-                            <div class="excel-cell">{{ row.first_name }}</div>
-                            <div class="excel-cell">{{ row.last_name }}</div>
-                            <div class="excel-cell">{{ row.email }}</div>
-                            <div class="excel-cell">{{ row.phone }}</div>
-                            <div class="excel-cell">{{ row.employee_role }}</div>
+                            <div class="excel-cell">{{ row.fname }}</div>
+                            <div class="excel-cell">{{ row.lname }}</div>
+                            <div class="excel-cell">{{ row.role }}</div>
                             <div class="excel-cell">{{ row.position }}</div>
                             <div class="excel-cell">{{ row.department }}</div>
                         </div>

@@ -5,6 +5,7 @@ from classQuotes import quote_generator
 from classWeather import weather_report
 from classHandler import Handler
 from classPerson import Person, Default_Person
+from classReports import Reports
 import services
 
 
@@ -229,7 +230,7 @@ def search():
     
 @frontend.route('/reports', methods=['GET', 'POST'])
 def reports():
-
+    current = Reports()
 
     if request.method == "POST":
         pass
@@ -242,4 +243,6 @@ def reports():
         
     return render_template("reports.html", 
         cf = config,
+        live = current.get_clocked_in(),
+        report = current.get_report()
         )
